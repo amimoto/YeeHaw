@@ -1,0 +1,1 @@
+class YHGFxWidget_BaseParty extends KFGFxWidget_BaseParty;
