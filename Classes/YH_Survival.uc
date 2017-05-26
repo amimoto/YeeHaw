@@ -1,4 +1,4 @@
-class YHGameInfo_Survival extends KFGameInfo_Survival;
+class YH_Survival extends KFGameInfo_Survival;
 
 // Disable item pickups
 function InitAllPickups()
@@ -90,6 +90,7 @@ function WaveEnded(EWaveEndCondition WinCondition)
     // To allow any statistics that are recorded on the very last zed killed at the end of the wave,
     // wait a single frame to allow them to finalize.
     SetTimer( WorldInfo.DeltaSeconds, false, nameOf(Timer_FinalizeEndOfWaveStats) );
+
 }
 
 State WaveCleanup

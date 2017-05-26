@@ -1,0 +1,25 @@
+$Description "Gunslingers only! Headshots return the bullet back to your magazine. Start the game with full loadout and it's a full set of hardest wave mayhem!
+
+Changes from vanilla survival:
+
+* Only Gunslingers Allowed
+* Always spawn with dual-1911, dual-deagles, dual-500s, and medic pistol
+* Aim-wisely and never run out of ammo: Headshots will not use ammo.
+* Pistol head bashes will give ammo (good way of earning ammo with trash)
+* Level 25 skill Whirlwind of Lead users can get additional ammo by getting headshots
+* No tradertime. Non-stop Zed killing action. Waves still exist to let people (re)spawn
+
+Making this puppy run:
+
+* Start Killing Floor 2
+* Hit tilde ~ to bring down the console
+* Enter in the following: open kf-burningparis?game=YeeHaw.YH_Survival
+* Swap kf-burningparis for other maps (eg. kf-outpost)
+* Change difficulty by supplying another difficulty parameter. So for HoE it could be: open kf-burningparis?game=YeeHaw.YH_Survival?Difficulty=3 (Note: 0=Normal)
+
+GS Logo by Atagene"
+$Title "YeeHaw"
+$PreviewFile "Documents\My Games\KillingFloor2\KFGame\src\YeeHaw\yeehaw.png"
+$Tags ""
+$MicroTxItem "false"
+$PackageDirectory "Documents\My Games\KillingFloor2\KFGame\src\YeeHaw\YeeHawUpload"

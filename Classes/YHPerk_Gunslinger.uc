@@ -18,6 +18,24 @@ function AddDefaultInventory( KFPawn P )
     }
 }
 
+// Add to player's ammo count
+function AddAmmo(KFWeapon KFW)
+{
+    if (KFW.MagazineCapacity[0] >= KFW.AmmoCount[0] )
+    {
+        KFW.AmmoCount[0]++;
+        KFW.ClientForceAmmoUpdate(KFW.AmmoCount[0],KFW.SpareAmmoCount[0]);
+        KFW.bNetDirty = true;
+    }
+    else if ( KFW.SpareAmmoCapacity[0] > KFW.SpareAmmoCount[0] )
+    {
+        KFW.SpareAmmoCount[0]++;
+        KFW.ClientForceAmmoUpdate(KFW.AmmoCount[0],KFW.SpareAmmoCount[0]);
+        KFW.bNetDirty = true;
+    }
+
+}
+
 // Where we determine if the play has got a headshot. If it does turn out
 // that they did, we return ammo to their magazine... if the magazine is
 // full, we'll just put another round into their spare ammo pool
@@ -41,14 +59,7 @@ simulated function ModifyDamageGiven( out int InDamage,
         // Make sure we're not doing the second round do blow off the head
         if ( MyKFPM != none && !MyKFPM.bCheckingExtraHeadDamage )
         {
-            if (KFW.MagazineCapacity[0] > KFW.AmmoCount[0] )
-            {
-                KFW.AmmoCount[0]++;
-            }
-            else if ( KFW.SpareAmmoCapacity[0] > KFW.SpareAmmoCount[0] )
-            {
-                KFW.SpareAmmoCount[0]++;
-            }
+            AddAmmo(KFW);
         }
     }
 

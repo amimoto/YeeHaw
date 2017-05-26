@@ -12,12 +12,17 @@ function UpdateSkills( class<KFPerk> PerkClass, const out byte SelectedSkills[`M
     local int UnlockedPerkLevel;
     local KFPlayerController KFPC;
     local string PackageName;
+    local string PerkClassName;
 
     PerkSkillArr = PerkClass.default.PerkSkills;
     KFPC = KFPlayerController(GetPC());
 
     DataProvider = CreateArray();
-    PackageName = Left(PerkClass.Name,2) $ "Game";
+
+    // Deal with Localization files later
+    // PackageName = Left(PerkClass.Name,2) $ "Game";
+    PackageName = "KFGame";
+    PerkClassName = String(PerkClass.Name) == "YHPerk_Gunslinger" ? "KFPerk_Gunslinger" : String(PerkClass.Name);
 
     for ( i = 0; i < `MAX_PERK_SKILLS; i++ )
     {
@@ -27,7 +32,7 @@ function UpdateSkills( class<KFPerk> PerkClass, const out byte SelectedSkills[`M
         bShouldUnlock = SelectedSkills[i] > 0;
         if(bShouldUnlock)
         {
-            SkillName = Localize(String(PerkClass.Name), PerkSkillArr[PerkSkillIndex].Name, PackageName);;
+            SkillName = Localize(PerkClassName, PerkSkillArr[PerkSkillIndex].Name, PackageName);;
             IconPath = PerkSkillArr[PerkSkillIndex].IconPath;
             if(IconPath == "")
             {

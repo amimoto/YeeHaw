@@ -8,18 +8,22 @@ function GFxObject GetSkillObject(byte TierIndex, byte SkillIndex, bool bShouldU
     local int PerkSkillIndex;
     local array<PerkSkill> PerkSkillArr;
     local string PackageName;
+    local string PerkClassName;
 
     PerkSkillArr = PerkClass.default.PerkSkills;
     PerkSkillIndex = (TierIndex * 2) + (SkillIndex);
 
-    PackageName = Left(PerkClass.Name,2) $ "Game";
+    // Deal with Localization files later
+    // PackageName = Left(PerkClass.Name,2) $ "Game";
+    PackageName = "KFGame";
+    PerkClassName = String(PerkClass.Name) == "YHPerk_Gunslinger" ? "KFPerk_Gunslinger" : String(PerkClass.Name);
 
     if(PerkSkillIndex < PerkClass.Default.PerkSkills.length )
     {
         SkillObject = CreateObject( "Object" );
-        SkillName = Localize(String(PerkClass.Name), PerkSkillArr[PerkSkillIndex].Name, PackageName);
+        SkillName = Localize(PerkClassName, PerkSkillArr[PerkSkillIndex].Name, PackageName);
         SkillObject.SetString("label", SkillName);
-        SkillDescription = Localize(String(PerkClass.Name), PerkSkillArr[PerkSkillIndex].Name$"Description", PackageName);
+        SkillDescription = Localize(PerkClassName, PerkSkillArr[PerkSkillIndex].Name$"Description", PackageName);
         SkillObject.SetString("description", SkillDescription);
 
         if(bShouldUnlock)
