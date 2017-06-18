@@ -20,8 +20,8 @@ for perk in PERKS:
     fname = "YHPerk_{perk}.uc".format(perk=perk)
 
     # Get the data
-    override_buf = perk_template.render(perk=perk)
-    open(fname,'w').write(fname)
+    perk_code = perk_template.render(perk=perk)
+    open(fname,'w').write(perk_code)
 
 
 """

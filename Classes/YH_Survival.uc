@@ -158,12 +158,6 @@ Begin:
 defaultproperties
 {
 
-    /* Opt to use CD's spawnmanager instead
-    SpawnManagerClasses(0)=class'YHAISpawnManager_Short'
-    SpawnManagerClasses(1)=class'YHAISpawnManager_Normal'
-    SpawnManagerClasses(2)=class'YHAISpawnManager_Long'
-    */
-
     HUDType=class'YHGFxHudWrapper'
 
     GameReplicationInfoClass = class'YHGameReplicationInfo'
