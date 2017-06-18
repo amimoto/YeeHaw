@@ -2,11 +2,6 @@ class YHPlayerController extends KFPlayerController;
 
 var YHGFxMoviePlayer_Manager      MyYHGFxManager;
 
-// Players may not throw their weapons
-exec function ThrowWeapon()
-{
-}
-
 DefaultProperties
 {
     //defaults

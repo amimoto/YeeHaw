@@ -1,4 +1,4 @@
-class YH_Survival extends KFGameInfo_Survival;
+class YH_Survival extends CD_Survival;
 
 // Disable item pickups
 function InitAllPickups()
@@ -28,6 +28,7 @@ function InitAllPickups()
 /** The wave ended */
 function WaveEnded(EWaveEndCondition WinCondition)
 {
+    local string CDSettingChangeMessage;
     local array<SequenceObject> AllWaveEndEvents;
     local array<int> OutputLinksToActivate;
     local KFSeqEvent_WaveEnd WaveEndEvt;
@@ -91,6 +92,12 @@ function WaveEnded(EWaveEndCondition WinCondition)
     // wait a single frame to allow them to finalize.
     SetTimer( WorldInfo.DeltaSeconds, false, nameOf(Timer_FinalizeEndOfWaveStats) );
 
+
+    // Ensure CD's settings get applied
+    if ( ApplyStagedConfig( CDSettingChangeMessage, "Staged settings applied:" ) )
+    {
+        BroadcastCDEcho( CDSettingChangeMessage );
+    }
 }
 
 State WaveCleanup
@@ -151,9 +158,11 @@ Begin:
 defaultproperties
 {
 
+    /* Opt to use CD's spawnmanager instead
     SpawnManagerClasses(0)=class'YHAISpawnManager_Short'
     SpawnManagerClasses(1)=class'YHAISpawnManager_Normal'
     SpawnManagerClasses(2)=class'YHAISpawnManager_Long'
+    */
 
     HUDType=class'YHGFxHudWrapper'
 
