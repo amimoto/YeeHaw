@@ -1,4 +1,4 @@
-class YHPerk_{perk} extends KFPerk_{perk};
+class YHPerk_SWAT extends KFPerk_SWAT;
 
 // We do this since we can't modify KFPerk.uc directly.
 // The ugly version of inheritance. Put the functions in every subclass!
@@ -78,7 +78,7 @@ simulated event UpdatePerkBuild( const out byte InSelectedSkills[`MAX_PERK_SKILL
     {
 
         PackPerkBuild( NewPerkBuild, InSelectedSkills );
-        Hax_PlayerController(Owner).CachePerkBuild(self.Class, NewPerkBuild);
+        YHPlayerController(Owner).CachePerkBuild(self.Class, NewPerkBuild);
     }
 }
 
@@ -98,7 +98,7 @@ static simulated function bool IsWeaponOnPerk(
                 optional array < class<KFPerk> > WeaponPerkClass,
                 optional class<KFPerk> InstigatorPerkClass,
                 optional name WeaponClassName
-            )
+                )
 {
     if ( InstigatorPerkClass == class'YHPerk_SWAT' )
     {

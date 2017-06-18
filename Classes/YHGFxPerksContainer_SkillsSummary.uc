@@ -1,5 +1,6 @@
 class YHGFxPerksContainer_SkillsSummary extends KFGFxPerksContainer_SkillsSummary;
 
+
 function UpdateSkills( class<KFPerk> PerkClass, const out byte SelectedSkills[`MAX_PERK_SKILLS] )
 {
     local bool bShouldUnlock;
@@ -22,7 +23,14 @@ function UpdateSkills( class<KFPerk> PerkClass, const out byte SelectedSkills[`M
     // Deal with Localization files later
     // PackageName = Left(PerkClass.Name,2) $ "Game";
     PackageName = "KFGame";
-    PerkClassName = String(PerkClass.Name) == "YHPerk_Gunslinger" ? "KFPerk_Gunslinger" : String(PerkClass.Name);
+    if ( Left(PerkClass.Name,2) == "YH" )
+    {
+        PerkClassName = "KFPerk_"$Mid(PerkClass.Name,7);
+    }
+    else
+    {
+        PerkClassName = String(PerkClass.Name);
+    }
 
     for ( i = 0; i < `MAX_PERK_SKILLS; i++ )
     {

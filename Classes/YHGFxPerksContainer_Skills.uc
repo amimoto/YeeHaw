@@ -16,7 +16,14 @@ function GFxObject GetSkillObject(byte TierIndex, byte SkillIndex, bool bShouldU
     // Deal with Localization files later
     // PackageName = Left(PerkClass.Name,2) $ "Game";
     PackageName = "KFGame";
-    PerkClassName = String(PerkClass.Name) == "YHPerk_Gunslinger" ? "KFPerk_Gunslinger" : String(PerkClass.Name);
+    if ( Left(PerkClass.Name,2) == "YH" )
+    {
+        PerkClassName = "KFPerk_"$Mid(PerkClass.Name,7);
+    }
+    else
+    {
+        PerkClassName = String(PerkClass.Name);
+    }
 
     if(PerkSkillIndex < PerkClass.Default.PerkSkills.length )
     {
