@@ -6,9 +6,13 @@ import re
 
 PERKS = """Berserker
 Commando
+Support
 FieldMedic
 Gunslinger
 Sharpshooter
+Demolitionist
+Firebug
+Survivalist
 SWAT""".split()
 
 # Load the template

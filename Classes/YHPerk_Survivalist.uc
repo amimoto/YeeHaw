@@ -1,4 +1,4 @@
-class YHPerk_Commando extends KFPerk_Commando;
+class YHPerk_Survivalist extends KFPerk_Survivalist;
 
 // We do this since we can't modify KFPerk.uc directly.
 // The ugly version of inheritance. Put the functions in every subclass!
@@ -135,7 +135,7 @@ static function bool IsDamageTypeOnPerk( class<KFDamageType> KFDT )
 {
     if( KFDT != none )
     {
-        return KFDT.default.ModifierPerkList.Find( class'KFPerk_Commando' ) > INDEX_NONE;
+        return KFDT.default.ModifierPerkList.Find( class'KFPerk_Survivalist' ) > INDEX_NONE;
     }
 
     return false;
@@ -149,18 +149,18 @@ static simulated function bool IsWeaponOnPerk(
                 optional name WeaponClassName
                 )
 {
-    if ( InstigatorPerkClass == class'YHPerk_Commando' )
+    if ( InstigatorPerkClass == class'YHPerk_Survivalist' )
     {
-        InstigatorPerkClass = class'KFPerk_Commando';
+        InstigatorPerkClass = class'KFPerk_Survivalist';
     }
 
     if( W != none )
     {
-        return W.static.GetWeaponPerkClass( InstigatorPerkClass ) == class'KFPerk_Commando';
+        return W.static.GetWeaponPerkClass( InstigatorPerkClass ) == class'KFPerk_Survivalist';
     }
     else if( WeaponPerkClass.length > 0 )
     {
-        return WeaponPerkClass.Find(class'KFPerk_Commando') != INDEX_NONE;
+        return WeaponPerkClass.Find(class'KFPerk_Survivalist') != INDEX_NONE;
     }
 
     return false;

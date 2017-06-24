@@ -56,6 +56,52 @@ simulated function ModifyDamageGiven( out int InDamage,
  ** So that the perk skills/bonuses still get applied
  ********************************************************************************/
 
+function SetPlayerDefaults(Pawn PlayerPawn)
+{
+    `log("SetPlayer Defaults >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ARMOR"@KFPawn_Human(PlayerPawn).Armor);
+    `log("CALLED:"@GetFuncName());ScriptTrace();
+    if ( OwnerPC == none ) {
+        `log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! SKIPPING SetPlayerDefaults because OnwerPC is none");
+        return;
+    }
+    if ( !YHPlayerController(OwnerPC).PerkBuildCacheLoaded ) {
+        `log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! SKIPPING SetPlayerDefaults because PerkBuildCacheLoaded is none");
+        return;
+    }
+
+    super.SetPlayerDefaults(PlayerPawn);
+    `log("SetPlayer Defaults <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< ARMOR"@KFPawn_Human(PlayerPawn).Armor);
+}
+
+simulated event UpdateSkills()
+{
+    `log("CALLED:"@GetFuncName());ScriptTrace();
+    super.UpdateSkills();
+}
+
+simulated event SetPerkBuild( int NewPerkBuild )
+{
+    `log("CALLED:"@GetFuncName()@"New Perk Build:"@NewPerkBuild);ScriptTrace();
+    super.SetPerkBuild(NewPerkBuild);
+}
+
+simulated protected event PostSkillUpdate()
+{
+    `log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ARMOR"@OwnerPawn.Armor);
+    if ( OwnerPC == none ) {
+        `log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! SKIPPING PostSkillUpdate because OnwerPC is none");
+        return;
+    }
+    if ( !YHPlayerController(OwnerPC).PerkBuildCacheLoaded ) {
+        `log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! SKIPPING PostSkillUpdate because PerkBuildCacheLoaded is none");
+        return;
+    }
+    `log("------------------------ CALLED:"@PostSkillUpdate);
+    ScriptTrace();
+    super.PostSkillUpdate();
+    `log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ARMOR"@OwnerPawn.Armor);
+}
+
 simulated event UpdatePerkBuild( const out byte InSelectedSkills[`MAX_PERK_SKILLS], class<KFPerk> PerkClass)
 {
     local int NewPerkBuild;
@@ -71,6 +117,9 @@ simulated event UpdatePerkBuild( const out byte InSelectedSkills[`MAX_PERK_SKILL
     {
         BasePerkClass = PerkClass;
     }
+
+    `log("CALLED: UpdatePerkBuild");
+    ScriptTrace();
 
     super.UpdatePerkBuild(InSelectedSkills, BasePerkClass);
 
