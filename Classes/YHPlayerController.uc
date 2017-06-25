@@ -2,47 +2,63 @@ class YHPlayerController extends CD_PlayerController;
 
 var YHGFxMoviePlayer_Manager      MyYHGFxManager;
 
-// FIXME: Make this a constant
-var int PerkBuildCache[20];
-var bool PerkBuildCacheLoaded;
-
 simulated event PreBeginPlay()
 {
-    PerkBuildCacheLoaded = false;
     super.PreBeginPlay();
 }
 
+/*
 reliable client function ReapplySkills()
 {
     local byte SelectedSkillsHolder[`MAX_PERK_SKILLS];
     local KFPerk MyPerk;
     local int NewPerkBuild;
 
+    YHGameReplicationInfo(WorldInfo.GRI).AllowPerkChanging(true);
     MyPerk = GetPerk();
     NewPerkBuild = GetPerkBuildByPerkClass(MyPerk.Class);
     MyPerk.GetUnpackedSkillsArray( MyPerk.Class, NewPerkBuild,  SelectedSkillsHolder);
     MyPerk.UpdatePerkBuild(SelectedSkillsHolder, MyPerk.Class );
-
-    `log("THE PERK BUILD IS:"@NewPerkBuild);
-    ScriptTrace();
+    YHGameReplicationInfo(WorldInfo.GRI).AllowPerkChanging(false);
 }
+*/
+
+reliable client function ReapplySkills()
+{
+    local KFPerk MyPerk;
+    local int NewPerkBuild;
+
+    MyPerk = GetPerk();
+    NewPerkBuild = GetPerkBuildByPerkClass(MyPerk.Class);
+    ChangeSkills(NewPerkBuild);
+}
+
 
 reliable client function ReapplyDefaults()
 {
     local KFPerk MyPerk;
     MyPerk = GetPerk();
     MyPerk.SetPlayerDefaults(MyPerk.OwnerPawn);
+    MyPerk.AddDefaultInventory(MyPerk.OwnerPawn);
 }
 
-reliable server function ServerCacheSync(int NewPerkBuildCache[20])
+reliable server function PRICacheLoad(int PerkIndex, int NewPerkBuild)
 {
-    local int i;
-    for ( i=0; i<PerkList.Length; i++ )
-    {
-        `log("??????????????????????????????????? UPDATING SERVERCACHCESYNC"@NewPerkBuildCache[i]);
-        PerkBuildCache[i] = NewPerkBuildCache[i];
-    }
-    PerkBuildCacheLoaded = true;
+    local YHPlayerReplicationInfo YHPRI;
+    YHPRI = YHPlayerReplicationInfo(PlayerReplicationInfo);
+    YHPRI.PerkBuildCache[PerkIndex] = NewPerkBuild;
+}
+
+reliable server function PRICacheCompleted()
+{
+    local YHPlayerReplicationInfo YHPRI;
+    YHPRI = YHPlayerReplicationInfo(PlayerReplicationInfo);
+    YHPRI.PerkBuildCacheLoaded = true;
+}
+
+function bool IsPerkBuildCacheLoaded()
+{
+    return YHPlayerReplicationInfo(PlayerReplicationInfo).PerkBuildCacheLoaded;
 }
 
 function int GetPerkBuildByPerkClass(class<KFPerk> PerkClass)
@@ -53,44 +69,70 @@ function int GetPerkBuildByPerkClass(class<KFPerk> PerkClass)
     local class<KFPerk> MyPerkClass;
     local string BasePerkClassName;
     local int PerkIndex;
+    local int RequestedPerkBuild;
 
-    `log("++++++++++++++++++++++++++++++++++ GetPerkBuildByPerkClass"@PerkClass);
-    ScriptTrace();
-    if ( !PerkBuildCacheLoaded )
+    local YHPlayerReplicationInfo YHPRI;
+
+    YHPRI = YHPlayerReplicationInfo(PlayerReplicationInfo);
+    `log("???????????????????????????????????????????????"@GetPerkBuildByPerkClass@"for"@PerkClass);
+    PerkIndex = PerkList.Find('PerkClass', PerkClass);
+
+    // If we have the values cached, immediately return them
+    if ( YHPRI.PerkBuildCacheLoaded )
     {
-        for ( i=0; i<PerkList.Length; i++ )
-        {
-            MyPerkInfo = PerkList[i];
-            MyPerkClass = MyPerkInfo.PerkClass;
-            if ( Left(MyPerkClass.Name,2) == "YH" )
-            {
-                BasePerkClassName = "KFGame.KFPerk_"$Mid(MyPerkClass.Name,7);
-                MyPerkClass = class<KFPerk>(DynamicLoadObject(BasePerkClassName, class'Class'));
-            }
-
-            `log("CALLED GetPerkBuildByPerkClass for"@BasePerkClassName);
-            MyPerkBuild = super.GetPerkBuildByPerkClass(MyPerkClass);
-
-            PerkBuildCache[i] = (MyPerkBuild);
-        }
-        PerkBuildCacheLoaded = True;
-        ServerCacheSync(PerkBuildCache);
+        if ( PerkIndex < 0 )
+              return 0;
+        return YHPRI.PerkBuildCache[PerkIndex];
     }
 
-    PerkIndex = PerkList.Find('PerkClass', PerkClass);
-    `log("CALLED GetPerkBuildByPerkClass with argument"@PerkClass);
-    if ( PerkIndex < 0 )
-          return 0;
-    `log("PERKBUILD FOR"@PerkClass@"is"@PerkBuildCache[PerkIndex]);
-    ScriptTrace();
-    return PerkBuildCache[PerkIndex];
+    RequestedPerkBuild = 0;
+    for ( i=0; i<PerkList.Length; i++ )
+    {
+        MyPerkInfo = PerkList[i];
+        MyPerkClass = MyPerkInfo.PerkClass;
+        if ( Left(MyPerkClass.Name,2) == "YH" )
+        {
+            BasePerkClassName = "KFGame.KFPerk_"$Mid(MyPerkClass.Name,7);
+            MyPerkClass = class<KFPerk>(DynamicLoadObject(BasePerkClassName, class'Class'));
+        }
+
+        MyPerkBuild = super.GetPerkBuildByPerkClass(MyPerkClass);
+        if ( PerkIndex == i )
+        {
+            RequestedPerkBuild = MyPerkBuild;
+        }
+
+        PRICacheLoad(i,MyPerkBuild);
+    }
+    PRICacheCompleted();
+
+    return RequestedPerkBuild;
 }
 
-function CachePerkBuild( class<KFPerk> PerkClass, int NewPerkBuild )
+
+/************************************************************************* 
+   As the binary perk/skills changing is causing us some grief, we'll
+   build around. it.
+ *************************************************************************/
+
+reliable server function ChangePerk( int NewPerkIndex )
 {
-    local int PerkIndex;
-    PerkIndex = PerkList.Find('PerkClass', PerkClass);
-    PerkBuildCache[PerkIndex] = NewPerkBuild;
+    local YHPlayerReplicationInfo YHPRI;
+    YHPRI = YHPlayerReplicationInfo(PlayerReplicationInfo);
+    YHPRI.PerkIndexCurrent = NewPerkIndex;
+    YHPRI.PerkIndexRequested= NewPerkIndex;
+
+    YHPRI.NetPerkIndex = NewPerkIndex;
+    YHPRI.CurrentPerkClass = PerkList[NewPerkIndex].PerkClass;
+}
+
+reliable server function ChangeSkills( int NewPerkBuild )
+{
+    local YHPlayerReplicationInfo YHPRI;
+    YHPRI = YHPlayerReplicationInfo(PlayerReplicationInfo);
+    YHPRI.PerkBuildCurrent = NewPerkBuild;
+    YHPRI.PerkBuildRequested = NewPerkBuild;
+    GetPerk().SetPerkBuild(NewPerkBuild);
 }
 
 DefaultProperties

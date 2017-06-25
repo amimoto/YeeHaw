@@ -4,7 +4,7 @@ class YHPerk_SWAT extends KFPerk_SWAT;
 // The ugly version of inheritance. Put the functions in every subclass!
 
 // Add to player's ammo count
-function AddAmmo(KFWeapon KFW)
+reliable server function AddAmmo(KFWeapon KFW)
 {
     if (KFW.MagazineCapacity[0] >= KFW.AmmoCount[0] )
     {
@@ -56,57 +56,41 @@ simulated function ModifyDamageGiven( out int InDamage,
  ** So that the perk skills/bonuses still get applied
  ********************************************************************************/
 
+/* Returns the secondary weapon's class path for this perk */
+/*
+simulated function string GetSecondaryWeaponClassPath()
+{
+    return SecondaryWeaponDef.default.WeaponClassPath;
+}
+*/
+
 function SetPlayerDefaults(Pawn PlayerPawn)
 {
-    `log("SetPlayer Defaults >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ARMOR"@KFPawn_Human(PlayerPawn).Armor);
-    `log("CALLED:"@GetFuncName());ScriptTrace();
-    if ( OwnerPC == none ) {
-        `log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! SKIPPING SetPlayerDefaults because OnwerPC is none");
-        return;
-    }
-    if ( !YHPlayerController(OwnerPC).PerkBuildCacheLoaded ) {
-        `log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! SKIPPING SetPlayerDefaults because PerkBuildCacheLoaded is none");
-        return;
-    }
+    if ( OwnerPC == none ) return;
+    if ( !YHPlayerController(OwnerPC).IsPerkBuildCacheLoaded() ) return;
 
     super.SetPlayerDefaults(PlayerPawn);
-    `log("SetPlayer Defaults <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< ARMOR"@KFPawn_Human(PlayerPawn).Armor);
 }
 
-simulated event UpdateSkills()
+function AddDefaultInventory( KFPawn P )
 {
-    `log("CALLED:"@GetFuncName());ScriptTrace();
-    super.UpdateSkills();
-}
-
-simulated event SetPerkBuild( int NewPerkBuild )
-{
-    `log("CALLED:"@GetFuncName()@"New Perk Build:"@NewPerkBuild);ScriptTrace();
-    super.SetPerkBuild(NewPerkBuild);
+    super.AddDefaultInventory(P);
 }
 
 simulated protected event PostSkillUpdate()
 {
-    `log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ARMOR"@OwnerPawn.Armor);
-    if ( OwnerPC == none ) {
-        `log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! SKIPPING PostSkillUpdate because OnwerPC is none");
-        return;
-    }
-    if ( !YHPlayerController(OwnerPC).PerkBuildCacheLoaded ) {
-        `log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! SKIPPING PostSkillUpdate because PerkBuildCacheLoaded is none");
-        return;
-    }
-    `log("------------------------ CALLED:"@PostSkillUpdate);
-    ScriptTrace();
+    if ( OwnerPC == none ) return;
+    if ( !YHPlayerController(OwnerPC).IsPerkBuildCacheLoaded() ) return;
     super.PostSkillUpdate();
-    `log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ARMOR"@OwnerPawn.Armor);
 }
 
 simulated event UpdatePerkBuild( const out byte InSelectedSkills[`MAX_PERK_SKILLS], class<KFPerk> PerkClass)
 {
     local int NewPerkBuild;
+    local int PerkIndex;
     local string BasePerkClassName;
     local class<KFPerk> BasePerkClass;
+    local YHPlayerController YHPC;
 
     if ( Left(PerkClass.Name,2) == "YH" )
     {
@@ -118,16 +102,15 @@ simulated event UpdatePerkBuild( const out byte InSelectedSkills[`MAX_PERK_SKILL
         BasePerkClass = PerkClass;
     }
 
-    `log("CALLED: UpdatePerkBuild");
-    ScriptTrace();
-
     super.UpdatePerkBuild(InSelectedSkills, BasePerkClass);
 
+    // Cache the new build
     if( Controller(Owner).IsLocalController() )
     {
-
         PackPerkBuild( NewPerkBuild, InSelectedSkills );
-        YHPlayerController(Owner).CachePerkBuild(self.Class, NewPerkBuild);
+        YHPC = YHPlayerController(OwnerPC);
+        PerkIndex = YHPC.PerkList.Find('PerkClass', PerkClass);
+        YHPC.PRICacheLoad(PerkIndex,NewPerkBuild);
     }
 }
 
