@@ -7,9 +7,12 @@ function RestartPlayer(Controller NewPlayer)
     YHPC = YHPlayerController(NewPlayer);
     if( YHPC != none && YHPC.GetTeamNum() != 255 )
     {
-        YHPC.ReapplySkills();
+        YHPC.RestartPlayer();
+        // Until after this call, the Play's Pawn will
+        // not exist. So we do a pre and post restart
+        // player on the player controller.
         super.RestartPlayer(NewPlayer);
-        YHPC.ReapplyDefaults();
+        // YHPC.AddDefaultInventory();
     }
     else
     {
@@ -53,6 +56,7 @@ defaultproperties
 
     HUDType=class'YHGFxHudWrapper'
 
+    DefaultPawnClass=class'Dodeca.DPawn_Human'
     GameReplicationInfoClass = class'YHGameReplicationInfo'
     PlayerControllerClass=class'YHPlayerController'
     PlayerReplicationInfoClass=class'YHPlayerReplicationInfo'

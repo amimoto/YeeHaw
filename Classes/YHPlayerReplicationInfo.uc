@@ -40,8 +40,11 @@ simulated function SetPerkBuild()
     LocalPC = YHPlayerController(Owner);
     MyPerk = LocalPC.GetPerk();
 
+    `log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ SetPerkBuild"@PerkBuildRequested);
     ScriptTrace();
     MyPerk.SetPerkBuild(PerkBuildRequested);
+    //MyPerk.UpdateSkills();
+    //MyPerk.PostLevelUp();
 }
 
 defaultproperties

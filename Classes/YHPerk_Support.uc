@@ -64,24 +64,130 @@ simulated function string GetSecondaryWeaponClassPath()
 }
 */
 
+function bool PerkReady()
+{
+    if ( OwnerPC == none )
+    {
+        `log("NOTREADY: OwnerPC");
+        return false;
+    }
+    if ( !YHPlayerController(OwnerPC).IsPerkBuildCacheLoaded() ){
+        `log("NOTREADY: BuildCacheLoaded");
+        return false;
+    }
+
+    `log("READY!");
+    return true;
+}
+
+
+simulated function MyPerkSetOwnerHealthAndArmor( optional bool bModifyHealth )
+{
+    // don't allow clients to set health, since health/healthmax/playerhealth/playerhealthpercent is replicated
+    if( Role != ROLE_Authority )
+    {
+        return;
+    }
+
+    if( CheckOwnerPawn() )
+    {
+        if( bModifyHealth )
+        {
+            OwnerPawn.Health = OwnerPawn.default.Health;
+            ModifyHealth( OwnerPawn.Health );
+        }
+
+        OwnerPawn.HealthMax = OwnerPawn.default.Health;
+        ModifyHealth( OwnerPawn.HealthMax );
+        OwnerPawn.Health = Min( OwnerPawn.Health, OwnerPawn.HealthMax );
+
+        if( OwnerPC == none )
+        {
+            OwnerPC = KFPlayerController(Owner);
+        }
+
+        MyPRI = KFPlayerReplicationInfo(OwnerPC.PlayerReplicationInfo);
+        if( MyPRI != none )
+        {
+            MyPRI.PlayerHealth = OwnerPawn.Health;
+            MyPRI.PlayerHealthPercent = FloatToByte( float(OwnerPawn.Health) / float(OwnerPawn.HealthMax) );
+        }
+
+        OwnerPawn.MaxArmor = OwnerPawn.default.MaxArmor;
+        ModifyArmor( OwnerPawn.MaxArmor );
+        OwnerPawn.Armor = Min( OwnerPawn.Armor,  OwnerPawn.MaxArmor );
+    }
+}
+
 function SetPlayerDefaults(Pawn PlayerPawn)
 {
-    if ( OwnerPC == none ) return;
-    if ( !YHPlayerController(OwnerPC).IsPerkBuildCacheLoaded() ) return;
+    `log("SetPlayerDefaults:"@PlayerPawn);
+    if ( PlayerPawn == none ) return;
+    if ( !PerkReady() ) return;
+    OwnerPawn = KFPawn_Human(PlayerPawn);
+    bForceNetUpdate = TRUE;
 
-    super.SetPlayerDefaults(PlayerPawn);
+    OwnerPC = KFPlayerController(Owner);
+    if( OwnerPC != none )
+    {
+        MyPRI = KFPlayerReplicationInfo(OwnerPC.PlayerReplicationInfo);
+    }
+
+    MyPerkSetOwnerHealthAndArmor( true );
+
+    // apply all other pawn changes
+    ApplySkillsToPawn();
 }
 
 function AddDefaultInventory( KFPawn P )
 {
-    super.AddDefaultInventory(P);
+    local YHInventoryManager YHIM;
+    `log("AddDefaultInventory:"@P);
+    ScriptTrace();
+    if ( !PerkReady() ) return;
+
+    `log("WTF?");
+    `log("WTF?"@P.InvManager);
+    if( P != none && P.InvManager != none )
+    {
+        YHIM = YHInventoryManager(P.InvManager);
+        `log("??????????????????????"@YHIM);
+        `log("WTF?");
+        `log("?????????????????????? Instigator"@YHIM.Instigator);
+        if( YHIM != none )
+        {
+            //Grenades added on spawn
+            YHIM.GiveInitialGrenadeCount();
+        }
+
+        if (KFGameInfo(WorldInfo.Game) != none)
+        {
+            if (KFGameInfo(WorldInfo.Game).AllowPrimaryWeapon(GetPrimaryWeaponClassPath()))
+            {
+                P.DefaultInventory.AddItem(class<Weapon>(DynamicLoadObject(GetPrimaryWeaponClassPath(), class'Class')));
+            }
+        }
+        else
+        {
+            P.DefaultInventory.AddItem(class<Weapon>(DynamicLoadObject(GetPrimaryWeaponClassPath(), class'Class')));
+        }
+        // Secondary weapon is spawned through the pawn unless we want an additional one  not anymore
+        P.DefaultInventory.AddItem(class<Weapon>(DynamicLoadObject(GetSecondaryWeaponClassPath(), class'Class')));
+        P.DefaultInventory.AddItem(class<Weapon>(DynamicLoadObject(GetKnifeWeaponClassPath(), class'Class')));
+    }
+    else
+    {
+        `log("??????????????????????????????????? AddDfeaultInventory is broke!");
+    }
 }
 
 simulated protected event PostSkillUpdate()
 {
-    if ( OwnerPC == none ) return;
-    if ( !YHPlayerController(OwnerPC).IsPerkBuildCacheLoaded() ) return;
+    `log("PostSkillUpdate");
+    ScriptTrace();
+    if ( !PerkReady() ) return;
     super.PostSkillUpdate();
+    `log("PostSkillUpdateDone");
 }
 
 simulated event UpdatePerkBuild( const out byte InSelectedSkills[`MAX_PERK_SKILLS], class<KFPerk> PerkClass)

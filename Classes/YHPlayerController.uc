@@ -7,30 +7,40 @@ simulated event PreBeginPlay()
     super.PreBeginPlay();
 }
 
-/*
-reliable client function ReapplySkills()
+reliable client function RestartPlayer()
 {
-    local byte SelectedSkillsHolder[`MAX_PERK_SKILLS];
     local KFPerk MyPerk;
     local int NewPerkBuild;
 
-    YHGameReplicationInfo(WorldInfo.GRI).AllowPerkChanging(true);
     MyPerk = GetPerk();
     NewPerkBuild = GetPerkBuildByPerkClass(MyPerk.Class);
-    MyPerk.GetUnpackedSkillsArray( MyPerk.Class, NewPerkBuild,  SelectedSkillsHolder);
-    MyPerk.UpdatePerkBuild(SelectedSkillsHolder, MyPerk.Class );
-    YHGameReplicationInfo(WorldInfo.GRI).AllowPerkChanging(false);
+    ChangeSkills(NewPerkBuild, true);
 }
-*/
 
-reliable client function ReapplySkills()
+reliable client function AddDefaultInventory()
+{
+    local KFPerk MyPerk;
+
+    MyPerk = GetPerk();
+    `log("CLIENT MyPerk.OwnerPawn:"@MyPerk.OwnerPawn);
+    `log("CLIENT UsablePawn:"@UsablePawn);
+    `log("CLIENT Pawn:"@Pawn);
+
+    YHPawn_Human(UsablePawn).AddDefaultInventory();
+}
+
+// We call this from the client as only the client actually knows
+// what the proper PerkBuild happens to be. This way we can capture
+// the PerkBuild from the client and pass it back to the server via
+// replication.
+reliable client function ReapplySkills(optional bool bInitialLoad)
 {
     local KFPerk MyPerk;
     local int NewPerkBuild;
 
     MyPerk = GetPerk();
     NewPerkBuild = GetPerkBuildByPerkClass(MyPerk.Class);
-    ChangeSkills(NewPerkBuild);
+    ChangeSkills(NewPerkBuild, bInitialLoad);
 }
 
 
@@ -39,7 +49,7 @@ reliable client function ReapplyDefaults()
     local KFPerk MyPerk;
     MyPerk = GetPerk();
     MyPerk.SetPlayerDefaults(MyPerk.OwnerPawn);
-    MyPerk.AddDefaultInventory(MyPerk.OwnerPawn);
+    // MyPerk.AddDefaultInventory(MyPerk.OwnerPawn);
 }
 
 reliable server function PRICacheLoad(int PerkIndex, int NewPerkBuild)
@@ -126,13 +136,29 @@ reliable server function ChangePerk( int NewPerkIndex )
     YHPRI.CurrentPerkClass = PerkList[NewPerkIndex].PerkClass;
 }
 
-reliable server function ChangeSkills( int NewPerkBuild )
+reliable server function ChangeSkills( int NewPerkBuild, optional bool bInitialLoad )
 {
     local YHPlayerReplicationInfo YHPRI;
+    local KFPerk MyPerk;
     YHPRI = YHPlayerReplicationInfo(PlayerReplicationInfo);
     YHPRI.PerkBuildCurrent = NewPerkBuild;
     YHPRI.PerkBuildRequested = NewPerkBuild;
-    GetPerk().SetPerkBuild(NewPerkBuild);
+
+    `log("SSSSSSSSSSSSSSSSSSSSSSSSSSSSS CHANGESKILLS"@NewPerkBuild@"INitialLoad"@bInitialLoad);
+
+    MyPerk = GetPerk();
+    MyPerk.SetPerkBuild(NewPerkBuild);
+    MyPerk.UpdateSkills();
+
+    if ( bInitialLoad )
+    {
+        `log("MyPerk.OwnerPawn:"@MyPerk.OwnerPawn);
+        `log("UsablePawn:"@UsablePawn);
+        `log("Pawn:"@Pawn);
+        // MyPerk.SetPlayerDefaults(MyPerk.OwnerPawn);
+        //YHPawn_Human(MyPerk.OwnerPawn).AddDefaultInventory();
+    }
+    // MyPerk.PostLevelUp();
 }
 
 DefaultProperties
