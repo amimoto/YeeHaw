@@ -23,6 +23,39 @@ reliable client function ReapplySkills()
 }
 */
 
+
+/** Makes sure we always spawn in with a valid perk */
+function WaitForPerkAndRespawn()
+{
+    // Check on next frame, don't use looping timer because we don't need overlaps here
+    SetTimer( 0.01f, false, nameOf(Timer_CheckForValidPerk) );
+    bWaitingForClientPerkData = true;
+}
+
+function Timer_CheckForValidPerk()
+{
+    local YHPlayerReplicationInfo YHPRI;
+    local KFPerk MyPerk;
+
+    `log("!!!!!!!!!!!!!!!!!!!!!!!!!!"@Timer_CheckForValidPerk);
+
+    YHPRI = YHPlayerReplicationInfo(PlayerReplicationInfo);
+    MyPerk = GetPerk();
+    if( MyPerk != none && MyPerk.bInitialized && YHPRI.PerkBuildCacheLoaded )
+    {
+        // Make sure that readiness state didn't change while waiting
+        if( CanRestartPlayer() )
+        {
+            WorldInfo.Game.RestartPlayer( self );
+        }
+        bWaitingForClientPerkData = false;
+        return;
+    }
+
+    // Check again next frame
+    SetTimer( 0.01f, false, nameOf(Timer_CheckForValidPerk) );
+}
+
 reliable client function ReapplySkills()
 {
     local KFPerk MyPerk;
@@ -38,8 +71,8 @@ reliable client function ReapplyDefaults()
 {
     local KFPerk MyPerk;
     MyPerk = GetPerk();
-    MyPerk.SetPlayerDefaults(MyPerk.OwnerPawn);
-    MyPerk.AddDefaultInventory(MyPerk.OwnerPawn);
+    MyPerk.SetPlayerDefaults(KFPawn(Pawn));
+    MyPerk.AddDefaultInventory(KFPawn(Pawn));
 }
 
 reliable server function PRICacheLoad(int PerkIndex, int NewPerkBuild)

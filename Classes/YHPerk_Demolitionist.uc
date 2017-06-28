@@ -64,23 +64,42 @@ simulated function string GetSecondaryWeaponClassPath()
 }
 */
 
+function bool ReadyToRun()
+{
+    if ( OwnerPC == none )
+    {
+        `log("NOTREADY: OwnerPC is None");
+        return false;
+    }
+
+    if ( !YHPlayerController(OwnerPC).IsPerkBuildCacheLoaded() )
+    {
+        `log("NOTREADY: IsPerkBuildCacheLoaded is False");
+        return false;
+    }
+
+    `log("READY");
+    ScriptTrace();
+    return true;
+}
+
 function SetPlayerDefaults(Pawn PlayerPawn)
 {
-    if ( OwnerPC == none ) return;
-    if ( !YHPlayerController(OwnerPC).IsPerkBuildCacheLoaded() ) return;
-
+    if ( !ReadyToRun() ) return;
     super.SetPlayerDefaults(PlayerPawn);
 }
 
 function AddDefaultInventory( KFPawn P )
 {
+    `log("-------------------------- AddDefaultInventory with KFPawn"@P);
+    ScriptTrace();
+    if ( !ReadyToRun() ) return;
     super.AddDefaultInventory(P);
 }
 
 simulated protected event PostSkillUpdate()
 {
-    if ( OwnerPC == none ) return;
-    if ( !YHPlayerController(OwnerPC).IsPerkBuildCacheLoaded() ) return;
+    if ( !ReadyToRun() ) return;
     super.PostSkillUpdate();
 }
 
