@@ -21,6 +21,14 @@ reliable client function ReapplySkills()
     MyPerk.UpdatePerkBuild(SelectedSkillsHolder, MyPerk.Class );
     YHGameReplicationInfo(WorldInfo.GRI).AllowPerkChanging(false);
 }
+
+reliable client function ReapplyDefaults()
+{
+    local KFPerk MyPerk;
+    MyPerk = GetPerk();
+    MyPerk.SetPlayerDefaults(KFPawn(Pawn));
+    MyPerk.AddDefaultInventory(KFPawn(Pawn));
+}
 */
 
 
@@ -36,8 +44,6 @@ function Timer_CheckForValidPerk()
 {
     local YHPlayerReplicationInfo YHPRI;
     local KFPerk MyPerk;
-
-    `log("!!!!!!!!!!!!!!!!!!!!!!!!!!"@Timer_CheckForValidPerk);
 
     YHPRI = YHPlayerReplicationInfo(PlayerReplicationInfo);
     MyPerk = GetPerk();
@@ -63,16 +69,8 @@ reliable client function ReapplySkills()
 
     MyPerk = GetPerk();
     NewPerkBuild = GetPerkBuildByPerkClass(MyPerk.Class);
+    `log("!!!!!!!!!!!!!!!!!!!!!!!!!!!! REAPPLY SKILLS BUILD FOR"@MyPerk@"IS"@NewPerkBuild);
     ChangeSkills(NewPerkBuild);
-}
-
-
-reliable client function ReapplyDefaults()
-{
-    local KFPerk MyPerk;
-    MyPerk = GetPerk();
-    MyPerk.SetPlayerDefaults(KFPawn(Pawn));
-    MyPerk.AddDefaultInventory(KFPawn(Pawn));
 }
 
 reliable server function PRICacheLoad(int PerkIndex, int NewPerkBuild)
@@ -107,7 +105,6 @@ function int GetPerkBuildByPerkClass(class<KFPerk> PerkClass)
     local YHPlayerReplicationInfo YHPRI;
 
     YHPRI = YHPlayerReplicationInfo(PlayerReplicationInfo);
-    `log("???????????????????????????????????????????????"@GetPerkBuildByPerkClass@"for"@PerkClass);
     PerkIndex = PerkList.Find('PerkClass', PerkClass);
 
     // If we have the values cached, immediately return them
@@ -148,6 +145,7 @@ function int GetPerkBuildByPerkClass(class<KFPerk> PerkClass)
    build around. it.
  *************************************************************************/
 
+/*
 reliable server function ChangePerk( int NewPerkIndex )
 {
     local YHPlayerReplicationInfo YHPRI;
@@ -158,12 +156,13 @@ reliable server function ChangePerk( int NewPerkIndex )
     YHPRI.NetPerkIndex = NewPerkIndex;
     YHPRI.CurrentPerkClass = PerkList[NewPerkIndex].PerkClass;
 }
+*/
 
 reliable server function ChangeSkills( int NewPerkBuild )
 {
     local YHPlayerReplicationInfo YHPRI;
+    `log("^^^^^^^^^^^^^^^^^^^^^^^^^ ChangeSkills"@NewPerkBuild);
     YHPRI = YHPlayerReplicationInfo(PlayerReplicationInfo);
-    YHPRI.PerkBuildCurrent = NewPerkBuild;
     YHPRI.PerkBuildRequested = NewPerkBuild;
     GetPerk().SetPerkBuild(NewPerkBuild);
 }

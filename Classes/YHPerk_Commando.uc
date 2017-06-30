@@ -68,18 +68,14 @@ function bool ReadyToRun()
 {
     if ( OwnerPC == none )
     {
-        `log("NOTREADY: OwnerPC is None");
         return false;
     }
 
     if ( !YHPlayerController(OwnerPC).IsPerkBuildCacheLoaded() )
     {
-        `log("NOTREADY: IsPerkBuildCacheLoaded is False");
         return false;
     }
 
-    `log("READY");
-    ScriptTrace();
     return true;
 }
 
@@ -91,8 +87,6 @@ function SetPlayerDefaults(Pawn PlayerPawn)
 
 function AddDefaultInventory( KFPawn P )
 {
-    `log("-------------------------- AddDefaultInventory with KFPawn"@P);
-    ScriptTrace();
     if ( !ReadyToRun() ) return;
     super.AddDefaultInventory(P);
 }
@@ -103,14 +97,21 @@ simulated protected event PostSkillUpdate()
     super.PostSkillUpdate();
 }
 
+/*
+reliable server function MyServerSetPerkBuild(int NewPerkBuild)
+{
+}
+*/
+
 simulated event UpdatePerkBuild( const out byte InSelectedSkills[`MAX_PERK_SKILLS], class<KFPerk> PerkClass)
 {
     local int NewPerkBuild;
     local int PerkIndex;
-    local string BasePerkClassName;
-    local class<KFPerk> BasePerkClass;
+    // local string BasePerkClassName;
+    //local class<KFPerk> BasePerkClass;
     local YHPlayerController YHPC;
 
+    /*
     if ( Left(PerkClass.Name,2) == "YH" )
     {
         BasePerkClassName = "KFGame.KFPerk_"$Mid(PerkClass.Name,7);
@@ -120,16 +121,25 @@ simulated event UpdatePerkBuild( const out byte InSelectedSkills[`MAX_PERK_SKILL
     {
         BasePerkClass = PerkClass;
     }
-
-    super.UpdatePerkBuild(InSelectedSkills, BasePerkClass);
+  */
 
     // Cache the new build
     if( Controller(Owner).IsLocalController() )
     {
+
+        // Do the normal process of setting up perk skills
+        // ... but usually this fails
         PackPerkBuild( NewPerkBuild, InSelectedSkills );
+        //ServerSetPerkBuild( NewPerkBuild, CurrentLevel);
+        //SaveBuildToStats( PerkClass, NewPerkBuild );
+        //SavePerkDataToConfig( PerkClass, NewPerkBuild );
+
+        // So we do this in a bit of a heavy-handed way
+        // we do this manually ;)
         YHPC = YHPlayerController(OwnerPC);
         PerkIndex = YHPC.PerkList.Find('PerkClass', PerkClass);
         YHPC.PRICacheLoad(PerkIndex,NewPerkBuild);
+        //NotifyPerkModified();
     }
 }
 

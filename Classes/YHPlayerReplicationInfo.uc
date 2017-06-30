@@ -5,17 +5,13 @@ var repnotify int PerkBuildCache[20];
 var repnotify bool PerkBuildCacheLoaded;
 
 /* Replicated Perk Changes */
-var repnotify int PerkIndexCurrent;
-var repnotify int PerkIndexRequested;
-var repnotify int PerkBuildCurrent;
 var repnotify int PerkBuildRequested;
 
 
 replication
 {
     if (bNetDirty)
-        PerkBuildCache, PerkBuildCacheLoaded, PerkBuildCurrent,
-        PerkBuildRequested, PerkIndexCurrent, PerkIndexRequested;
+        PerkBuildCache, PerkBuildCacheLoaded, PerkBuildRequested;
 }
 
 simulated event ReplicatedEvent(name VarName)
@@ -34,14 +30,20 @@ simulated event ReplicatedEvent(name VarName)
 
 simulated function SetPerkBuild()
 {
+    local byte SelectedSkillsHolder[`MAX_PERK_SKILLS];
     local YHPlayerController LocalPC;
     local KFPerk MyPerk;
 
     LocalPC = YHPlayerController(Owner);
     MyPerk = LocalPC.GetPerk();
 
+    `log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! SetPerkBuild"@PerkBuildRequested);
     ScriptTrace();
-    MyPerk.SetPerkBuild(PerkBuildRequested);
+
+    MyPerk.GetUnpackedSkillsArray( MyPerk.Class, PerkBuildRequested,  SelectedSkillsHolder);
+    MyPerk.UpdatePerkBuild(SelectedSkillsHolder, MyPerk.Class );
+
+    //MyPerk.SetPerkBuild(PerkBuildRequested);
 }
 
 defaultproperties
