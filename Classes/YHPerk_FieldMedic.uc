@@ -86,7 +86,10 @@ function bool ReadyToRun()
 function SetPlayerDefaults(Pawn PlayerPawn)
 {
     if ( !ReadyToRun() ) return;
+    `log("~~~~~~~~~~~~~~~~~~~~~~~~~~~ SetPlayerDefaults");
     super.SetPlayerDefaults(PlayerPawn);
+    ScriptTrace();
+    `log("~~~~~~~~~~~~~~~~~~~~~~~~~~~ SetPlayerDefaults");
 }
 
 function AddDefaultInventory( KFPawn P )
@@ -167,6 +170,39 @@ static simulated function bool IsWeaponOnPerk(
 
     return false;
 }
+
+/*
+
+/** On perk customization or change, modify owning pawn based on perk selection */
+event NotifyPerkModified()
+{
+    local YHPlayerController YHPC;
+    YHPC = YHPlayerController(OwnerPC);
+
+    `log("----------------------------------------- NotifyPerkModified");
+    ScriptTrace();
+    `log("CALLING MODIFIED FROM FieldMedic");
+    `log("PERK BUILD IS:"@YHPC.GetPerkBuildByPerkClass(self.class));
+    `log("READY TO RUN:"@ReadyToRun());
+    PostLevelUp();
+    `log("----------------------------------------- /NotifyPerkModified");
+}
+
+
+simulated function byte GetLevel()
+{
+    return 25;
+}
+
+simulated event PostLevelUp()
+{
+    super.PostLevelUp();
+    //PerkSetOwnerHealthAndArmor();
+    //PostSkillUpdate();
+    //ApplySkillsToPawn();
+}
+
+*/
 
 defaultproperties
 {

@@ -28,6 +28,11 @@ simulated event ReplicatedEvent(name VarName)
     {
         SetPerkBuild();
     }
+    else if ( VarName == 'CurrentPerkClass' )
+    {
+        `log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Class CHANGED"@CurrentPerkClass);
+    }
+
 
     super.ReplicatedEvent(VarName);
 }

@@ -61,9 +61,12 @@ reliable client function ReapplySkills()
     local KFPerk MyPerk;
     local int NewPerkBuild;
 
+    `log("---------------------------- ReapplySkills");
     MyPerk = GetPerk();
     NewPerkBuild = GetPerkBuildByPerkClass(MyPerk.Class);
+    `log("MYPERK:"@MyPerk@"NewPerkBuild:"@NewPerkBuild);
     ChangeSkills(NewPerkBuild);
+    `log("---------------------------- /ReapplySkills");
 }
 
 
