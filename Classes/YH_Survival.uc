@@ -25,7 +25,7 @@ function RestartPlayer(Controller NewPlayer)
     local KFPlayerController KFPC;
     local KFPlayerReplicationInfo KFPRI;
     local bool bWasWaitingForClientPerkData;
-	local KFPerk MyPerk;
+    local KFPerk MyPerk;
 
     KFPC = KFPlayerController(NewPlayer);
     YHPC = YHPlayerController(NewPlayer);
@@ -53,37 +53,37 @@ function RestartPlayer(Controller NewPlayer)
 
     YHPC.ReapplySkills();
 
-	// Make sure the perk is initialized before spawning in, if not, wait for it
-	// @NOTE: We still do this in standalone games because we may need to wait for Steam -MattF
-	if( KFPC != none && KFPC.GetTeamNum() != 255 )
+    // Make sure the perk is initialized before spawning in, if not, wait for it
+    // @NOTE: We still do this in standalone games because we may need to wait for Steam -MattF
+    if( KFPC != none && KFPC.GetTeamNum() != 255 )
     {
-    	MyPerk = KFPC.GetPerk();
-    	if( MyPerk == none || !MyPerk.bInitialized || !YHPC.IsPerkBuildCacheLoaded()  )
-    	{
-    		KFPC.WaitForPerkAndRespawn();
-    		return;
-    	}
+        MyPerk = KFPC.GetPerk();
+        if( MyPerk == none || !MyPerk.bInitialized || !YHPC.IsPerkBuildCacheLoaded()  )
+        {
+            KFPC.WaitForPerkAndRespawn();
+            return;
+        }
     }
 
-	// If we have a customization pawn, destroy it before spawning a new pawn with super.RestartPlayer
+    // If we have a customization pawn, destroy it before spawning a new pawn with super.RestartPlayer
     if( NewPlayer.Pawn != none && KFPawn_Customization(NewPlayer.Pawn) != none )
-	{
-	 	NewPlayer.Pawn.Destroy();
-	}
+    {
+        NewPlayer.Pawn.Destroy();
+    }
 
-  	super(FrameworkGame).RestartPlayer( NewPlayer );
+    super(FrameworkGame).RestartPlayer( NewPlayer );
 
-  	if( NewPlayer.Pawn != none )
-  	{
-		if( KFPC != none )
-		{
-			// Initialize game play post process effects such as damage, low health, etc.
-			KFPC.InitGameplayPostProcessFX();
+    if( NewPlayer.Pawn != none )
+    {
+        if( KFPC != none )
+        {
+            // Initialize game play post process effects such as damage, low health, etc.
+            KFPC.InitGameplayPostProcessFX();
 
-	        // Start fading in the camera
-	        KFPC.ClientSetCameraFade( true, MakeColor(255,255,255,255), vect2d(1.f, 0.f), 0.6f, true );
-		}
-	}
+            // Start fading in the camera
+            KFPC.ClientSetCameraFade( true, MakeColor(255,255,255,255), vect2d(1.f, 0.f), 0.6f, true );
+        }
+    }
 
     // YHPC.ReapplyDefaults();
 
@@ -106,6 +106,7 @@ function RestartPlayer(Controller NewPlayer)
         `log("SCORING: Player" @ KFPRI.PlayerName @ "received" @ KFPRI.Score @ "starting cash", bLogScoring);
     }
 }
+
 State TraderOpen
 {
     function BeginState( Name PreviousStateName )
