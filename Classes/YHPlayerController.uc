@@ -171,6 +171,26 @@ reliable server function ChangeSkills( int NewPerkBuild )
     GetPerk().SetPerkBuild(NewPerkBuild);
 }
 
+reliable server function SetPerkLoadStatus(optional bool bStatus)
+{
+    YHPlayerReplicationInfo(PlayerReplicationInfo).bPerkLoaded = bStatus;
+}
+
+function bool GetPerkLoadStatus()
+{
+    return YHPlayerReplicationInfo(PlayerReplicationInfo).bPerkLoaded;
+}
+
+reliable server function SetPerkBuildStatus(optional bool bStatus)
+{
+    YHPlayerReplicationInfo(PlayerReplicationInfo).bPerkBuilt = bStatus;
+}
+
+function bool GetPerkBuildStatus()
+{
+    return YHPlayerReplicationInfo(PlayerReplicationInfo).bPerkBuilt;
+}
+
 DefaultProperties
 {
     //defaults

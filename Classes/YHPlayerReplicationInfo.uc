@@ -5,6 +5,8 @@ var repnotify int PerkBuildCache[20];
 var repnotify bool PerkBuildCacheLoaded;
 
 /* Replicated Perk Changes */
+var bool bPerkLoaded;
+var bool bPerkBuilt;
 var repnotify int PerkIndexCurrent;
 var repnotify int PerkIndexRequested;
 var repnotify int PerkBuildCurrent;
@@ -14,6 +16,7 @@ var repnotify int PerkBuildRequested;
 replication
 {
     if (bNetDirty)
+        bPerkLoaded, bPerkBuilt,
         PerkBuildCache, PerkBuildCacheLoaded, PerkBuildCurrent,
         PerkBuildRequested, PerkIndexCurrent, PerkIndexRequested;
 }

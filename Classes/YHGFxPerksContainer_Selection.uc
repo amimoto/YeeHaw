@@ -10,7 +10,7 @@ function SavePerk(int PerkID)
     {
         ScriptTrace();
         YHPC.RequestPerkChange( PerkID );
-        `log("SWITCHING TO PERK"@YHPC.PerkList[PerkID].PerkClass);
+        `log("Requesting SWITCHING TO PERK"@YHPC.PerkList[PerkID].PerkClass);
 
         if( YHPC.CanUpdatePerkInfo() )
         {

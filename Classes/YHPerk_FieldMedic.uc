@@ -64,22 +64,60 @@ simulated function string GetSecondaryWeaponClassPath()
 }
 */
 
+function bool PerkBuildMatchesExpectations()
+{
+    local YHPlayerController YHPC;
+    local int ExpectedBuild;
+    local int CurrentBuild;
+
+    `log("---------------------------------------- PerkBuildMatchesExpectations");
+    // Basic Guard Clauses
+    if ( OwnerPC == none ) return false;
+    YHPC = YHPlayerController(OwnerPC);
+    if ( !YHPC.IsPerkBuildCacheLoaded() ) return false;
+
+    // Now check based upon the current perk
+    ExpectedBuild = YHPC.GetPerkBuildByPerkClass(Class);
+    CurrentBuild = GetSavedBuild();
+    `log("ExpectedBuild"@ExpectedBuild@"vs"@CurrentBuild);
+    `log("---------------------------------------- /PerkBuildMatchesExpectations");
+    return ExpectedBuild == CurrentBuild;
+}
+
+
+
 function bool ReadyToRun()
 {
+    local YHPlayerController YHPC;
+    local int ExpectedBuild;
+
+    `log("---------------------------------------- ReadyToRun");
     if ( OwnerPC == none )
     {
         `log("NOTREADY: OwnerPC is None");
         return false;
     }
 
-    if ( !YHPlayerController(OwnerPC).IsPerkBuildCacheLoaded() )
+    // Make sure we have cached the build values
+    YHPC = YHPlayerController(OwnerPC);
+    if ( !YHPC.IsPerkBuildCacheLoaded() )
     {
         `log("NOTREADY: IsPerkBuildCacheLoaded is False");
         return false;
     }
 
+    // And have we got the proper perk build? If not let's set it
+    if ( !PerkBuildMatchesExpectations() )
+    {
+        // FIXME: Fix perk build
+        `log("NOTREADY: PerkBuildMatchesExpectations is False");
+        ExpectedBuild = YHPC.GetPerkBuildByPerkClass(Class);
+        YHPC.ChangeSkills(ExpectedBuild);
+    }
+
     `log("READY");
     ScriptTrace();
+    `log("---------------------------------------- /ReadyToRun");
     return true;
 }
 
@@ -89,7 +127,7 @@ function SetPlayerDefaults(Pawn PlayerPawn)
     `log("~~~~~~~~~~~~~~~~~~~~~~~~~~~ SetPlayerDefaults");
     super.SetPlayerDefaults(PlayerPawn);
     ScriptTrace();
-    `log("~~~~~~~~~~~~~~~~~~~~~~~~~~~ SetPlayerDefaults");
+    `log("~~~~~~~~~~~~~~~~~~~~~~~~~~~ /SetPlayerDefaults");
 }
 
 function AddDefaultInventory( KFPawn P )
@@ -98,12 +136,16 @@ function AddDefaultInventory( KFPawn P )
     ScriptTrace();
     if ( !ReadyToRun() ) return;
     super.AddDefaultInventory(P);
+    `log("-------------------------- /AddDefaultInventory with KFPawn"@P);
 }
 
 simulated protected event PostSkillUpdate()
 {
     if ( !ReadyToRun() ) return;
+    `log("--------------------------------- PostSkillUpdate");
+    ScriptTrace();
     super.PostSkillUpdate();
+    `log("--------------------------------- /PostSkillUpdate");
 }
 
 simulated event UpdatePerkBuild( const out byte InSelectedSkills[`MAX_PERK_SKILLS], class<KFPerk> PerkClass)
@@ -196,10 +238,13 @@ simulated function byte GetLevel()
 
 simulated event PostLevelUp()
 {
+    `log("---------------------------------- PostLevelUp");
+    ScriptTrace();
     super.PostLevelUp();
     //PerkSetOwnerHealthAndArmor();
     //PostSkillUpdate();
     //ApplySkillsToPawn();
+    `log("---------------------------------- /PostLevelUp");
 }
 
 */
