@@ -1,5 +1,7 @@
 class YHPerk_Sharpshooter extends KFPerk_Sharpshooter;
 
+`include(YH_Log.uci)
+
 // We do this since we can't modify KFPerk.uc directly.
 // The ugly version of inheritance. Put the functions in every subclass!
 
@@ -70,7 +72,7 @@ function bool PerkBuildMatchesExpectations()
     local int ExpectedBuild;
     local int CurrentBuild;
 
-    //`log("---------------------------------------- PerkBuildMatchesExpectations");
+    `yhLog("---------------------------------------- PerkBuildMatchesExpectations");
     // Basic Guard Clauses
     if ( OwnerPC == none ) return false;
     YHPC = YHPlayerController(OwnerPC);
@@ -79,8 +81,8 @@ function bool PerkBuildMatchesExpectations()
     // Now check based upon the current perk
     ExpectedBuild = YHPC.GetPerkBuildByPerkClass(Class);
     CurrentBuild = GetSavedBuild();
-    //`log("ExpectedBuild"@ExpectedBuild@"vs"@CurrentBuild);
-    //`log("---------------------------------------- /PerkBuildMatchesExpectations");
+    `yhLog("ExpectedBuild"@ExpectedBuild@"vs Current Build of"@CurrentBuild);
+    `yhLog("---------------------------------------- /PerkBuildMatchesExpectations");
     return ExpectedBuild == CurrentBuild;
 }
 
@@ -91,10 +93,10 @@ function bool ReadyToRun()
     local YHPlayerController YHPC;
     local int ExpectedBuild;
 
-    //`log("---------------------------------------- ReadyToRun");
+    `yhLog("---------------------------------------- ReadyToRun");
     if ( OwnerPC == none )
     {
-        //`log("NOTREADY: OwnerPC is None");
+        `yhLog("NOTREADY: OwnerPC is None");
         return false;
     }
 
@@ -102,50 +104,52 @@ function bool ReadyToRun()
     YHPC = YHPlayerController(OwnerPC);
     if ( !YHPC.IsPerkBuildCacheLoaded() )
     {
-        //`log("NOTREADY: IsPerkBuildCacheLoaded is False");
+        `yhLog("NOTREADY: IsPerkBuildCacheLoaded is False");
         return false;
     }
 
     // And have we got the proper perk build? If not let's set it
     if ( !PerkBuildMatchesExpectations() )
     {
-        // FIXME: Fix perk build
-        //`log("NOTREADY: PerkBuildMatchesExpectations is False");
+        `yhLog("NOTREADY: PerkBuildMatchesExpectations is False");
         ExpectedBuild = YHPC.GetPerkBuildByPerkClass(Class);
+        `yhLog("Forcing Perk Build to:"@ExpectedBuild);
         YHPC.ChangeSkills(ExpectedBuild);
+        //YHPC.GetPerk().PostSkillUpdate();
     }
 
-    //`log("READY");
-    //ScriptTrace();
-    //`log("---------------------------------------- /ReadyToRun");
+    `yhLog("READY");
+    `yhScriptTrace();
+    `yhLog("---------------------------------------- /ReadyToRun");
     return true;
 }
 
 function SetPlayerDefaults(Pawn PlayerPawn)
 {
     if ( !ReadyToRun() ) return;
-    //`log("~~~~~~~~~~~~~~~~~~~~~~~~~~~ SetPlayerDefaults");
+    `yhLog("~~~~~~~~~~~~~~~~~~~~~~~~~~~ SetPlayerDefaults");
     super.SetPlayerDefaults(PlayerPawn);
-    //ScriptTrace();
-    //`log("~~~~~~~~~~~~~~~~~~~~~~~~~~~ /SetPlayerDefaults");
+    `yhScriptTrace();
+    `yhLog("~~~~~~~~~~~~~~~~~~~~~~~~~~~ /SetPlayerDefaults");
 }
 
 function AddDefaultInventory( KFPawn P )
 {
-    //`log("-------------------------- AddDefaultInventory with KFPawn"@P);
-    //ScriptTrace();
+    `yhLog("-------------------------- AddDefaultInventory with KFPawn"@P);
+    `yhScriptTrace();
     if ( !ReadyToRun() ) return;
     super.AddDefaultInventory(P);
-    //`log("-------------------------- /AddDefaultInventory with KFPawn"@P);
+    `yhLog("-------------------------- /AddDefaultInventory with KFPawn"@P);
 }
 
 simulated protected event PostSkillUpdate()
 {
     if ( !ReadyToRun() ) return;
-    //`log("--------------------------------- PostSkillUpdate");
-    //ScriptTrace();
+    `yhLog("--------------------------------- PostSkillUpdate");
+    `yhScriptTrace();
     super.PostSkillUpdate();
-    //`log("--------------------------------- /PostSkillUpdate");
+    YHPlayerController(OwnerPC).PRISyncHacksToClient();
+    `yhLog("--------------------------------- /PostSkillUpdate");
 }
 
 simulated event UpdatePerkBuild( const out byte InSelectedSkills[`MAX_PERK_SKILLS], class<KFPerk> PerkClass)

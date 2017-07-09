@@ -1,5 +1,7 @@
 class YHGameReplicationInfo extends KFGameReplicationInfo;
 
+`include(YH_Log.uci)
+
 var repnotify bool bGameStarted;
 var repnotify bool bAllowChangePerk;
 
@@ -23,8 +25,8 @@ reliable server function GameStarted()
 /*
 simulated event bool CanChangePerks()
 {
-    //`log("+++++++++++++++++++++++++++++++ CanChangePerks()");
-    ScriptTrace();
+    `yhLog("+++++++++++++++++++++++++++++++ CanChangePerks()");
+    `yhScriptTrace();
     return ( bAllowChangePerk || !bGameStarted || bTraderIsOpen );
 }
 */

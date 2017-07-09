@@ -1,5 +1,7 @@
 class YHPlayerController extends CD_PlayerController;
 
+`include(YH_Log.uci)
+
 var YHGFxMoviePlayer_Manager      MyYHGFxManager;
 
 simulated event PreBeginPlay()
@@ -21,7 +23,7 @@ function Timer_CheckForValidPerk()
     local YHPlayerReplicationInfo YHPRI;
     local KFPerk MyPerk;
 
-    //`log("!!!!!!!!!!!!!!!!!!!!!!!!!!"@Timer_CheckForValidPerk);
+    `yhLog("!!!!!!!!!!!!!!!!!!!!!!!!!!"@Timer_CheckForValidPerk);
 
     YHPRI = YHPlayerReplicationInfo(PlayerReplicationInfo);
     MyPerk = GetPerk();
@@ -45,12 +47,12 @@ reliable client function ReapplySkills()
     local KFPerk MyPerk;
     local int NewPerkBuild;
 
-    //`log("---------------------------- ReapplySkills");
+    `yhLog("---------------------------- ReapplySkills");
     MyPerk = GetPerk();
     NewPerkBuild = GetPerkBuildByPerkClass(MyPerk.Class);
-    //`log("MYPERK:"@MyPerk@"NewPerkBuild:"@NewPerkBuild);
+    `yhLog("MYPERK:"@MyPerk@"NewPerkBuild:"@NewPerkBuild);
     ChangeSkills(NewPerkBuild);
-    //`log("---------------------------- /ReapplySkills");
+    `yhLog("---------------------------- /ReapplySkills");
 }
 
 
@@ -61,6 +63,16 @@ reliable client function ReapplyDefaults()
     MyPerk.SetPlayerDefaults(KFPawn(Pawn));
     MyPerk.AddDefaultInventory(KFPawn(Pawn));
 }
+
+reliable server function PRISyncHacksToClient()
+{
+    local KFPerk MyPerk;
+    local YHPlayerReplicationInfo YHPRI;
+    YHPRI = YHPlayerReplicationInfo(PlayerReplicationInfo);
+    MyPerk = GetPerk();
+    YHPRI.MaxGrenadeCount = MyPerk.MaxGrenadeCount;
+}
+
 
 reliable server function PRICacheLoad(int PerkIndex, int NewPerkBuild)
 {
@@ -94,7 +106,7 @@ function int GetPerkBuildByPerkClass(class<KFPerk> PerkClass)
     local YHPlayerReplicationInfo YHPRI;
 
     YHPRI = YHPlayerReplicationInfo(PlayerReplicationInfo);
-    //`log("???????????????????????????????????????????????"@GetPerkBuildByPerkClass@"for"@PerkClass);
+    `yhLog("???????????????????????????????????????????????"@GetPerkBuildByPerkClass@"for"@PerkClass);
     PerkIndex = PerkList.Find('PerkClass', PerkClass);
 
     // If we have the values cached, immediately return them

@@ -1,5 +1,7 @@
 class YHPlayerReplicationInfo extends KFPlayerReplicationInfo;
 
+`include(YH_Log.uci)
+
 // FIXME: Make this a constant
 var repnotify int PerkBuildCache[20];
 var repnotify bool PerkBuildCacheLoaded;
@@ -13,19 +15,23 @@ var repnotify int PerkBuildCurrent;
 var repnotify int PerkBuildRequested;
 
 
+var repnotify int MaxGrenadeCount;
+
+
 replication
 {
     if (bNetDirty)
         bPerkLoaded, bPerkBuilt,
         PerkBuildCache, PerkBuildCacheLoaded, PerkBuildCurrent,
-        PerkBuildRequested, PerkIndexCurrent, PerkIndexRequested;
+        PerkBuildRequested, PerkIndexCurrent, PerkIndexRequested,
+        MaxGrenadeCount;
 }
 
 simulated event ReplicatedEvent(name VarName)
 {
     if ( VarName == 'PerkIndexRequested' )
     {
-        //`log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ PERKINDEXREQUESTED");
+        `yhLog("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ PERKINDEXREQUESTED");
     }
     else if ( VarName == 'PerkBuildRequested' )
     {
@@ -33,9 +39,12 @@ simulated event ReplicatedEvent(name VarName)
     }
     else if ( VarName == 'CurrentPerkClass' )
     {
-        //`log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Class CHANGED"@CurrentPerkClass);
+        `yhLog("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Class CHANGED"@CurrentPerkClass);
     }
-
+    else if ( VarName == 'MaxGrenadeCount' )
+    {
+        SetMaxGrenadeCount();
+    }
 
     super.ReplicatedEvent(VarName);
 }
@@ -45,11 +54,27 @@ simulated function SetPerkBuild()
     local YHPlayerController LocalPC;
     local KFPerk MyPerk;
 
+    `yhLog("------------------------------------ YHPRI.SetPerkBuild");
+    `yhScriptTrace();
+
     LocalPC = YHPlayerController(Owner);
     MyPerk = LocalPC.GetPerk();
 
-    ScriptTrace();
+    `yhScriptTrace();
     MyPerk.SetPerkBuild(PerkBuildRequested);
+    `yhLog("GrenadeCount"@MyPerk.MaxGrenadeCount);
+    `yhLog("------------------------------------ /YHPRI.SetPerkBuild");
+}
+
+simulated function SetMaxGrenadeCount()
+// Ugly hack to ensure that the MaxGrenadeCount gets propagated
+// through to the client.
+{
+    local YHPlayerController LocalPC;
+    local KFPerk MyPerk;
+    LocalPC = YHPlayerController(Owner);
+    MyPerk = LocalPC.GetPerk();
+    MyPerk.MaxGrenadeCount = MaxGrenadeCount;
 }
 
 defaultproperties
