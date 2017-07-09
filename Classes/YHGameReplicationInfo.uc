@@ -23,7 +23,7 @@ reliable server function GameStarted()
 /*
 simulated event bool CanChangePerks()
 {
-    `log("+++++++++++++++++++++++++++++++ CanChangePerks()");
+    //`log("+++++++++++++++++++++++++++++++ CanChangePerks()");
     ScriptTrace();
     return ( bAllowChangePerk || !bGameStarted || bTraderIsOpen );
 }

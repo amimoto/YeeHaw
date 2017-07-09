@@ -7,22 +7,6 @@ simulated event PreBeginPlay()
     super.PreBeginPlay();
 }
 
-/*
-reliable client function ReapplySkills()
-{
-    local byte SelectedSkillsHolder[`MAX_PERK_SKILLS];
-    local KFPerk MyPerk;
-    local int NewPerkBuild;
-
-    YHGameReplicationInfo(WorldInfo.GRI).AllowPerkChanging(true);
-    MyPerk = GetPerk();
-    NewPerkBuild = GetPerkBuildByPerkClass(MyPerk.Class);
-    MyPerk.GetUnpackedSkillsArray( MyPerk.Class, NewPerkBuild,  SelectedSkillsHolder);
-    MyPerk.UpdatePerkBuild(SelectedSkillsHolder, MyPerk.Class );
-    YHGameReplicationInfo(WorldInfo.GRI).AllowPerkChanging(false);
-}
-*/
-
 
 /** Makes sure we always spawn in with a valid perk */
 function WaitForPerkAndRespawn()
@@ -37,7 +21,7 @@ function Timer_CheckForValidPerk()
     local YHPlayerReplicationInfo YHPRI;
     local KFPerk MyPerk;
 
-    `log("!!!!!!!!!!!!!!!!!!!!!!!!!!"@Timer_CheckForValidPerk);
+    //`log("!!!!!!!!!!!!!!!!!!!!!!!!!!"@Timer_CheckForValidPerk);
 
     YHPRI = YHPlayerReplicationInfo(PlayerReplicationInfo);
     MyPerk = GetPerk();
@@ -61,12 +45,12 @@ reliable client function ReapplySkills()
     local KFPerk MyPerk;
     local int NewPerkBuild;
 
-    `log("---------------------------- ReapplySkills");
+    //`log("---------------------------- ReapplySkills");
     MyPerk = GetPerk();
     NewPerkBuild = GetPerkBuildByPerkClass(MyPerk.Class);
-    `log("MYPERK:"@MyPerk@"NewPerkBuild:"@NewPerkBuild);
+    //`log("MYPERK:"@MyPerk@"NewPerkBuild:"@NewPerkBuild);
     ChangeSkills(NewPerkBuild);
-    `log("---------------------------- /ReapplySkills");
+    //`log("---------------------------- /ReapplySkills");
 }
 
 
@@ -110,7 +94,7 @@ function int GetPerkBuildByPerkClass(class<KFPerk> PerkClass)
     local YHPlayerReplicationInfo YHPRI;
 
     YHPRI = YHPlayerReplicationInfo(PlayerReplicationInfo);
-    `log("???????????????????????????????????????????????"@GetPerkBuildByPerkClass@"for"@PerkClass);
+    //`log("???????????????????????????????????????????????"@GetPerkBuildByPerkClass@"for"@PerkClass);
     PerkIndex = PerkList.Find('PerkClass', PerkClass);
 
     // If we have the values cached, immediately return them

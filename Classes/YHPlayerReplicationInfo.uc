@@ -25,7 +25,7 @@ simulated event ReplicatedEvent(name VarName)
 {
     if ( VarName == 'PerkIndexRequested' )
     {
-        `log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ PERKINDEXREQUESTED");
+        //`log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ PERKINDEXREQUESTED");
     }
     else if ( VarName == 'PerkBuildRequested' )
     {
@@ -33,7 +33,7 @@ simulated event ReplicatedEvent(name VarName)
     }
     else if ( VarName == 'CurrentPerkClass' )
     {
-        `log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Class CHANGED"@CurrentPerkClass);
+        //`log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Class CHANGED"@CurrentPerkClass);
     }
 
 

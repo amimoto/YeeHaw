@@ -1,24 +1,5 @@
 class YH_Survival extends CD_Survival;
 
-/*
-function RestartPlayer(Controller NewPlayer)
-{
-    local YHPlayerController YHPC;
-
-    YHPC = YHPlayerController(NewPlayer);
-    if( YHPC != none && YHPC.GetTeamNum() != 255 )
-    {
-        YHPC.ReapplySkills();
-        super.RestartPlayer(NewPlayer);
-        YHPC.ReapplyDefaults();
-    }
-    else
-    {
-        super.RestartPlayer(NewPlayer);
-    }
-}
-*/
-
 function RestartPlayer(Controller NewPlayer)
 {
     local YHPlayerController YHPC;

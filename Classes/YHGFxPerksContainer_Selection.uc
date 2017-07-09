@@ -5,28 +5,28 @@ function SavePerk(int PerkID)
     local YHPlayerController YHPC;
 
     YHPC = YHPlayerController(GetPC());
-    `log("---------------------------------------- SavePerk to"@PerkID);
+    //`log("---------------------------------------- SavePerk to"@PerkID);
     if ( YHPC != none )
     {
-        ScriptTrace();
+        //ScriptTrace();
         YHPC.RequestPerkChange( PerkID );
-        `log("Requesting SWITCHING TO PERK"@YHPC.PerkList[PerkID].PerkClass);
+        //`log("Requesting SWITCHING TO PERK"@YHPC.PerkList[PerkID].PerkClass);
 
         if( YHPC.CanUpdatePerkInfo() )
         {
-            `log("CAN UPDATE PERK INFO");
+            //`log("CAN UPDATE PERK INFO");
             YHPC.SetHaveUpdatePerk(true);
         }
         else
         {
-            `log("COULD NOT UPDATE PERK INFO");
+            //`log("COULD NOT UPDATE PERK INFO");
         }
     }
     else
     {
-        `log("(YHPC is NONE :(");
+        //`log("(YHPC is NONE :(");
     }
-    `log("---------------------------------------- /SavePerk");
+    //`log("---------------------------------------- /SavePerk");
 }
 
 
