@@ -1,13 +1,22 @@
-$Description "Gunslingers only! Headshots return the bullet back to your magazine. Start the game with full loadout and it's a full set of hardest wave mayhem!
+$Description "ControlledDifficulty where headshots return the ammo back to the chamber.
 
 Changes from vanilla survival:
 
-* Only Gunslingers Allowed
-* Always spawn with dual-1911, dual-deagles, dual-500s, and medic pistol
 * Aim-wisely and never run out of ammo: Headshots will not use ammo.
 * Pistol head bashes will give ammo (good way of earning ammo with trash)
-* Level 25 skill Whirlwind of Lead users can get additional ammo by getting headshots
-* No tradertime. Non-stop Zed killing action. Waves still exist to let people (re)spawn
+* Trader is quiet
+* Full integration with ControlledDifficulty
+
+Differences from previous version.
+
+* No longer Gunslingers only
+* No longer spawn with default loadout
+* No longer waves of insane last waves
+* Trader time is back
+
+Possible issues:
+
+* As there's some funny business happening under the hood to handle skills, there may be some issues such as skills not being active though it looks like they should be
 
 Making this puppy run:
 
@@ -16,6 +25,7 @@ Making this puppy run:
 * Enter in the following: open kf-burningparis?game=YeeHaw.YH_Survival
 * Swap kf-burningparis for other maps (eg. kf-outpost)
 * Change difficulty by supplying another difficulty parameter. So for HoE it could be: open kf-burningparis?game=YeeHaw.YH_Survival?Difficulty=3 (Note: 0=Normal)
+* All usual parameters for ControlledDifficulty are also available here
 
 GS Logo by Atagene"
 $Title "YeeHaw"
