@@ -1,4 +1,4 @@
-//`define YH_LOG 1
+`define YH_LOG 1
 
 `if(`isdefined(YH_LOG))
 `define yhLog(text, cond) `log(`text, `cond, 'YH')
@@ -7,4 +7,10 @@
 `define yhLog(text, cond) //`log(`text, `cond, 'YH')
 `define yhScriptTrace() //ScriptTrace()
 `endif
+
+`define TestFoo "hello"
+
+`define yhLocalize( defStr, myObj, myKey ) class'YHLocalization'.static.GetLocalizedString(`defStr,`myObj,`myKey)
+`define yhLocalizeObject( defStr, myObj, myKey ) class'YHLocalization'.static.GetLocalizedStringObject(`defStr,`myObj,`myKey)
+
 

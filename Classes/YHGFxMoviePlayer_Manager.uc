@@ -39,4 +39,6 @@ defaultproperties
     WidgetBindings.Remove((WidgetName="traderMenu",WidgetClass=class'KFGFxMenu_Trader'))
     WidgetBindings.Add((WidgetName="traderMenu",WidgetClass=class'YHGFxMenu_Trader'))
 
+    InGamePartyWidgetClass=class'YHGFxWidget_PartyInGame'
+
 }

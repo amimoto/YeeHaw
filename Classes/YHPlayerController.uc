@@ -9,6 +9,11 @@ simulated event PreBeginPlay()
     super.PreBeginPlay();
 }
 
+static function string GetPerkName( int Index )
+{
+    return `yhLocalizeObject(default.PerkList[Index].PerkClass.default.PerkName,default.PerkList[Index].PerkClass,"Perkname");
+}
+
 
 /** Makes sure we always spawn in with a valid perk */
 function WaitForPerkAndRespawn()
@@ -198,6 +203,7 @@ DefaultProperties
     PerkList.Add((PerkClass=class'YHPerk_Demolitionist'))
     PerkList.Add((PerkClass=class'YHPerk_Firebug'))
     PerkList.Add((PerkClass=class'YHPerk_Gunslinger'))
+    PerkList.Add((PerkClass=class'YHCPerk_Scientist'))
     PerkList.Add((PerkClass=class'YHPerk_Sharpshooter'))
     PerkList.Add((PerkClass=class'YHPerk_Survivalist'))
     PerkList.Add((PerkClass=class'YHPerk_SWAT'))

@@ -7,6 +7,12 @@ Changes from vanilla survival:
 * Trader is quiet
 * Full integration with ControlledDifficulty
 
+IMPORTANT:
+
+Also subscribe to the ControlledDifficulty GameType found here:
+
+https://steamcommunity.com/sharedfiles/filedetails/?id=738484519
+
 Differences from previous version.
 
 * No longer Gunslingers only
@@ -30,6 +36,6 @@ Making this puppy run:
 GS Logo by Atagene"
 $Title "YeeHaw"
 $PreviewFile "Documents\My Games\KillingFloor2\KFGame\src\YeeHaw\yeehaw.png"
-$Tags ""
+$Tags "Gamemodes"
 $MicroTxItem "false"
 $PackageDirectory "Documents\My Games\KillingFloor2\KFGame\src\YeeHaw\YeeHawUpload"
