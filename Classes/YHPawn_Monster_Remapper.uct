@@ -1,0 +1,18 @@
+class YHPawn_Monster_Remapper extends Object;
+
+`include(YH_Log.uci)
+
+
+static function class<KFPawn_Monster> RemapMonster( class<KFPawn_Monster> Monster )
+{
+    switch(Monster)
+    {
+{% for mapping in mappings %}
+      case class'{{mapping.monster_superclass}}':
+          return class'{{mapping.monster_class}}';
+{% endfor %}
+    }
+
+    return Monster;
+}
+

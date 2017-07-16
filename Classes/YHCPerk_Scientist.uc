@@ -41,7 +41,8 @@ defaultproperties
     ProgressStatID=STATID_Surv_Progress
     PerkBuildStatID=STATID_Surv_Build
 
-    PrimaryWeaponDef=class'KFWeapDef_MedicPistol'
+    //PrimaryWeaponDef=class'YHWeapDef_MedicPistol'
+    PrimaryWeaponDef=class'YHWeapDef_MedicRifle'
     KnifeWeaponDef=class'KFWeapDef_Knife_Medic'
     GrenadeWeaponDef=class'YHWeapDef_Grenade_Scientist'
 

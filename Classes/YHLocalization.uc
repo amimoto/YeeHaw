@@ -28,11 +28,11 @@ static function string GetLocalizedString(string BaseString, string Module, stri
     local int i;
     local YHStringEntry StringEntry;
 
-    `yhLog("GetLocalizedString:"@BaseString@"M:"@Module@"K:"@Key);
+    //`yhLog("GetLocalizedString:"@BaseString@"M:"@Module@"K:"@Key);
 
     if ( BaseString != "" && Left(BaseString,1) != "?")
     {
-        `log("GOT BASE STRING:"@BaseString);
+        //`log("GOT BASE STRING:"@BaseString);
         return BaseString;
     }
 

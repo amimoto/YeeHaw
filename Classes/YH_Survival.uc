@@ -128,4 +128,9 @@ defaultproperties
     PlayerControllerClass=class'YHPlayerController'
     PlayerReplicationInfoClass=class'YHPlayerReplicationInfo'
     KFGFxManagerClass=class'YHGFxMoviePlayer_Manager'
+
+    SpawnManagerClasses(0)=class'YHSpawnManager_Short'
+    SpawnManagerClasses(1)=class'YHSpawnManager_Normal'
+    SpawnManagerClasses(2)=class'YHSpawnManager_Long'
+
 }

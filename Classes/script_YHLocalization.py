@@ -33,7 +33,7 @@ Overdose="Overdose"
 OverdoseDescription="80% of darted trash zeds will explode upon death"
 
 EyeBleach="Eye Bleach"
-EyeBleachDescription="Darted players reduce visual effects of explosions, bile and fire"
+EyeBleachDescription="Darted players reduce visual effects of explosions, bile and fire."
 
 SteadyHands="Steady Hands"
 SteadyHandsDescription="Darted players reduce recoil, firing speed and increase damage up to 20%"

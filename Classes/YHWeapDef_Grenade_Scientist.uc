@@ -15,6 +15,6 @@ DefaultProperties
     /*
     BuyPrice=0
     AmmoPricePerMag=10*/
-    WeaponClassPath="YeeHaw.YFProj_ZedTimeGrenade"
+    WeaponClassPath="YeeHaw.YHProj_ZedTimeGrenade"
     ImagePath="ui_weaponselect_tex.UI_WeaponSelect_EMPGrenade"
 }

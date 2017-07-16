@@ -1,0 +1,7 @@
+class YHWeapDef_Medic{{weapdef}} extends KFWeapDef_Medic{{weapdef}};
+
+
+defaultproperties
+{
+    WeaponClassPath="YeeHaw.YHWeap_{{weap}}_Medic"
+}
