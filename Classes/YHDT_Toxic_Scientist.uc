@@ -1,4 +1,4 @@
-class YHDT_Toxic_PharmingRounds extends KFDT_Toxic
+class YHDT_Toxic_Scientist extends KFDT_Toxic
     abstract;
 
 `include(KFGameDialog.uci)

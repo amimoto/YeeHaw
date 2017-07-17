@@ -46,6 +46,8 @@ defaultproperties
     KnifeWeaponDef=class'KFWeapDef_Knife_Medic'
     GrenadeWeaponDef=class'YHWeapDef_Grenade_Scientist'
 
+    ToxicDmgTypeClass=class'YHDT_Toxic_Scientist'
+
     MovementSpeed=(Name="Movement Speed",Increment=0.004f,Rank=0,StartingValue=0.f,MaxValue=0.1f)
 
     PerkSkills(EScientistBobbleheads)=(Name="Bobbleheads",IconPath="UI_PerkTalent_TEX.Survivalist.UI_Talents_Survivalist_TacticalReload", Increment=0.f,Rank=0,StartingValue=0.25,MaxValue=0.25)    //0.1

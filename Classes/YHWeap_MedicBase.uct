@@ -60,5 +60,9 @@ simulated function ProcessInstantHitEx( byte FiringMode, ImpactInfo Impact, opti
 
 defaultproperties
 {
+    WeaponProjectiles(ALTFIRE_FIREMODE)=class'YHProj_ScientistDart'
+
+    InstantHitDamageTypes(ALTFIRE_FIREMODE)=class'YHDT_Dart_Scientist'
+
     AssociatedPerkClasses.Add(class'YHCPerk_Scientist')
 }
