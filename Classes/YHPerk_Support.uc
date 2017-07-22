@@ -1,9 +1,27 @@
-class YHPerk_Support extends KFPerk_Support;
+class YHPerk_Support extends KFPerk_Support
+    implements(YHPerk_Interface);
 
 `include(YH_Log.uci)
 
 // We do this since we can't modify KFPerk.uc directly.
 // The ugly version of inheritance. Put the functions in every subclass!
+
+simulated function ApplyDartHeadshotAfflictions(
+                          KFPlayerController DamageInstigator,
+                          byte HitZoneIdx,
+                          KFPawn_Monster Monster
+                      )
+{
+}
+
+
+simulated function ApplyDartBodyshotAfflictions(
+                          KFPlayerController DamageInstigator,
+                          byte HitZoneIdx,
+                          KFPawn_Monster Monster
+                      )
+{
+}
 
 // Add to player's ammo count
 reliable server function AddAmmo(KFWeapon KFW)

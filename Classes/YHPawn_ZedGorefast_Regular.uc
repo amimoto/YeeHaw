@@ -1,4 +1,4 @@
-class YHPawn_ZedStalker extends KFPawn_ZedStalker
+class YHPawn_ZedGorefast_Regular extends CD_Pawn_ZedGorefast_Regular
     implements(YHPawn_Monster_Interface)
     ;
 

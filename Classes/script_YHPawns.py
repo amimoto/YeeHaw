@@ -47,9 +47,10 @@ CD_Pawn_ZedGorefast_Special
 """.split()
 
 for cd_monster in CD_MONSTERS:
-    m = re.search('CD_PawnZed(.*)',cd_monster)
+    m = re.search('^CD_Pawn_Zed(.*)$',cd_monster)
     if not m: continue
     monster = m.group(1)
+    print monster, cd_monster
     if monster not in MONSTERS:
         MONSTERS.append(monster)
 

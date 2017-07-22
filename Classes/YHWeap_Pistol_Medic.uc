@@ -23,7 +23,7 @@ simulated function ProcessInstantHitEx( byte FiringMode, ImpactInfo Impact, opti
     HealTarget = KFPawn(Impact.HitActor);
     Healer = KFPlayerController(Instigator.Controller);
 
-    `yhLog("ProcessInstantHitEx"@FiringMode);
+    `yhLog("ProcessInstantHitEx"@FiringMode@"Hit:"@HealTarget);
 
     InstigatorPerk = GetPerk();
     if( InstigatorPerk != none )

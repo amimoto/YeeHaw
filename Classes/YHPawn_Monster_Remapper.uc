@@ -71,6 +71,39 @@ static function class<KFPawn_Monster> RemapMonster( class<KFPawn_Monster> Monste
       case class'KFPawn_ZedStalker':
           return class'YHPawn_ZedStalker';
 
+      case class'CD_Pawn_ZedClot_Alpha_Regular':
+          return class'YHPawn_ZedClot_Alpha_Regular';
+
+      case class'CD_Pawn_ZedClot_Alpha_Special':
+          return class'YHPawn_ZedClot_Alpha_Special';
+
+      case class'CD_Pawn_ZedCrawler_Regular':
+          return class'YHPawn_ZedCrawler_Regular';
+
+      case class'CD_Pawn_ZedCrawler_Special':
+          return class'YHPawn_ZedCrawler_Special';
+
+      case class'CD_Pawn_ZedFleshpoundKing_NoMinions':
+          return class'YHPawn_ZedFleshpoundKing_NoMinions';
+
+      case class'CD_Pawn_ZedFleshpoundMini_NRS':
+          return class'YHPawn_ZedFleshpoundMini_NRS';
+
+      case class'CD_Pawn_ZedFleshpoundMini_RS':
+          return class'YHPawn_ZedFleshpoundMini_RS';
+
+      case class'CD_Pawn_ZedFleshpound_NRS':
+          return class'YHPawn_ZedFleshpound_NRS';
+
+      case class'CD_Pawn_ZedFleshpound_RS':
+          return class'YHPawn_ZedFleshpound_RS';
+
+      case class'CD_Pawn_ZedGorefast_Regular':
+          return class'YHPawn_ZedGorefast_Regular';
+
+      case class'CD_Pawn_ZedGorefast_Special':
+          return class'YHPawn_ZedGorefast_Special';
+
     }
 
     return Monster;

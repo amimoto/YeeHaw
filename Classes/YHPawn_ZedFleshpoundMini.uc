@@ -1,8 +1,22 @@
-class YHPawn_ZedFleshpoundMini extends KFPawn_ZedFleshpoundMini;
+class YHPawn_ZedFleshpoundMini extends KFPawn_ZedFleshpoundMini
+    implements(YHPawn_Monster_Interface)
+    ;
 
 `include(YH_Log.uci)
 
-event TakeDamage(int Damage,
+var repnotify bool bPharmed;
+var repnotify bool bOverdosed;
+var repnotify bool bYourMineMined;
+var repnotify bool bSmellsLikeRoses;
+var repnotify bool bTypicalRedditor;
+
+replication
+{
+    if (bNetDirty)
+        bPharmed, bOverdosed, bYourMineMined, bSmellsLikeRoses, bTypicalRedditor;
+}
+
+simulated function ApplyDartAfflictions(int Damage,
                  Controller InstigatedBy,
                  vector HitLocation,
                  vector Momentum,
@@ -13,7 +27,46 @@ event TakeDamage(int Damage,
     local int HitZoneIdx;
     local KFPlayerController InstigatorKFPC;
     local KFPerk InstigatorPerk;
+    local YHPerk_Interface InstigatorPerkInterface;
 
+    // Ensure it's a player that instigated
+    InstigatorKFPC = KFPlayerController(InstigatedBy);
+    if ( InstigatorKFPC == None ) return;
+
+    // And that it's the scientist that caused it
+    InstigatorPerk = InstigatorKFPC.GetPerk();
+    InstigatorPerkInterface = YHPerk_Interface(InstigatorPerk);
+    if ( InstigatorPerkInterface == None ) return;
+
+    // What did they dart?
+    HitZoneIdx = HitZones.Find('ZoneName', HitInfo.BoneName);
+    if ( HitZoneIdx == HZI_HEAD )
+    {
+        InstigatorPerkInterface.ApplyDartHeadshotAfflictions(
+            InstigatorKFPC,
+            HitZoneIdx,
+            self
+        );
+    }
+    else
+    {
+        InstigatorPerkInterface.ApplyDartBodyshotAfflictions(
+            InstigatorKFPC,
+            HitZoneIdx,
+            self
+        );
+    }
+
+}
+
+event TakeDamage(int Damage,
+                 Controller InstigatedBy,
+                 vector HitLocation,
+                 vector Momentum,
+                 class<DamageType> DamageType,
+                 optional TraceHitInfo HitInfo,
+                 optional Actor DamageCauser)
+{
 
     `yhLog("Took Damage:"@Damage@"Instigated By"@InstigatedBy@"Damage Type"@DamageType);
 
@@ -23,26 +76,25 @@ event TakeDamage(int Damage,
     // When it's the medic dart, it's DamageType = YH_Dart_Scientist
     super.TakeDamage(Damage,InstigatedBy,HitLocation,Momentum,DamageType,HitInfo,DamageCauser);
 
-    // Do nothing if dead
-    if ( DamageType != class'YHDT_Dart_Scientist' || Health <= 0 )
+    // Apply dart afflictions if required
+    if ( DamageType == class'YHDT_Dart_Scientist' && Health > 0 )
     {
-        return;
+        ApplyDartAfflictions(Damage,InstigatedBy,HitLocation,Momentum,DamageType,HitInfo,DamageCauser);
     }
+}
 
-    InstigatorKFPC = KFPlayerController(InstigatedBy);
-    if ( InstigatorKFPC == None ) return;
+defaultproperties
+{
 
-    InstigatorPerk = InstigatorKFPC.GetPerk();
-
-    HitZoneIdx = HitZones.Find('ZoneName', HitInfo.BoneName);
-    if ( HitZoneIdx == HZI_HEAD )
-    {
-        SetHeadScale(1.5,CurrentHeadScale);
-        `yhLog("DOOT by"@InstigatorPerk);
-    }
-    else
-    {
-        `yhLog("SMHA by"@InstigatorPerk);
-    }
+    // ---------------------------------------------
+    // Afflictions
+    Begin Object Class=YHAfflictionManager Name=Afflictions_1
+        FireFullyCharredDuration=2.5
+        FireCharPercentThreshhold=0.25
+    End Object
+    AfflictionHandler=Afflictions_1
 
 }
+
+
+

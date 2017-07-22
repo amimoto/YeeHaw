@@ -24,7 +24,7 @@ Bobbleheads="Bobbleheads"
 BobbleheadsDescription="Darting heads of Zeds will inflate them"
 
 Mudskipper="Mudskipper"
-MudskipperDescription="Darting legs of Zeds will slow movement by 30%"
+MudskipperDescription="Darting Zeds will slow movement by 30%"
 
 Pharming="Pharming"
 PharmingDescription="80% of darted trash zeds release healing clouds upon death"

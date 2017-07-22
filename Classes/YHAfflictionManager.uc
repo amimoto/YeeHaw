@@ -1,0 +1,4 @@
+class YHAfflictionManager extends KFAfflictionManager;
+
+
+
