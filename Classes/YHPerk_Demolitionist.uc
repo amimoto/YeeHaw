@@ -235,6 +235,14 @@ static simulated function bool IsWeaponOnPerk(
     return false;
 }
 
+
+function float GetBobbleheadPowerModifier( class<YHDamageType> DamageType, byte HitZoneIdx ) { return 0; };
+function float GetPharmPowerModifier( class<YHDamageType> DamageType, byte HitZoneIdx ) { return 0; };
+function float GetOverdosePowerModifier( class<YHDamageType> DamageType, byte HitZoneIdx ) { return 0; };
+function float GetYourMineMinePowerModifier( class<YHDamageType> DamageType, byte HitZoneIdx ) { return 0; };
+function float GetSmellsLikeRosesPowerModifier( class<YHDamageType> DamageType, byte HitZoneIdx ) { return 0; };
+
+
 defaultproperties
 {
 }

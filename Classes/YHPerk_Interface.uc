@@ -13,3 +13,11 @@ simulated function ApplyDartBodyshotAfflictions(
                           KFPawn_Monster Monster
                       );
 
+function float GetBobbleheadPowerModifier( class<YHDamageType> DamageType, byte HitZoneIdx );
+function float GetPharmPowerModifier( class<YHDamageType> DamageType, byte HitZoneIdx );
+function float GetOverdosePowerModifier( class<YHDamageType> DamageType, byte HitZoneIdx );
+function float GetYourMineMinePowerModifier( class<YHDamageType> DamageType, byte HitZoneIdx );
+function float GetSmellsLikeRosesPowerModifier( class<YHDamageType> DamageType, byte HitZoneIdx );
+
+
+

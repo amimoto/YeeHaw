@@ -3,6 +3,22 @@
 import os
 import jinja2
 import re
+from jinja2 import Environment, FileSystemLoader
+import os
+
+THIS_DIR = os.path.dirname(os.path.abspath(__file__))
+
+JINJA2ENV = Environment(loader=FileSystemLoader(THIS_DIR), trim_blocks=True)
+
+def generate_source( template_fpath, source_fpath, **kwargs):
+    target_fpath = source_fpath.format(**kwargs)
+    target_template_fpath = target_fpath+'t'
+
+    if os.path.exists(target_template_fpath):
+        template_fpath = target_template_fpath
+
+    data_code = JINJA2ENV.get_template(template_fpath).render(**kwargs)
+    open(target_fpath,'w').write(data_code)
 
 
 MONSTERS = """
@@ -50,14 +66,10 @@ for cd_monster in CD_MONSTERS:
     m = re.search('^CD_Pawn_Zed(.*)$',cd_monster)
     if not m: continue
     monster = m.group(1)
-    print monster, cd_monster
     if monster not in MONSTERS:
         MONSTERS.append(monster)
 
 # Load the template
-TEMPLATE = open('YHPawn_Monster.uct').read()
-monster_template = jinja2.Template(TEMPLATE)
-
 MAPPINGS = []
 
 # Create the pawns for the monsters
@@ -71,14 +83,20 @@ for monster in MONSTERS:
     monster_superclass = "KFPawn_Zed{monster}".format(monster=monster)
     if cd_monster in CD_MONSTERS:
         monster_superclass = cd_monster
+
     MAPPINGS.append({
         'monster_superclass': monster_superclass,
         'monster_class': monster_class
     })
 
     # Get the data
-    monster_code = monster_template.render(monster=monster,monster_superclass=monster_superclass)
-    open(fname,'w').write(monster_code)
+    generate_source(
+        'YHPawn_Monster.uct',
+        'YHPawn_Zed{monster}.uc',
+        monster=monster,
+        monster_superclass=monster_superclass,
+        monster_class=monster_class
+    )
 
 # Create the remappers to map monsters into what we desire them to be
 MAPPER_TEMPLATE = open('YHPawn_Monster_Remapper.uct').read()
@@ -95,15 +113,61 @@ Long
 """.split()
 
 # Load the template
-TEMPLATE = open('YHSpawnManager.uct').read()
-manager_template = jinja2.Template(TEMPLATE)
-
 for length in LENGTHS:
-    print length
-    fname = "YHSpawnManager_{length}.uc".format(length=length)
+    generate_source(
+        'YHSpawnManager.uct',
+        'YHSpawnManager_{length}.uc',
+        length=length
+    )
 
-    # Get the data
-    length_code = manager_template.render(length=length)
-    open(fname,'w').write(length_code)
+# Handle the Perks
+PERKS = """Berserker
+Commando
+Support
+FieldMedic
+Gunslinger
+Sharpshooter
+Demolitionist
+Firebug
+Survivalist
+SWAT""".split()
 
+for perk in PERKS:
+    generate_source(
+        'YHPerk.uct',
+        'YHPerk_{perk}.uc',
+        perk=perk
+    )
+
+
+# Handle the Weapons
+medic_weapons = [
+        'AssaultRifle',
+        'Pistol',
+        'Shotgun',
+        'SMG'
+    ]
+
+# Load the template
+DEFTRANS = {
+    'AssaultRifle': 'Rifle'
+}
+
+for weap in medic_weapons:
+    print weap
+    weapdef = DEFTRANS.get(weap,weap)
+
+    generate_source(
+        'YHWeap_MedicBase.uct',
+        'YHWeap_{weap}_Medic.uc',
+        weap=weap,
+        weapdef=weapdef
+    )
+
+    generate_source(
+        'YHWeapDEF_MedicBase.uct',
+        'YHWeapDef_Medic{weapdef}.uc',
+        weap=weap,
+        weapdef=weapdef
+    )
 

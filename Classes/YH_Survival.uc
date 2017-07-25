@@ -122,15 +122,16 @@ function StartWave()
 defaultproperties
 {
 
-    HUDType=class'YHGFxHudWrapper'
+    HUDType=class'YeeHaw.YHGFxHudWrapper'
+    DefaultPawnClass=class'YeeHaw.YHPawn_Human'
 
-    GameReplicationInfoClass = class'YHGameReplicationInfo'
-    PlayerControllerClass=class'YHPlayerController'
-    PlayerReplicationInfoClass=class'YHPlayerReplicationInfo'
-    KFGFxManagerClass=class'YHGFxMoviePlayer_Manager'
+    GameReplicationInfoClass = class'YeeHaw.YHGameReplicationInfo'
+    PlayerControllerClass=class'YeeHaw.YHPlayerController'
+    PlayerReplicationInfoClass=class'YeeHaw.YHPlayerReplicationInfo'
+    KFGFxManagerClass=class'YeeHaw.YHGFxMoviePlayer_Manager'
 
-    SpawnManagerClasses(0)=class'YHSpawnManager_Short'
-    SpawnManagerClasses(1)=class'YHSpawnManager_Normal'
-    SpawnManagerClasses(2)=class'YHSpawnManager_Long'
+    SpawnManagerClasses(0)=class'YeeHaw.YHSpawnManager_Short'
+    SpawnManagerClasses(1)=class'YeeHaw.YHSpawnManager_Normal'
+    SpawnManagerClasses(2)=class'YeeHaw.YHSpawnManager_Long'
 
 }

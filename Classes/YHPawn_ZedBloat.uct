@@ -1,0 +1,91 @@
+{% extends "YHPawn_Monster.uct" %}
+
+{% block vars %}
+{{super()}}
+
+/** Projectile to spawn for puke mine attack */
+var protected const class<KFProjectile> PukeYourMineMineProjectileClass;
+var protected const class<KFProjectile> PukeSmellsLikeRosesProjectileClass;
+
+{% endblock %}
+
+
+/** Spawns a puke mine at the specified location and rotation. Network: SERVER */
+function SpawnPukeMine( vector SpawnLocation, rotator SpawnRotation )
+{
+    local KFProjectile PukeMine;
+    class<KFProjectile> MyPukeMineProjectileClass;
+
+    MyPukeMineProjectileClass = PukeMineProjectileClass;
+
+    if ( IsYourMineMined() )
+    {
+        MyPukeMineProjectileClass = PukeYourMineMineProjectileClass;
+    }
+
+    if ( IsSmellsLikeRoses() )
+    {
+        MyPukeMineProjectileClass = PukeSmellsLikeRosesProjectileClass;
+    }
+
+    PukeMine = Spawn( PukeMineProjectileClass, self,, SpawnLocation, SpawnRotation,, true );
+    if( PukeMine != none )
+    {
+        PukeMine.Init( vector(SpawnRotation) );
+    }
+}
+
+
+function DealExplosionDamage()
+{
+    local Pawn P;
+    local vector HitLocation, HitNormal;
+    local Actor HitActor;
+
+    // @note - At low ranges CollidingActors (no VisibleCollidingActors) is okay,
+    // but AllPawns is constant and much faster 99% of the time.
+    foreach WorldInfo.AllPawns( class'Pawn', P, Location, ExplodeRange )
+    {
+        if ( P != Instigator )
+        {
+            // Trace to make sure there are no obstructions. ie acquiring someone through a wall
+            HitActor = Instigator.Trace(HitLocation, HitNormal, P.Location, Location, true);
+            if ( HitActor == none || HitActor == P )
+            {
+                DealPukeDamage(P, Location);
+            }
+        }
+    }
+}
+
+
+function DealPukeDamage( Pawn Victim, Vector Origin )
+{
+    local Vector VectToEnemy;
+
+    VectToEnemy = Victim.Location - Origin;
+    VectToEnemy.Z = 0.f;
+    VectToEnemy = Normal( VectToEnemy );
+
+    Victim.TakeDamage( GetRallyBoostDamage(VomitDamage), Controller, Victim.Location, VectToEnemy, class'KFDT_BloatPuke',, self );
+}
+
+{% block defaultproperties %}
+{{ super() }}
+
+    // ---------------------------------------------
+    // Puke Mines
+    PukeMineProjectileClass=class'KFProj_BloatPukeMine'
+    PukeYourMineMineProjectileClass=class'YHProj_BloatPukeYourMineMine'
+    PukeSmellsLikeRosesProjectileClass=class'YHProj_BloatPukeSmellsLikeRoses'
+    DeathPukeMineRotations(0)=(Pitch=7000,Yaw=10480,Roll=0)
+    DeathPukeMineRotations(1)=(Pitch=7000,Yaw=32767,Roll=0)
+    DeathPukeMineRotations(2)=(Pitch=7000,Yaw=-10480,Roll=0)
+
+{% endblock %}
+
+
+    {% block incapyourminemine%}IncapSettings(YHAF_YourMineMine)=(Duration=60.0,Cooldown=5.0){% endblock %}
+
+    {% block incapsmellslikeroses%}IncapSettings(YHAF_SmellsLikeRoses)=(Duration=60,Cooldown=5.0){% endblock %}
+

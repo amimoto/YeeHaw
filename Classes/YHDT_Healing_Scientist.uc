@@ -1,0 +1,1 @@
+class YHDT_Healing_Scientist extends KFDT_Healing;
