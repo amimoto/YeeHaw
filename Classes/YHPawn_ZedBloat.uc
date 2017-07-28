@@ -16,7 +16,7 @@ var             GameExplosion       PharmExplosionTemplate;
 replication
 {
     if (bNetDirty)
-        bBobbleheaded, bPharmed, bOverdosed, bYourMineMined, bSmellsLikeRoses, bTypicalRedditor};
+        bBobbleheaded, bPharmed, bOverdosed, bYourMineMined, bSmellsLikeRoses, bTypicalRedditor;
 }
 
 static event class<KFPawn_Monster> GetAIPawnClassToSpawn()
@@ -314,7 +314,7 @@ Begin Object Class=KFGameExplosion Name=OverdoseExploTemplate0
 
     // ---------------------------------------------
     // Puke Mines
-    PukeMineProjectileClass=class'KFProj_BloatPukeMine'
+    PukeMineProjectileClass=class'YHProj_BloatPukeMine'
     DeathPukeMineRotations(0)=(Pitch=7000,Yaw=10480,Roll=0)
     DeathPukeMineRotations(1)=(Pitch=7000,Yaw=32767,Roll=0)
     DeathPukeMineRotations(2)=(Pitch=7000,Yaw=-10480,Roll=0)

@@ -1,1 +1,0 @@
-class YHProj_BloatPukeSmellsLikeRoses extends KFProj_BloatPukeMine;

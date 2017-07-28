@@ -1,5 +1,71 @@
 class YHCheatManager extends KFCheatManager;
 
+exec function SpawnHumanPawn(optional bool bEnemy, optional bool bUseGodMode, optional int CharIndex)
+{
+    local KFAIController KFBot;
+    local KFPlayerReplicationInfo KFPRI;
+    local vector                    CamLoc;
+    local rotator                   CamRot;
+    Local YHPawn_Human KFPH;
+    local Vector HitLocation, HitNormal;
+    local Actor TraceOwner;
+
+
+    GetPlayerViewPoint(CamLoc, CamRot);
+
+    if( Pawn != none )
+    {
+        TraceOwner = Pawn;
+    }
+    else
+    {
+        TraceOwner = Outer;
+    }
+
+    TraceOwner.Trace( HitLocation, HitNormal, CamLoc + Vector(CamRot) * 250000, CamLoc, TRUE, vect(0,0,0) );
+
+    HitLocation.Z += 100;
+//  FlushPersistentDebugLines();
+//    DrawDebugSphere( HitLocation, 100, 12, 0, 255, 0, TRUE );
+
+    KFPH = Spawn(class'YHPawn_Human', , , HitLocation);
+    KFPH.SetPhysics(PHYS_Falling);
+
+    // Create a new Controller for this Bot
+    KFBot = Spawn(class'KFAIController');
+
+    // Silly name for now
+    WorldInfo.Game.ChangeName(KFBot, "Human Toaster", false);
+
+    // Add them to the Team they selected
+    if( !bEnemy )
+    {
+       KFGameInfo(WorldInfo.Game).SetTeam(KFBot, KFGameInfo(WorldInfo.Game).Teams[0]);
+    }
+
+    KFBot.Possess(KFPH, false);
+
+    if( bUseGodMode )
+    {
+       KFBot.bGodMode = true;
+    }
+
+    KFPRI = KFPlayerReplicationInfo( KFBot.PlayerReplicationInfo );
+
+    // Set perk stuff
+    //KFPRI.SetCharacter(CharIndex);
+    KFPRI.CurrentPerkClass = Class'YHPlayerController'.default.PerkList[1].PerkClass;
+    KFPRI.NetPerkIndex = 1;
+
+    if( KFPRI != none )
+    {
+        KFPRI.PLayerHealthPercent = FloatToByte( float(KFPH.Health) / float(KFPH.HealthMax) );
+        KFPRI.PLayerHealth = KFPH.Health;
+    }
+    //KFPRI.CurrentPerkLevel = 0;
+
+    KFPH.AddDefaultInventory();
+}
 
 /** Get a zed class from the name */
 function class<KFPawn_Monster> LoadMonsterByName(string ZedName, optional bool bIsVersusPawn )

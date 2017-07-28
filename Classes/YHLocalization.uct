@@ -1,0 +1,59 @@
+class YHLocalization extends Object;
+
+`include(YH_Log.uci)
+
+/********************************************
+ This is super busted right now as we're unable to
+ load data properly from the workshop based localization
+ files. So we do the ugly thing of pulling from our own
+ string. Nasty business
+ ********************************************/
+
+struct YHStringEntry
+{
+    var string m; // module
+    var string k; // key
+    var string s; // string
+};
+
+var array<YHStringEntry> YHStrings;
+
+static function string GetLocalizedStringObject(string BaseString, Object BaseModule, string Key)
+{
+    return GetLocalizedString(BaseString,string(BaseModule.Name),Key);
+}
+
+static function string GetLocalizedString(string BaseString, string Module, string Key)
+{
+    local int i;
+    local YHStringEntry StringEntry;
+
+    //`yhLog("GetLocalizedString:"@BaseString@"M:"@Module@"K:"@Key);
+
+    if ( BaseString != "" && Left(BaseString,1) != "?")
+    {
+        //`log("GOT BASE STRING:"@BaseString);
+        return BaseString;
+    }
+
+    for ( i=0; i<default.YHStrings.Length; i++ )
+    {
+        StringEntry = default.YHStrings[i];
+        if ( StringEntry.m == Module && StringEntry.k == Key )
+        {
+            return StringEntry.s;
+        }
+    }
+
+    return "Missing"@Module@Key;
+}
+
+defaultproperties
+{
+{% for line in line_items %}
+{{ line }}
+{% endfor %}
+
+}
+
+

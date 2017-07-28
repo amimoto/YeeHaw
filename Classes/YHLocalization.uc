@@ -50,7 +50,6 @@ static function string GetLocalizedString(string BaseString, string Module, stri
 
 defaultproperties
 {
-
 YHStrings.Add( (m="YHCPerk_Scientist",k="PerkName",s="Scientist") )
 YHStrings.Add( (m="YHCPerk_Scientist",k="EXPAction1",s="Dealing Scientist weapon damage") )
 YHStrings.Add( (m="YHCPerk_Scientist",k="EXPAction2",s="Head shots with Scientist weapons") )
@@ -63,12 +62,20 @@ YHStrings.Add( (m="YHCPerk_Scientist",k="Bobbleheads",s="Bobbleheads") )
 YHStrings.Add( (m="YHCPerk_Scientist",k="BobbleheadsDescription",s="Darting heads of Zeds will inflate them") )
 YHStrings.Add( (m="YHCPerk_Scientist",k="Mudskipper",s="Mudskipper") )
 YHStrings.Add( (m="YHCPerk_Scientist",k="MudskipperDescription",s="Darting Zeds will slow movement by 30%") )
+YHStrings.Add( (m="YHCPerk_Scientist",k="Sensitive",s="Sensitive") )
+YHStrings.Add( (m="YHCPerk_Scientist",k="SensitiveDescription",s="Darting Zeds will decrease damage by 20% and resistance by 20%") )
 YHStrings.Add( (m="YHCPerk_Scientist",k="Pharming",s="Pharming") )
 YHStrings.Add( (m="YHCPerk_Scientist",k="PharmingDescription",s="80% of darted trash zeds release healing clouds upon death") )
 YHStrings.Add( (m="YHCPerk_Scientist",k="Overdose",s="Overdose") )
 YHStrings.Add( (m="YHCPerk_Scientist",k="OverdoseDescription",s="80% of darted trash zeds will explode upon death") )
 YHStrings.Add( (m="YHCPerk_Scientist",k="EyeBleach",s="Eye Bleach") )
-YHStrings.Add( (m="YHCPerk_Scientist",k="EyeBleachDescription",s="Darted players reduce visual effects of explosions, bile and fire") )
+YHStrings.Add( (m="YHCPerk_Scientist",k="EyeBleachDescription",s="Darted players reduce visual effects of explosions, bile and fire.") )
+YHStrings.Add( (m="YHCPerk_Scientist",k="SteadyHands",s="Steady Hands") )
+YHStrings.Add( (m="YHCPerk_Scientist",k="SteadyHandsDescription",s="Darted players reduce recoil, firing speed and increase damage up to 20%") )
+YHStrings.Add( (m="YHCPerk_Scientist",k="NoPainNoGain",s="No Pain No Gain") )
+YHStrings.Add( (m="YHCPerk_Scientist",k="NoPainNoGainDescription",s="100% faster healing and 100% more HP restored BUT team member will take initial 10 HP damage") )
+YHStrings.Add( (m="YHCPerk_Scientist",k="ExtraStrength",s="Extra Strength") )
+YHStrings.Add( (m="YHCPerk_Scientist",k="ExtraStrength",s="Increase the effectiveness of darted trash effects by 50%") )
 YHStrings.Add( (m="YHCPerk_Scientist",k="SteadyHands",s="Steady Hands") )
 YHStrings.Add( (m="YHCPerk_Scientist",k="SteadyHandsDescription",s="Darted players reduce recoil, firing speed and increase damage up to 20%") )
 YHStrings.Add( (m="YHCPerk_Scientist",k="YourMineMine",s="Your Mine Mine") )
@@ -81,5 +88,4 @@ YHStrings.Add( (m="YHCPerk_Scientist",k="LoversQuarrel",s="ZED TIME - Lover's Qu
 YHStrings.Add( (m="YHCPerk_Scientist",k="LoversQuarrelDescription",s="Dart headshots will cause zeds to attack other zeds") )
 
 }
-
 

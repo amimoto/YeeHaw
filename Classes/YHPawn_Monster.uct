@@ -24,7 +24,7 @@ replication
 {
 {% block replication %}
     if (bNetDirty)
-        {%block bnetdirty%}bBobbleheaded, bPharmed, bOverdosed, bYourMineMined, bSmellsLikeRoses, bTypicalRedditor{%endblock%}};
+        {%block bnetdirty%}bBobbleheaded, bPharmed, bOverdosed, bYourMineMined, bSmellsLikeRoses, bTypicalRedditor{%endblock%};
 {% endblock %}
 }
 

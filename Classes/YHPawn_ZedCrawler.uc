@@ -16,7 +16,7 @@ var             GameExplosion       PharmExplosionTemplate;
 replication
 {
     if (bNetDirty)
-        bBobbleheaded, bPharmed, bOverdosed, bYourMineMined, bSmellsLikeRoses, bTypicalRedditor};
+        bBobbleheaded, bPharmed, bOverdosed, bYourMineMined, bSmellsLikeRoses, bTypicalRedditor;
 }
 
 static event class<KFPawn_Monster> GetAIPawnClassToSpawn()

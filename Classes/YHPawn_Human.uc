@@ -17,6 +17,24 @@ function AddDefaultInventory()
         MyPerk.AddDefaultInventory(self);
     }
 
+
+// For EyeBleach
+function float GetPerkDoTScaler( optional Controller InstigatedBy, optional class<KFDamageType> KFDT )
+{
+    local KFPerk MyPerk;
+    local float DoTScaler;
+
+    DoTScaler = 1.f;
+
+    MyPerk = GetPerk();
+    if( MyPerk != none )
+    {
+        MyPerk.ModifyBloatBileDoT( DoTScaler );
+    }
+
+    return DoTScaler;
+}
+
 /** DefaultInventory.AddItem(class<Weapon>(DynamicLoadObject("KFGameContent.KFWeap_Pistol_9mm", class'Class')));
     Loading the secondary weapon in the perk again */
 

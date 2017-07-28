@@ -17,11 +17,11 @@ var             Texture2d       WhiteMaterial;
 enum EScientistPerkSkills
 {
     EScientistBobbleheads,
-    EScientistMudskipper,
+    EScientistSensitive,
     EScientistPharming,
     EScientistOverdose,
-    EScientistEyeBleach,
-    EScientistSteadyHands,
+    EScientistNoPainNoGain,
+    EScientistExtraStrength,
     EScientistYourMineMine,
     EScientistSmellsLikeRoses,
     EScientistZTRealityDistortion,

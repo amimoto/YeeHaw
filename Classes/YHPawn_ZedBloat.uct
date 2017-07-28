@@ -1,15 +1,5 @@
 {% extends "YHPawn_Monster.uct" %}
 
-{% block vars %}
-{{super()}}
-
-/** Projectile to spawn for puke mine attack */
-var protected const class<KFProjectile> PukeYourMineMineProjectileClass;
-var protected const class<KFProjectile> PukeSmellsLikeRosesProjectileClass;
-
-{% endblock %}
-
-
 /** Spawns a puke mine at the specified location and rotation. Network: SERVER */
 function SpawnPukeMine( vector SpawnLocation, rotator SpawnRotation )
 {
@@ -20,12 +10,12 @@ function SpawnPukeMine( vector SpawnLocation, rotator SpawnRotation )
 
     if ( IsYourMineMined() )
     {
-        MyPukeMineProjectileClass = PukeYourMineMineProjectileClass;
+        MyPukeMineProjectileClass.bYourMineMine = true;
     }
 
     if ( IsSmellsLikeRoses() )
     {
-        MyPukeMineProjectileClass = PukeSmellsLikeRosesProjectileClass;
+        MyPukeMineProjectileClass.bSmellsLikeRoses = true;
     }
 
     PukeMine = Spawn( PukeMineProjectileClass, self,, SpawnLocation, SpawnRotation,, true );
@@ -75,9 +65,7 @@ function DealPukeDamage( Pawn Victim, Vector Origin )
 
     // ---------------------------------------------
     // Puke Mines
-    PukeMineProjectileClass=class'KFProj_BloatPukeMine'
-    PukeYourMineMineProjectileClass=class'YHProj_BloatPukeYourMineMine'
-    PukeSmellsLikeRosesProjectileClass=class'YHProj_BloatPukeSmellsLikeRoses'
+    PukeMineProjectileClass=class'YHProj_BloatPukeMine'
     DeathPukeMineRotations(0)=(Pitch=7000,Yaw=10480,Roll=0)
     DeathPukeMineRotations(1)=(Pitch=7000,Yaw=32767,Roll=0)
     DeathPukeMineRotations(2)=(Pitch=7000,Yaw=-10480,Roll=0)
