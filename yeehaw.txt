@@ -6,6 +6,7 @@ Changes from vanilla survival:
 * Pistol head bashes will give ammo (good way of earning ammo with trash)
 * Trader is quiet
 * Full integration with ControlledDifficulty
+* New Perk: Horzine Scientist
 
 IMPORTANT:
 
@@ -34,8 +35,8 @@ Making this puppy run:
 * All usual parameters for ControlledDifficulty are also available here
 
 GS Logo by Atagene"
-$Title "YeeHaw"
-$PreviewFile "Documents\My Games\KillingFloor2\KFGame\src\YeeHaw\yeehaw.png"
+$Title "YeeHawTest"
+$PreviewFile "c:\temp\yeehaw.png"
 $Tags "Gamemodes"
 $MicroTxItem "false"
-$PackageDirectory "Documents\My Games\KillingFloor2\KFGame\src\YeeHaw\YeeHawUpload"
+$PackageDirectory "c:\temp\yeehaw"

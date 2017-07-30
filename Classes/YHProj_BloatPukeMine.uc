@@ -30,11 +30,13 @@ simulated function bool ValidTouch( Pawn Other )
         return false;
     }
 
-    // Only let players trigger the heal mile
+    /* Nah, let's let zeds trigger things too
+    // Only let players trigger the heal mine
     if ( bSmellsLikeRoses && Other.GetTeamNum() == 255 )
     {
         return false;
     }
+    */
 
     // Make sure not touching through wall
     return FastTrace( Other.Location, Location,, true );
@@ -66,11 +68,13 @@ simulated function TriggerExplosion(Vector HitLocation, Vector HitNormal, Actor 
     if ( bSmellsLikeRoses )
     {
         ExplosionTemplate = SmellsLikeRosesExplosionTemplate;
+        ExplosionActorClass = class'KFExplosion_MedicGrenade';
     }
     else if ( bYourMineMine )
     {
         ExplosionTemplate = YourMineMineExplosionTemplate;
     }
+
 
     super.TriggerExplosion(HitLocation, HitNormal, HitActor);
 }

@@ -22,26 +22,6 @@ import os
 import _winreg
 import shutil
 
-CONFIG_BASE = {
-                'default': 'yeehaw',
-                'yeehaw': {
-                    'target':r'c:/temp/yeehaw',
-                    'icon': 'yeehaw.png',
-                    'target_icon': r'c:/temp/yeehaw.png',
-                    'workshop': 'yeehaw.txt',
-                    'workshop_upload': '"{workshop_fpath}" yeehaw.txt',
-                    'target_workshop': '~/Documents/My Games/KillingFloor2/yeehaw.txt',
-                    'test': '"{bin_path}/kfeditor.exe" kf-outpost?game=YeeHaw.YH_Survival?difficulty=2 -useunpublished -log',
-                    'server_copy': [
-                            ['{brew_path}/YeeHaw.u','{server_path}/BrewedPC'],
-                        ],
-                    'build': '"{bin_path}/kfeditor.exe" brewcontent -platform=PC -log',
-                    'workshop_copy': [
-                            ['{brew_path}/YeeHaw.u','BrewedPC'],
-                        ],
-                    }
-                }
-
 args = docopt.docopt(__doc__,version="Builder 1.0")
 
 PACKAGE_PATH = "C:/"
@@ -58,21 +38,25 @@ KF2_WORKSHOP_FPATH = KF2_INSTALL_PATH + r"\Binaries\WorkshopUserTool.exe"
 HOME_PATH = os.path.expanduser("~")
 KF2_BREWED_PATH = HOME_PATH+"/Documents/My Games/KillingFloor2/KFGame/Published/BrewedPC"
 KF2_SERVER_PATH = r"C:\kf2server\KFGame"
+SRC_PATH = HOME_PATH+"/Documents/My Games/KillingFloor2/KFGame/src"
 
 def load_config(config_fpath):
     with open(config_fpath) as f:
         buf = f.read()
     return json.loads(buf)
 
+def load_config_base():
+    return json.loads(open('build.config.json').read())
+
 def amend_config(config_fpath):
     config = load_config(config_fpath)
-    config.update(CONFIG_BASE)
-    buf = json.dumps(CONFIG_BASE)
+    config.update(load_config_base())
+    buf = json.dumps(config,sort_keys=True,indent=4,separators=(',',': '))
     with open(config_fpath,"w") as f:
         f.write(buf)
 
 def create_config(config_fpath):
-    buf = json.dumps(CONFIG_BASE)
+    buf = json.dumps(load_config_base(),sort_keys=True,indent=4,separators=(',',': '))
     with open(config_fpath,"w") as f:
         f.write(buf)
 
@@ -125,13 +109,15 @@ elif args['server']:
         src_fpath = src.format(
                             bin_path=KF2_BIN_PATH,
                             install_path=KF2_INSTALL_PATH,
-                            brew_path=KF2_BREWED_PATH
+                            brew_path=KF2_BREWED_PATH,
+                            src_path=SRC_PATH
                         )
         target_path = dest.format(
                             bin_path=KF2_BIN_PATH,
                             install_path=KF2_INSTALL_PATH,
                             brew_path=KF2_BREWED_PATH,
-                            server_path=KF2_SERVER_PATH
+                            server_path=KF2_SERVER_PATH,
+                            src_path=SRC_PATH
                         )
 
         if not os.path.exists(target_path):
@@ -156,7 +142,8 @@ elif args['publish']:
         src_fpath = src.format(
                             bin_path=KF2_BIN_PATH,
                             install_path=KF2_INSTALL_PATH,
-                            brew_path=KF2_BREWED_PATH
+                            brew_path=KF2_BREWED_PATH,
+                            src_path=SRC_PATH
                         )
         target_path = os.path.join(config['target'],dest)
         if not os.path.exists(target_path):

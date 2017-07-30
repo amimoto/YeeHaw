@@ -11,7 +11,7 @@ function SetPerkInfo()
     if (KFPC != none)
     {
         CurrentPerk = KFPlayerController(GetPC()).CurrentPerk;
-        SetString("perkName", `yhLocalizeObject(CurrentPerk.PerkName,CurrentPerk,"PerkName"));
+        SetString("perkName", `yhLocalizeObject(CurrentPerk.PerkName,CurrentPerk.Class,"PerkName"));
         SetString("perkIconPath", "img://"$CurrentPerk.GetPerkIconPath());
         SetInt("perkLevel", CurrentPerk.GetLevel());
         SetInt("xpBarValue", KFPC.GetPerkLevelProgressPercentage(CurrentPerk.Class));

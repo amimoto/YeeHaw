@@ -11,6 +11,13 @@ replication
       bGameStarted, bAllowChangePerk;
 }
 
+event PreBeginPlay()
+{
+    YHGFxObject_TraderItems(TraderItems).Init();
+    super.PreBeginPlay();
+}
+
+
 reliable server function AllowPerkChanging(bool Allow)
 {
     bAllowChangePerk = Allow;
@@ -35,6 +42,10 @@ defaultproperties
 {
     // With this, there will be an eerie quiet through all the waves
     TraderDialogManagerClass=class'YHTraderDialogManager'
+
+    Begin Object Class="YHGFxObject_TraderItems" Name="TraderItems0"
+    End Object
+    TraderItems=TraderItems0
 
     bGameStarted=false
     bAllowChangePerk=false

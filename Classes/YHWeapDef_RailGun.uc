@@ -1,4 +1,4 @@
-class YHWeapDef_Medic{{weapdef}} extends KFWeapDef_Medic{{weapdef}};
+class YHWeapDef_RailGun extends KFWeapDef_RailGun;
 
 `include(YH_Log.uci)
 
@@ -16,8 +16,7 @@ static function string GetItemLocalization(string KeyName)
     return LocalizedString;
 }
 
-
 defaultproperties
 {
-    WeaponClassPath="YeeHaw.YHWeap_{{weap}}_Medic"
+    WeaponClassPath="YeeHaw.YHWeap_Rifle_RailGun"
 }

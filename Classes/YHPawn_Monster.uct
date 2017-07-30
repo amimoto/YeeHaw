@@ -12,19 +12,21 @@ class YHPawn_Zed{{monster}} extends {{monster_superclass}}
 var repnotify bool bBobbleheaded;
 var repnotify bool bPharmed;
 var repnotify bool bOverdosed;
+var repnotify bool bZedWhispered;
+var repnotify bool bSensitive;
 var repnotify bool bYourMineMined;
 var repnotify bool bSmellsLikeRoses;
-var repnotify bool bTypicalRedditor;
+var repnotify bool bExtraStrength;
 
-var             GameExplosion       OverdoseExplosionTemplate;
-var             GameExplosion       PharmExplosionTemplate;
+var GameExplosion  OverdoseExplosionTemplate;
+var GameExplosion  PharmExplosionTemplate;
 {% endblock %}
 
 replication
 {
 {% block replication %}
     if (bNetDirty)
-        {%block bnetdirty%}bBobbleheaded, bPharmed, bOverdosed, bYourMineMined, bSmellsLikeRoses, bTypicalRedditor{%endblock%};
+        {%block bnetdirty%}bBobbleheaded, bPharmed, bOverdosed, bSensitive, bZedWhispered, bYourMineMined, bSmellsLikeRoses, bExtraStrength{%endblock%};
 {% endblock %}
 }
 
@@ -41,6 +43,12 @@ function bool IsBobbleheaded() {
 {% endblock %}
 }
 
+function bool IsSensitive() {
+{% block issensitive %}
+    return bSensitive;
+{% endblock %}
+}
+
 function bool IsPharmed() {
 {% block ispharmed %}
     return bPharmed;
@@ -50,6 +58,12 @@ function bool IsPharmed() {
 function bool IsOverdosed() {
 {% block isoverdosed %}
     return bOverdosed;
+{% endblock %}
+}
+
+function bool IsZedWhispered() {
+{% block iszedwhispered %}
+    return bZedWhispered;
 {% endblock %}
 }
 
@@ -65,9 +79,9 @@ function bool IsSmellsLikeRoses() {
 {% endblock %}
 }
 
-function bool IsTypicalRedditor() {
-{% block istypicalredditor %}
-    return bTypicalRedditor;
+function bool IsExtraStrength() {
+{% block isextrastrength %}
+    return bExtraStrength;
 {% endblock %}
 }
 
@@ -80,38 +94,103 @@ function SetBobbleheaded( bool active ) {
     }
     else
     {
-        SetHeadScale(1.0,CurrentHeadScale);
+        if ( !bIsHeadless )
+            SetHeadScale(1.0,CurrentHeadScale);
     }
 {% endblock %}
 }
 
+function SetSensitive( bool active ) {
+{% block setsensitive %}
+    bSensitive = active;
+{% endblock %}
+}
+
+simulated event bool CanDoSpecialMove(ESpecialMove AMove, optional bool bForceCheck)
+{
+    {% block candospecialmove %}
+    // Sweetly spoken to, we don't do much then
+    if ( IsZedWhispered() ) {
+        `yhLog("Ignoring Special Move for"@self);
+        return false;
+    }
+    `yhLog("Doing Special Move");
+    return SpecialMoveHandler.CanDoSpecialMove( AMove, bForceCheck );
+    {% endblock %}
+}
+
 function SetPharmed( bool active ) {
 {% block setpharmed %}
-    bPharmed = active;
+    if ( !bIsHeadless )
+        bPharmed = active;
 {% endblock %}
 }
 
 function SetOverdosed( bool active ) {
 {% block setoverdosed %}
-    bOverdosed = active;
+    if ( !bIsHeadless )
+        bOverdosed = active;
 {% endblock %}
+}
+
+function bool ShouldSprint()
+{
+    if ( IsZedWhispered() )
+    {
+        return false;
+    }
+    return self.ShouldSprint();
+}
+
+function SetZedWhispered( bool active ) {
+{% block setzedwhispered %}
+
+    bZedWhispered = active;
+
+    `yhLog(self@"Rage status is:"@IsEnraged()@"ZedWhispered Status is:"@bZedWhispered);
+
+    if ( active )
+    {
+        `yhLog("Disabling Rage for"@self);
+        SetEnraged(False);
+        `yhLog("Disable RallyBoost if active"@self);
+        Timer_EndRallyBoost();
+    }
+
+{% endblock %}
+}
+
+function AdjustMovementSpeed( float SpeedAdjust )
+{
+    super.AdjustMovementSpeed(SpeedAdjust);
+}
+
+simulated function SetEnraged( bool bNewEnraged )
+{
+
+    `yhLog("Ruh ROH! Going to be setting raged to"@bNewEnraged);
+
+    // Cannot be enraged while afflicted by ZedWhisperer
+    if ( bZedWhispered && bNewEnraged )
+    {
+        `yhLog("NAH IGNORING");
+        return;
+    }
+
+    super.SetEnraged(bNewEnraged);
 }
 
 function SetYourMineMined( bool active ) {
 {% block setyourminemined %}
-    bYourMineMined = active;
+    if ( !bIsHeadless )
+        bYourMineMined = active;
 {% endblock %}
 }
 
 function SetSmellsLikeRoses( bool active ) {
 {% block setsmellslikerosese %}
-    bSmellsLikeRoses = active;
-{% endblock %}
-}
-
-function SetTypicalRedditor( bool active ) {
-{% block settypicalredditor %}
-    bTypicalRedditor = active;
+    if ( !bIsHeadless )
+        bSmellsLikeRoses = active;
 {% endblock %}
 }
 
@@ -288,6 +367,13 @@ function OverdoseExplode( Controller Killer, KFPerk InstigatorPerk )
 // For future use.
 function AdjustDamage(out int InDamage, out vector Momentum, Controller InstigatedBy, vector HitLocation, class<DamageType> DamageType, TraceHitInfo HitInfo, Actor DamageCauser)
 {
+
+    // If nerfed by darts, increase damage by 50%
+    if ( IsSensitive() )
+    {
+        InDamage *= 1.5f;
+    }
+
     super.AdjustDamage(InDamage, Momentum, InstigatedBy, HitLocation, DamageType, HitInfo, DamageCauser);
 }
 
@@ -305,11 +391,15 @@ defaultproperties
     AfflictionHandler=Afflictions_1
 {% endblock %}
 
-    {% block incapbobblehead %}IncapSettings(YHAF_Bobblehead)=(Duration=5.0,Cooldown=5.0){% endblock %}
+    {% block incapbobblehead %}IncapSettings(YHAF_Bobblehead)=(Duration=5.0,Cooldown=8.0){% endblock %}
 
-    {% block incapoverdose%}IncapSettings(YHAF_Overdose)=(Duration=5.0,Cooldown=5.0){% endblock %}
+    {% block incapsensitive %}IncapSettings(YHAF_Sensitive)=(Duration=5.0,Cooldown=10.0){% endblock %}
 
-    {% block incappharmed%}IncapSettings(YHAF_Pharmed)=(Duration=5.0,Cooldown=5.0){% endblock %}
+    {% block incapoverdose%}IncapSettings(YHAF_Overdose)=(Duration=5.0,Cooldown=7.0){% endblock %}
+
+    {% block incappharmed%}IncapSettings(YHAF_Pharmed)=(Duration=5.0,Cooldown=7.0){% endblock %}
+
+    {% block incapzedwhisperer%}IncapSettings(YHAF_ZedWhisperer)=(Duration=50.0,Cooldown=5.0){% endblock %}
 
     {% block incapyourminemine%}//IncapSettings(YHAF_YourMineMine)=(Duration=5.0,Cooldown=5.0){% endblock %}
 
@@ -318,7 +408,7 @@ defaultproperties
 
 {% block pharmexplotemplate %}
     Begin Object Class=KFGameExplosion Name=PharmExploTemplate0
-        Damage=50  //50
+        Damage=30
         DamageRadius=350
         DamageFalloffExponent=0.f
         DamageDelay=0.f
@@ -366,6 +456,8 @@ defaultproperties
     End Object
     OverdoseExplosionTemplate=OverdoseExploTemplate0
 {%- endblock %}
+
+    bExtraStrength = False
 
 {% endblock %}
 }

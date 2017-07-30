@@ -1,5 +1,7 @@
 class YHWeap_SMG_Medic extends KFWeap_SMG_Medic;
 
+var int NoPainNoGainDamage;
+
 `include(YH_Log.uci)
 
 // Disable Lock-on
@@ -19,11 +21,16 @@ simulated function ProcessInstantHitEx( byte FiringMode, ImpactInfo Impact, opti
     local KFPawn HealTarget;
     local KFPlayerController Healer;
     local KFPerk InstigatorPerk;
+    local int HitZoneIdx;
+
+    local YHPerk_Interface YHPI;
+    local YHPawn_Human Human_HealTarget;
+
 
     HealTarget = KFPawn(Impact.HitActor);
     Healer = KFPlayerController(Instigator.Controller);
 
-    `yhLog("ProcessInstantHitEx"@FiringMode@"Hit:"@HealTarget@"Actor:"@Impact.HitActor);
+    `yhLog("ProcessInstantHitEx"@FiringMode@"Hit:"@HealTarget@"Actor:"@Impact.HitActor@"HIT:"@Impact.HitInfo.BoneName);
     `yhScriptTrace();
 
     InstigatorPerk = GetPerk();
@@ -40,7 +47,30 @@ simulated function ProcessInstantHitEx( byte FiringMode, ImpactInfo Impact, opti
             Healer.AddShotsHit(1);
         }
 
-        HealTarget.HealDamage(HealAmount, Instigator.Controller, HealingDartDamageType);
+        // Figure if we need to deal with NoPainNoGain
+        YHPI = YHPerk_Interface(InstigatorPerk);
+        Human_HealTarget = YHPawn_Human(HealTarget);
+        if ( YHPI != none && YHPI.IsNoPainNoGainActive() && Human_HealTarget != none )
+        {
+            HitZoneIdx = HealTarget.HitZones.Find('ZoneName', Impact.HitInfo.BoneName);
+            if ( HitZoneIdx != HZI_HEAD )
+            {
+                HealTarget.TakeDamage(
+                    NoPainNoGainDamage,
+                    Instigator.Controller,
+                    Impact.HitLocation,
+                    InstantHitMomentum[FiringMode] * Impact.RayDir,
+                    class'YHDT_Medic_Pain',
+                    Impact.HitInfo,
+                    Instigator
+                );
+            }
+            Human_HealTarget.HealDamageFast(HealAmount+NoPainNoGainDamage, Instigator.Controller, HealingDartDamageType);
+        }
+        else
+        {
+            HealTarget.HealDamage(HealAmount, Instigator.Controller, HealingDartDamageType);
+        }
 
         // Play a healed impact sound for the healee
         if( HealImpactSoundPlayEvent != None && HealTarget != None && !bSuppressSounds  )
@@ -65,5 +95,7 @@ defaultproperties
 
     InstantHitDamageTypes(ALTFIRE_FIREMODE)=class'YHDT_Dart_Scientist'
 
-    AssociatedPerkClasses.Add(class'YHCPerk_Scientist')
+    AssociatedPerkClasses.Add(class'YeeHaw.YHCPerk_Scientist')
+
+    NoPainNoGainDamage = 15
 }

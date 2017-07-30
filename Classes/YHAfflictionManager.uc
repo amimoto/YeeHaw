@@ -1,6 +1,8 @@
 class YHAfflictionManager extends KFAfflictionManager
     DependsOn(YHDamageType);
 
+var float DartHeadshotBoost;
+
 `include(YH_Log.uci)
 
 /* Types of stacking afflictions that are used to index the IncapSettings array */
@@ -37,11 +39,12 @@ enum EYHAfflictionType
 
     /* YeeHaws */
     YHAF_Bobblehead,
+    YHAF_Sensitive,
     YHAF_Overdose,
     YHAF_Pharmed,
+    YHAF_ZedWhisperer,
     YHAF_SmellsLikeRoses,
-    YHAF_YourMineMine,
-    YHAF_TypicalRedditor
+    YHAF_YourMineMine
 
 };
 
@@ -68,10 +71,11 @@ function EAfflictionType ConvertAfflictionEnum(EYHAfflictionType EYHAT)
         case YHEAfflictionType_Blank: return EAfflictionType_Blank;
         case YHAF_Bobblehead: return AF_Custom1;
         case YHAF_Overdose: return AF_Custom1;
+        case YHAF_Sensitive: return AF_Custom1;
         case YHAF_Pharmed: return AF_Custom1;
+        case YHAF_ZedWhisperer: return AF_Custom1;
         case YHAF_SmellsLikeRoses: return AF_Custom1;
         case YHAF_YourMineMine: return AF_Custom1;
-        case YHAF_TypicalRedditor: return AF_Custom1;
     }
     return EAfflictionType_Blank;
 }
@@ -188,13 +192,13 @@ protected function ProcessSpecialMoveAfflictions(KFPerk InstigatorPerk, vector H
 {
     local EHitZoneBodyPart BodyPart;
     local byte HitZoneIdx;
-    local float KnockdownPower, StumblePower, StunPower, SnarePower;
+    local float KnockdownPower, StumblePower, StunPower, SnarePower, SensitivePower;
     local float BobbleheadPower, PharmPower, OverdosePower, YourMineMinePower;
-    local float SmellsLikeRosesPower;
+    local float SmellsLikeRosesPower, ZedWhispererPower;
     local float KnockdownModifier, StumbleModifier, StunModifier;
 
     local float BobbleheadModifier, PharmModifier, OverdoseModifier, YourMineMineModifier;
-    local float SmellsLikeRosesModifier;
+    local float SmellsLikeRosesModifier, SensitiveModifier, ZedWhispererModifier;
 
     local class<YHDamageType> DT;
     local YHPerk_Interface YHInstigatorPerk;
@@ -224,6 +228,20 @@ protected function ProcessSpecialMoveAfflictions(KFPerk InstigatorPerk, vector H
         OverdosePower = DT.default.OverdosePower;
         YourMineMinePower = DT.default.YourMineMinePower;
         SmellsLikeRosesPower = DT.default.SmellsLikeRosesPower;
+        SensitivePower = DT.default.SensitivePower;
+        ZedWhispererPower = DT.default.ZedWhispererPower;
+
+        // Headshots will increase the likihood of the effect
+        if ( HitZoneIdX == HZI_HEAD )
+        {
+            BobbleheadPower *= DartHeadshotBoost;
+            PharmPower *= DartHeadshotBoost;
+            OverdosePower *= DartHeadshotBoost;
+            YourMineMinePower *= DartHeadshotBoost;
+            SmellsLikeRosesPower *= DartHeadshotBoost;
+            SensitivePower *= DartHeadshotBoost;
+            ZedWhispererPower *= DartHeadshotBoost;
+        }
     }
     else
     {
@@ -232,6 +250,8 @@ protected function ProcessSpecialMoveAfflictions(KFPerk InstigatorPerk, vector H
         OverdosePower = 0;
         YourMineMinePower = 0;
         SmellsLikeRosesPower = 0;
+        SensitivePower = 0;
+        ZedWhispererPower = 0;
     }
 
     KnockdownModifier = 1.f;
@@ -243,6 +263,8 @@ protected function ProcessSpecialMoveAfflictions(KFPerk InstigatorPerk, vector H
     OverdoseModifier = 0;
     YourMineMineModifier = 0;
     SmellsLikeRosesModifier = 0;
+    SensitiveModifier = 0;
+    ZedWhispererModifier = 0;
 
     // Allow for known afflictions to adjust reaction
     KnockdownModifier += GetAfflictionKnockdownModifier();
@@ -277,6 +299,9 @@ protected function ProcessSpecialMoveAfflictions(KFPerk InstigatorPerk, vector H
         OverdoseModifier = YHInstigatorPerk.GetOverdosePowerModifier( DT, HitZoneIdx );
         YourMineMineModifier = YHInstigatorPerk.GetYourMineMinePowerModifier( DT, HitZoneIdx );
         SmellsLikeRosesModifier = YHInstigatorPerk.GetSmellsLikeRosesPowerModifier( DT, HitZoneIdx );
+        SensitiveModifier = YHInstigatorPerk.GetSensitivePowerModifier( DT, HitZoneIdx );
+        ZedWhispererModifier = YHInstigatorPerk.GetZedWhispererPowerModifier( DT, HitZoneIdx );
+
     }
 
     KnockdownPower *= KnockdownModifier;
@@ -288,6 +313,9 @@ protected function ProcessSpecialMoveAfflictions(KFPerk InstigatorPerk, vector H
     OverdosePower *= OverdoseModifier;
     YourMineMinePower *= YourMineMineModifier;
     SmellsLikeRosesPower *= SmellsLikeRosesModifier;
+    SensitivePower *= SensitiveModifier;
+    ZedWhispererPower *= ZedWhispererModifier;
+
 
     // increment affliction power
     if ( KnockdownPower > 0 && CanDoSpecialmove(SM_Knockdown) )
@@ -331,8 +359,14 @@ protected function ProcessSpecialMoveAfflictions(KFPerk InstigatorPerk, vector H
     {
         YHAccrueAffliction(YHAF_SmellsLikeRoses, SmellsLikeRosesPower, BodyPart);
     }
-
-
+    if ( SensitivePower > 0 )
+    {
+        YHAccrueAffliction(YHAF_Sensitive, SensitivePower, BodyPart);
+    }
+    if ( ZedWhispererPower > 0 )
+    {
+        YHAccrueAffliction(YHAF_ZedWhisperer, ZedWhispererPower, BodyPart);
+    }
 }
 
 /** Effect based afflictions can apply even on dead bodies */
@@ -390,5 +424,10 @@ defaultproperties
     AfflictionClasses(YHAF_Pharmed)=class'YHAffliction_Pharmed'
     AfflictionClasses(YHAF_SmellsLikeRoses)=class'YHAffliction_SmellsLikeRoses'
     AfflictionClasses(YHAF_YourMineMine)=class'YHAffliction_YourMineMine'
+
+    AfflictionClasses(YHAF_Sensitive)=class'YHAffliction_Sensitive'
+    AfflictionClasses(YHAF_ZedWhisperer)=class'YHAffliction_ZedWhispered'
+
+    DartHeadshotBoost = 2.f
 }
 

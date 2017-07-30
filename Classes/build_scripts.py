@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 
 import os
 import jinja2
@@ -6,7 +7,7 @@ import re
 from jinja2 import Environment, FileSystemLoader
 
 
-YEEHAW_LANG = """
+YEEHAW_LANG = u"""
 [YHCPerk_Scientist]
 PerkName="Scientist"
 EXPAction1="Dealing Scientist weapon damage"
@@ -27,32 +28,20 @@ SkillCatagories[4]="Zedxperiments"
 Bobbleheads="Bobbleheads"
 BobbleheadsDescription="Darting heads of Zeds will inflate them"
 
-Mudskipper="Mudskipper"
-MudskipperDescription="Darting Zeds will slow movement by 30%"
-
 Sensitive="Sensitive"
 SensitiveDescription="Darting Zeds will decrease damage by 20% and resistance by 20%"
 
 Pharming="Pharming"
-PharmingDescription="80% of darted trash zeds release healing clouds upon death"
+PharmingDescription="Darted zeds release healing clouds upon death"
 
 Overdose="Overdose"
-OverdoseDescription="80% of darted trash zeds will explode upon death"
-
-EyeBleach="Eye Bleach"
-EyeBleachDescription="Darted players reduce visual effects of explosions, bile and fire."
-
-SteadyHands="Steady Hands"
-SteadyHandsDescription="Darted players reduce recoil, firing speed and increase damage up to 20%"
+OverdoseDescription="Darted zeds will explode upon death"
 
 NoPainNoGain="No Pain No Gain"
-NoPainNoGainDescription="100% faster healing and 100% more HP restored BUT team member will take initial 10 HP damage"
+NoPainNoGainDescription="Darts have MUCH faster dart healing BUT bodyshots will cause initial damage"
 
-ExtraStrength="Extra Strength"
-ExtraStrength="Increase the effectiveness of darted trash effects by 50%"
-
-SteadyHands="Steady Hands"
-SteadyHandsDescription="Darted players reduce recoil, firing speed and increase damage up to 20%"
+ZedWhisperer="Zed Whisperer"
+ZedWhispererDescription="Darting Zeds will de-rage or disable some special moves"
 
 YourMineMine="Your Mine Mine"
 YourMineMineDescription="Darted bloats upon explosive death will release mines that explode on zed contact"
@@ -60,11 +49,64 @@ YourMineMineDescription="Darted bloats upon explosive death will release mines t
 SmellsLikeRoses="Smells Like Roses"
 SmellsLikeRosesDescription="Darted bloats upon explosive death will release mines that release a healing cloud on contact"
 
-RealityDistortion="ZED TIME - Reality Distortion Field"
-RealityDistortionDescription="Bodyshots will be treated as headshots"
+ZedTimeGrenades="Zed Time Grenades"
+ZedTimeGrenadesDescription="Swap your bloat mine grenades and wield the power to manipulate time!"
 
+RealityDistortion="ZED TIME - Reality Distortion Field"
+RealityDistortionDescription="Infinite darts and ammo!"
+
+[YHProj_ZedTimeGrenade]
+ItemName="Time Decompression Grenade"
+ItemCategory ="Time"
+ItemDescription="-Triggers Zed Time. Amazing stuff."
+
+[YHWeap_Healer_Syringe]
+ItemName="Medical Syringe"
+ItemCategory="Equipment"
+
+[YHWeap_Pistol_Medic]
+ItemName="HMTech-101 Pistol"
+ItemCategory="Pistol"
+ItemDescription="-Fire mode is semi-auto only.\\n-Alt-fire shoots healing darts to heal team members.\\n-It uses caseless ammunition and it counts the rounds for you."
+
+[YHWeap_SMG_Medic]
+ItemName="HMTech-201 SMG"
+ItemCategory="Submachine Gun"
+ItemDescription="-Fire mode is full-auto only.\\n-Alt-fire shoots healing darts to heal team members.\\n-Your HMTech pistol, only beefed up!"
+
+[YHWeap_Shotgun_Medic]
+ItemName="HMTech-301 Shotgun"
+ItemCategory="Shotgun"
+ItemDescription="-Fire mode is semi-auto only.\\n-Alt-fire shoots healing darts to heal team members.\\n-The combat shotgun version of the HMTech pistol."
+
+[YHWeap_AssaultRifle_Medic]
+ItemName="HMTech-401 Assault Rifle"
+ItemCategory="Assault Rifle"
+ItemDescription="-Fire mode is full-auto only.\\n-Alt-fire shoots healing darts to heal team members.\\n-The full-blown assault rifle version of the HMTech pistol."
+
+[YHWeap_Rifle_RailGun]
+ItemName="Rail Gun"
+ItemCategory="Sniper Rifle"
+ItemDescription="-Fire mode is single shot only.\\n-Using the sight lets you lock on to vulnerable spots on your target. \\n-This weapon fires a solid steel slug at high speeds using magnets, penetrating Zeds like tissue paper."
+
+[YHWeap_Beam_Microwave]
+ItemName="Microwave Gun"
+ItemCategory="Flames"
+ItemDescription="-Fire mode uses microwaves to heat Zeds at range, burning them inside and out.\\n-Alt-fire unleashes a close-range microwave blast.\\n-The wonders of modern technology: a handheld Zed-cooker."
+
+"""
+
+SPAREIDEAS = """
+Mudskipper="Mudskipper"
+MudskipperDescription="Darting Zeds will slow movement by 30%"
+SteadyHands="Steady Hands"
+SteadyHandsDescription="Darted players reduce recoil, firing speed and increase damage up to 20%"
 LoversQuarrel="ZED TIME - Lover's Qurarrel"
 LoversQuarrelDescription="Dart headshots will cause zeds to attack other zeds"
+EyeBleach="Eye Bleach"
+EyeBleachDescription="Darted players reduce visual effects of explosions, bile and fire."
+ExtraStrength="ZED TIME - Extra Strength"
+ExtraStrengthDescription="Greatly increase the effectiveness of dart effects"
 """
 
 
@@ -135,9 +177,10 @@ for cd_monster in CD_MONSTERS:
 # Load the template
 MAPPINGS = []
 
+print "[Monsters]"
 # Create the pawns for the monsters
 for monster in MONSTERS:
-    print monster
+    print "-", monster
 
     monster_class = "YHPawn_Zed{monster}".format(monster=monster)
     fname = monster_class + '.uc'
@@ -175,8 +218,10 @@ Normal
 Long
 """.split()
 
+print "[SpawnManagers]"
 # Load the template
 for length in LENGTHS:
+    print "-", length
     generate_source(
         'YHSpawnManager.uct',
         'YHSpawnManager_{length}.uc',
@@ -195,7 +240,9 @@ Firebug
 Survivalist
 SWAT""".split()
 
+print "[PERKS]"
 for perk in PERKS:
+    print "-", perk
     generate_source(
         'YHPerk.uct',
         'YHPerk_{perk}.uc',
@@ -216,8 +263,9 @@ DEFTRANS = {
     'AssaultRifle': 'Rifle'
 }
 
+print "[Weapons]"
 for weap in medic_weapons:
-    print weap
+    print "-", weap
     weapdef = DEFTRANS.get(weap,weap)
 
     generate_source(
@@ -237,6 +285,7 @@ for weap in medic_weapons:
 
 current_module = ''
 
+print "[LANGUAGE]"
 line_items = []
 for l in YEEHAW_LANG.split('\n'):
     m = re.search('^\[(.*)\]$',l)
@@ -251,7 +300,7 @@ for l in YEEHAW_LANG.split('\n'):
         if m.group(2):
             varindex = m.group(3)
             varname += varindex
-        buf = 'YHStrings.Add( (m="{m}",k="{k}",s={s}) )'.format(m=current_module,k=varname,s=val)
+        buf = u'YHStrings.Add( (m="{m}",k="{k}",s={s}) )'.format(m=current_module,k=varname,s=val)
         line_items.append(buf)
 
 generate_source(

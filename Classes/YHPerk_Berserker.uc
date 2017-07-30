@@ -241,7 +241,14 @@ function float GetPharmPowerModifier( class<YHDamageType> DamageType, byte HitZo
 function float GetOverdosePowerModifier( class<YHDamageType> DamageType, byte HitZoneIdx ) { return 0; };
 function float GetYourMineMinePowerModifier( class<YHDamageType> DamageType, byte HitZoneIdx ) { return 0; };
 function float GetSmellsLikeRosesPowerModifier( class<YHDamageType> DamageType, byte HitZoneIdx ) { return 0; };
+function float GetExtraStrengthPowerModifier( class<YHDamageType> DamageType, byte HitZoneIdx ) { return 0; };
+function float GetSensitivePowerModifier( class<YHDamageType> DamageType, byte HitZoneIdx ) { return 0; };
+function float GetZedWhispererPowerModifier( class<YHDamageType> DamageType, byte HitZoneIdx ) { return 0; };
 
+simulated function bool IsNoPainNoGainActive()
+{
+    return false;
+}
 
 defaultproperties
 {

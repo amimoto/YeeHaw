@@ -38,12 +38,14 @@ defaultproperties
     DoT_DamageScale=0.1
 
     PoisonPower=33.f
-    BobbleheadPower=100.f
-    PharmPower=100.f
-    SnarePower=100.f
-    OverdosePower=100.f
-    YourMineMinePower=100.f
-    SmellsLikeRosesPower=100.f
+    BobbleheadPower=51.f
+    PharmPower=51.f
+    OverdosePower=33.f
+    YourMineMinePower=33.f
+    SmellsLikeRosesPower = 33.f
+    ZedWhispererPower = 33.f
+    ExtraStrengthPower = 100.f
+    SensitivePower = 100.f
 
     WeaponDef=class'KFWeapDef_Healer'
 }

@@ -6,17 +6,19 @@ class YHPawn_ZedHuskFriendlyTest extends KFPawn_ZedHuskFriendlyTest
 var repnotify bool bBobbleheaded;
 var repnotify bool bPharmed;
 var repnotify bool bOverdosed;
+var repnotify bool bZedWhispered;
+var repnotify bool bSensitive;
 var repnotify bool bYourMineMined;
 var repnotify bool bSmellsLikeRoses;
-var repnotify bool bTypicalRedditor;
+var repnotify bool bExtraStrength;
 
-var             GameExplosion       OverdoseExplosionTemplate;
-var             GameExplosion       PharmExplosionTemplate;
+var GameExplosion  OverdoseExplosionTemplate;
+var GameExplosion  PharmExplosionTemplate;
 
 replication
 {
     if (bNetDirty)
-        bBobbleheaded, bPharmed, bOverdosed, bYourMineMined, bSmellsLikeRoses, bTypicalRedditor;
+        bBobbleheaded, bPharmed, bOverdosed, bSensitive, bZedWhispered, bYourMineMined, bSmellsLikeRoses, bExtraStrength;
 }
 
 static event class<KFPawn_Monster> GetAIPawnClassToSpawn()
@@ -30,12 +32,20 @@ function bool IsBobbleheaded() {
     return bBobbleheaded;
 }
 
+function bool IsSensitive() {
+    return bSensitive;
+}
+
 function bool IsPharmed() {
     return bPharmed;
 }
 
 function bool IsOverdosed() {
     return bOverdosed;
+}
+
+function bool IsZedWhispered() {
+    return bZedWhispered;
 }
 
 function bool IsYourMineMined() {
@@ -46,8 +56,8 @@ function bool IsSmellsLikeRoses() {
     return bSmellsLikeRoses;
 }
 
-function bool IsTypicalRedditor() {
-    return bTypicalRedditor;
+function bool IsExtraStrength() {
+    return bExtraStrength;
 }
 
 function SetBobbleheaded( bool active ) {
@@ -58,28 +68,89 @@ function SetBobbleheaded( bool active ) {
     }
     else
     {
-        SetHeadScale(1.0,CurrentHeadScale);
+        if ( !bIsHeadless )
+            SetHeadScale(1.0,CurrentHeadScale);
     }
 }
 
+function SetSensitive( bool active ) {
+    bSensitive = active;
+}
+
+simulated event bool CanDoSpecialMove(ESpecialMove AMove, optional bool bForceCheck)
+{
+        // Sweetly spoken to, we don't do much then
+    if ( IsZedWhispered() ) {
+        `yhLog("Ignoring Special Move for"@self);
+        return false;
+    }
+    `yhLog("Doing Special Move");
+    return SpecialMoveHandler.CanDoSpecialMove( AMove, bForceCheck );
+    }
+
 function SetPharmed( bool active ) {
-    bPharmed = active;
+    if ( !bIsHeadless )
+        bPharmed = active;
 }
 
 function SetOverdosed( bool active ) {
-    bOverdosed = active;
+    if ( !bIsHeadless )
+        bOverdosed = active;
+}
+
+function bool ShouldSprint()
+{
+    if ( IsZedWhispered() )
+    {
+        return false;
+    }
+    return self.ShouldSprint();
+}
+
+function SetZedWhispered( bool active ) {
+
+    bZedWhispered = active;
+
+    `yhLog(self@"Rage status is:"@IsEnraged()@"ZedWhispered Status is:"@bZedWhispered);
+
+    if ( active )
+    {
+        `yhLog("Disabling Rage for"@self);
+        SetEnraged(False);
+        `yhLog("Disable RallyBoost if active"@self);
+        Timer_EndRallyBoost();
+    }
+
+}
+
+function AdjustMovementSpeed( float SpeedAdjust )
+{
+    super.AdjustMovementSpeed(SpeedAdjust);
+}
+
+simulated function SetEnraged( bool bNewEnraged )
+{
+
+    `yhLog("Ruh ROH! Going to be setting raged to"@bNewEnraged);
+
+    // Cannot be enraged while afflicted by ZedWhisperer
+    if ( bZedWhispered && bNewEnraged )
+    {
+        `yhLog("NAH IGNORING");
+        return;
+    }
+
+    super.SetEnraged(bNewEnraged);
 }
 
 function SetYourMineMined( bool active ) {
-    bYourMineMined = active;
+    if ( !bIsHeadless )
+        bYourMineMined = active;
 }
 
 function SetSmellsLikeRoses( bool active ) {
-    bSmellsLikeRoses = active;
-}
-
-function SetTypicalRedditor( bool active ) {
-    bTypicalRedditor = active;
+    if ( !bIsHeadless )
+        bSmellsLikeRoses = active;
 }
 
 simulated function ApplyDartAfflictions(int Damage,
@@ -245,6 +316,13 @@ function OverdoseExplode( Controller Killer, KFPerk InstigatorPerk )
 // For future use.
 function AdjustDamage(out int InDamage, out vector Momentum, Controller InstigatedBy, vector HitLocation, class<DamageType> DamageType, TraceHitInfo HitInfo, Actor DamageCauser)
 {
+
+    // If nerfed by darts, increase damage by 50%
+    if ( IsSensitive() )
+    {
+        InDamage *= 1.5f;
+    }
+
     super.AdjustDamage(InDamage, Momentum, InstigatedBy, HitLocation, DamageType, HitInfo, DamageCauser);
 }
 
@@ -259,14 +337,16 @@ defaultproperties
     End Object
     AfflictionHandler=Afflictions_1
 
-    IncapSettings(YHAF_Bobblehead)=(Duration=5.0,Cooldown=5.0)
-    IncapSettings(YHAF_Overdose)=(Duration=5.0,Cooldown=5.0)
-    IncapSettings(YHAF_Pharmed)=(Duration=5.0,Cooldown=5.0)
+    IncapSettings(YHAF_Bobblehead)=(Duration=5.0,Cooldown=8.0)
+    IncapSettings(YHAF_Sensitive)=(Duration=5.0,Cooldown=10.0)
+    IncapSettings(YHAF_Overdose)=(Duration=5.0,Cooldown=7.0)
+    IncapSettings(YHAF_Pharmed)=(Duration=5.0,Cooldown=7.0)
+    IncapSettings(YHAF_ZedWhisperer)=(Duration=50.0,Cooldown=5.0)
     //IncapSettings(YHAF_YourMineMine)=(Duration=5.0,Cooldown=5.0)
     //IncapSettings(YHAF_SmellsLikeRoses)=(Duration=5.0,Cooldown=5.0)
 
     Begin Object Class=KFGameExplosion Name=PharmExploTemplate0
-        Damage=50  //50
+        Damage=30
         DamageRadius=350
         DamageFalloffExponent=0.f
         DamageDelay=0.f
@@ -310,6 +390,8 @@ Begin Object Class=KFGameExplosion Name=OverdoseExploTemplate0
         bOrientCameraShakeTowardsEpicenter=true
     End Object
     OverdoseExplosionTemplate=OverdoseExploTemplate0
+    bExtraStrength = False
+
 }
 
 

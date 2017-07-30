@@ -5,29 +5,41 @@ class YHCPerk_Scientist extends KFPerk
 
 /** Passive skills */
 var private const   PerkSkill       EnemyHPDetection;              // Can see cloaked zeds x UUs far (100UUs = 100cm = 1m)
+var const PerkSkill                 HealerRecharge;         
 
 var             GameExplosion       ExplosionTemplate;
+var class<KFWeaponDefinition>       ZTGrenadeWeaponDef;
 
-var private     const   array<byte>             MudskipperBodyParts;
-
-var private     const   float                   SnarePower;
-
-var             Texture2d       WhiteMaterial;
+var             Texture2d           WhiteMaterial;
 
 enum EScientistPerkSkills
 {
-    EScientistBobbleheads,
-    EScientistSensitive,
-    EScientistPharming,
-    EScientistOverdose,
-    EScientistNoPainNoGain,
-    EScientistExtraStrength,
-    EScientistYourMineMine,
-    EScientistSmellsLikeRoses,
-    EScientistZTRealityDistortion,
-    EScientistZTLoversQuarrel
+    EScientistBobbleheads, // TODO: multiple darts?
+    EScientistSensitive, // TODO: multiple darts?
+    EScientistPharming, // TODO: multiple darts?
+    EScientistOverdose, // TODO: multiple darts?
+    EScientistNoPainNoGain, // TODO: balance?
+    EScientistZedWhisperer, // TODO: balance?
+    EScientistSmellsLikeRoses, // TODO: Animations
+    EScientistYourMineMine, // TODO: Animations
+    EScientistZTGrenades, // TODO: Code
+    EScientistZTRealityDistortion // DONE
 };
 
+
+/**
+ * @brief Modifies how long one recharge cycle takes
+ *
+ * @param RechargeRate charging rate per sec
+  */
+simulated function ModifyHealerRechargeTime( out float RechargeRate )
+{
+    local float HealerRechargeTimeMod;
+
+    HealerRechargeTimeMod = GetPassiveValue( HealerRecharge, GetLevel() );
+    `QALog( "HealerRecharge" @ HealerRechargeTimeMod, bLogPerk );
+    RechargeRate /= HealerRechargeTimeMod;
+}
 
 /**
  * @brief The Zed shrapnel skill can spawn an explosion, this function delivers the template
@@ -39,16 +51,6 @@ function GameExplosion GetExplosionTemplate()
     return default.ExplosionTemplate;
 }
 
-
-simulated function float GetSnarePowerModifier( optional class<DamageType> DamageType, optional byte HitZoneIdx )
-{
-    if ( IsMudskipperActive() )
-    {
-        return 1.f;
-    }
-    return 0;
-};
-
 function float GetBobbleheadPowerModifier( class<YHDamageType> DamageType, byte HitZoneIdx ) {
     `yhLog("HitZoneIdx"@HitZoneIdx@"IsBobbleHeadsActive"@IsBobbleHeadsActive());
     if ( HitZoneIdx == HZI_Head && IsBobbleHeadsActive() )
@@ -56,6 +58,14 @@ function float GetBobbleheadPowerModifier( class<YHDamageType> DamageType, byte 
         return 1.f;
     }
     return 0.f;
+};
+
+function float GetSensitivePowerModifier( class<YHDamageType> DamageType, byte HitZoneIdx ) {
+    if ( IsSensitiveActive() )
+    {
+        return 1.f;
+    }
+    return 0;
 };
 
 function float GetPharmPowerModifier( class<YHDamageType> DamageType, byte HitZoneIdx ) {
@@ -68,6 +78,32 @@ function float GetPharmPowerModifier( class<YHDamageType> DamageType, byte HitZo
 
 function float GetOverdosePowerModifier( class<YHDamageType> DamageType, byte HitZoneIdx ) {
     if ( IsOverdoseActive() )
+    {
+        return 1.f;
+    }
+    return 0;
+};
+
+
+function float GetNoPainNoGainPowerModifier( class<YHDamageType> DamageType, byte HitZoneIdx ) {
+    if ( IsNoPainNoGainActive() )
+    {
+        return 1.f;
+    }
+    return 0;
+};
+
+function float GetZedWhispererPowerModifier( class<YHDamageType> DamageType, byte HitZoneIdx ) {
+    if ( IsZedWhispererActive() )
+    {
+        return 1.f;
+    }
+    return 0;
+};
+
+
+function float GetExtraStrengthPowerModifier( class<YHDamageType> DamageType, byte HitZoneIdx ) {
+    if ( IsExtraStrengthActive() )
     {
         return 1.f;
     }
@@ -106,10 +142,9 @@ simulated function ApplyDartBodyshotAfflictions(
 {
 }
 
-/* For debug purposes */
 simulated function bool GetIsUberAmmoActive( KFWeapon KFW )
 {
-    return true;
+    return IsWeaponOnPerk( KFW,, self.class ) && IsRealityDistortionActive() && WorldInfo.TimeDilation < 1.f;
 }
 
 /*********************************************************************************
@@ -121,9 +156,9 @@ simulated function bool IsBobbleheadsActive()
     return PerkSkills[EScientistBobbleheads].bActive && IsPerkLevelAllowed(EScientistBobbleheads);
 }
 
-simulated function bool IsMudskipperActive()
+simulated function bool IsSensitiveActive()
 {
-    return PerkSkills[EScientistMudskipper].bActive && IsPerkLevelAllowed(EScientistMudskipper);
+    return PerkSkills[EScientistSensitive].bActive && IsPerkLevelAllowed(EScientistSensitive);
 }
 
 simulated function bool IsPharmingActive()
@@ -136,14 +171,14 @@ simulated function bool IsOverdoseActive()
     return PerkSkills[EScientistOverdose].bActive && IsPerkLevelAllowed(EScientistOverdose);
 }
 
-simulated function bool IsEyeBleachActive()
+simulated function bool IsNoPainNoGainActive()
 {
-    return PerkSkills[EScientistEyeBleach].bActive && IsPerkLevelAllowed(EScientistEyeBleach);
+    return PerkSkills[EScientistNoPainNoGain].bActive && IsPerkLevelAllowed(EScientistNoPainNoGain);
 }
 
-simulated function bool IsSteadyHandsActive()
+simulated function bool IsZedWhispererActive()
 {
-    return PerkSkills[EScientistSteadyHands].bActive && IsPerkLevelAllowed(EScientistSteadyHands);
+    return PerkSkills[EScientistZedWhisperer].bActive && IsPerkLevelAllowed(EScientistZedWhisperer);
 }
 
 simulated function bool IsYourMineMineActive()
@@ -161,9 +196,14 @@ simulated function bool IsRealityDistortionActive()
     return PerkSkills[EScientistZTRealityDistortion].bActive && IsPerkLevelAllowed(EScientistZTRealityDistortion);
 }
 
-simulated function bool IsLoversQuarrelActive()
+simulated function bool IsExtraStrengthActive()
 {
-    return PerkSkills[EScientistZTLoversQuarrel].bActive && IsPerkLevelAllowed(EScientistZTLoversQuarrel);
+    return false;
+}
+
+simulated function bool IsZTGrenadesActive()
+{
+    return PerkSkills[EScientistZTGrenades].bActive && IsPerkLevelAllowed(EScientistZTGrenades);
 }
 
 /*********************************************************************************************
@@ -242,18 +282,44 @@ simulated function DrawZedHealthbar(Canvas C, KFPawn_Monster KFPM, vector Camera
     }
 }
 
+simulated function string GetGrenadeImagePath()
+{
+    if( IsZTGrenadesActive() )
+    {
+        return default.ZTGrenadeWeaponDef.Static.GetImagePath();
+    }
+
+    return default.GrenadeWeaponDef.Static.GetImagePath();
+}
+
+
+simulated function class<KFWeaponDefinition> GetGrenadeWeaponDef()
+{
+    if( IsZTGrenadesActive() )
+    {
+        `yhLog("Tossing ZEDTIME GRENADES");
+        return default.ZTGrenadeWeaponDef;
+    }
+    `yhLog("Tossing NORMAL GRENADES");
+
+    return default.GrenadeWeaponDef;
+}
+
+
+/* Returns the grenade class for this perk */
+simulated function class< KFProj_Grenade > GetGrenadeClass()
+{
+    if( IsZTGrenadesActive() )
+    {
+        return class<KFProj_Grenade>(DynamicLoadObject(ZTGrenadeWeaponDef.default.WeaponClassPath, class'Class'));
+    }
+
+    return GrenadeClass;
+}
+
 
 defaultproperties
 {
-
-    // Skill tracking
-    SnarePower=100 //this is for the leg darts
-
-    MudskipperBodyParts(0)=2
-    MudskipperBodyParts(1)=3
-    MudskipperBodyParts(2)=4
-    MudskipperBodyParts(3)=5
-
 
     //PerkIcon=Texture2D'UI_PerkIcons_TEX.UI_PerkIcon_Scientist'
     PerkIcon=Texture2D'UI_PerkIcons_TEX.UI_Horzine_H_Logo'
@@ -261,23 +327,26 @@ defaultproperties
     ProgressStatID=STATID_Surv_Progress
     PerkBuildStatID=STATID_Surv_Build
 
-    //PrimaryWeaponDef=class'YHWeapDef_MedicPistol'
-    PrimaryWeaponDef=class'YHWeapDef_MedicRifle'
+    PrimaryWeaponDef=class'YHWeapDef_MedicPistol'
+    //PrimaryWeaponDef=class'YHWeapDef_MedicRifle'
     KnifeWeaponDef=class'KFWeapDef_Knife_Medic'
-    GrenadeWeaponDef=class'YHWeapDef_Grenade_Scientist'
+    // GrenadeWeaponDef=class'YHWeapDef_Grenade_Scientist'
+    GrenadeWeaponDef=class'YHWeapDef_Grenade_BloatMine'
 
+    /** Passive skills */
     EnemyHPDetection=(Name="Enemy HP Detection Range",Increment=200.f,Rank=0,StartingValue=1000.f,MaxValue=6000.f)
+    HealerRecharge=(Name="Healer Recharge",Increment=0.04f,Rank=0,StartingValue=1.f,MaxValue=3.f)
 
-    PerkSkills(EScientistBobbleheads)=(Name="Bobbleheads",IconPath="UI_PerkTalent_TEX.Survivalist.UI_Talents_Survivalist_TacticalReload", Increment=0.f,Rank=0,StartingValue=0.25,MaxValue=0.25)    //0.1
-    PerkSkills(EScientistMudskipper)=(Name="Mudskipper",IconPath="UI_PerkTalent_TEX.Gunslinger.UI_Talents_Gunslinger_KnockEmDown", Increment=0.f,Rank=0,StartingValue=2.5f,MaxValue=2.5f)
-    PerkSkills(EScientistPharming)=(Name="Pharming",IconPath="UI_PerkTalent_TEX.Survivalist.UI_Talents_Survivalist_FieldMedic", Increment=0.f,Rank=0,StartingValue=0.25f,MaxValue=0.25f)
-    PerkSkills(EScientistOverdose)=(Name="Overdose",IconPath="UI_PerkTalent_TEX.Survivalist.UI_Talents_Survivalist_MeleeExpert", Increment=0.f,Rank=0,StartingValue=0.1f,MaxValue=0.1f)
-    PerkSkills(EScientistEyeBleach)=(Name="EyeBleach",IconPath="UI_PerkTalent_TEX.Survivalist.UI_Talents_Survivalist_AmmoVest", Increment=0.f,Rank=0,StartingValue=0.15f,MaxValue=0.15f)
-    PerkSkills(EScientistSteadyHands)=(Name="SteadyHands",IconPath="UI_PerkTalent_TEX.Survivalist.UI_Talents_Survivalist_BigPockets", Increment=0.f,Rank=0,StartingValue=5.f,MaxValue=5.f)
-    PerkSkills(EScientistYourMineMine)=(Name="YourMineMine",IconPath="UI_PerkTalent_TEX.Survivalist.UI_Talents_Survivalist_Shrapnel", Increment=0.f,Rank=0,StartingValue=2.f,MaxValue=2.f)
-    PerkSkills(EScientistSmellsLikeRoses)=(Name="SmellsLikeRoses",IconPath="UI_PerkTalent_TEX.Survivalist.UI_Talents_Survivalist_Boom", Increment=0.f,Rank=0,StartingValue=1.25f,MaxValue=1.25f)
-    PerkSkills(EScientistZTRealityDistortion)=(Name="RealityDistortion",IconPath="UI_PerkTalent_TEX.Survivalist.UI_Talents_Survivalist_Madman", Increment=0.f,Rank=0,StartingValue=0.5f,MaxValue=0.5f)
-    PerkSkills(EScientistZTLoversQuarrel)=(Name="LoversQuarrel",IconPath="UI_PerkTalent_TEX.Survivalist.UI_Talents_Survivalist_IncapMaster", Increment=0.f,Rank=0,StartingValue=1.f,MaxValue=1.f)
+    PerkSkills(EScientistBobbleheads)        =(Name="Bobbleheads",      IconPath="UI_PerkTalent_TEX.Gunslinger.UI_Talents_Gunslinger_RackEmUp",     Increment=0.f,Rank=0,StartingValue=0.25,MaxValue=0.25)
+    PerkSkills(EScientistSensitive)          =(Name="Sensitive",        IconPath="UI_PerkTalent_TEX.Gunslinger.UI_Talents_Gunslinger_KnockEmDown",  Increment=0.f,Rank=0,StartingValue=2.5f,MaxValue=2.5f)
+    PerkSkills(EScientistPharming)           =(Name="Pharming",         IconPath="UI_PerkTalent_TEX.Survivalist.UI_Talents_Survivalist_FieldMedic", Increment=0.f,Rank=0,StartingValue=0.25f,MaxValue=0.25f)
+    PerkSkills(EScientistOverdose)           =(Name="Overdose",         IconPath="UI_PerkTalent_TEX.Survivalist.UI_Talents_Survivalist_Shrapnel",   Increment=0.f,Rank=0,StartingValue=0.1f,MaxValue=0.1f)
+    PerkSkills(EScientistNoPainNoGain)       =(Name="NoPainNoGain",     IconPath="UI_PerkTalent_TEX.Medic.UI_Talents_Medic_HealingSurge",           Increment=0.f,Rank=0,StartingValue=0.15f,MaxValue=0.15f)
+    PerkSkills(EScientistYourMineMine)       =(Name="YourMineMine",     IconPath="UI_PerkTalent_TEX.Survivalist.UI_Talents_Survivalist_Boom",       Increment=0.f,Rank=0,StartingValue=2.f,MaxValue=2.f)
+    PerkSkills(EScientistSmellsLikeRoses)    =(Name="SmellsLikeRoses",  IconPath="UI_perktalent_TEX.Medic.UI_Talents_Medic_AirborneAgent",          Increment=0.f,Rank=0,StartingValue=1.25f,MaxValue=1.25f)
+    PerkSkills(EScientistZedWhisperer)       =(Name="ZedWhisperer",     IconPath="UI_perktalent_TEX.Medic.UI_Talents_Medic_Zedative",               Increment=0.f,Rank=0,StartingValue=1.25f,MaxValue=1.25f)
+    PerkSkills(EScientistZTRealityDistortion)=(Name="RealityDistortion",IconPath="UI_PerkTalent_TEX.Survivalist.UI_Talents_Survivalist_Madman",     Increment=0.f,Rank=0,StartingValue=0.5f,MaxValue=0.5f)
+    PerkSkills(EScientistZTGrenades)         =(Name="ZedTimeGrenades",  IconPath="UI_PerkTalent_TEX.demolition.UI_Talents_Demolition_Professional", Increment=0.f,Rank=0,StartingValue=5.f,MaxValue=5.f)
 
     Begin Object Class=KFGameExplosion Name=ExploTemplate0
         Damage=230  //231  //120
@@ -302,7 +371,8 @@ defaultproperties
     End Object
     ExplosionTemplate=ExploTemplate0
 
-
     WhiteMaterial=Texture2D'EngineResources.WhiteSquareTexture'
+
+    ZTGrenadeWeaponDef=class'YHWeapDef_Grenade_Scientist';
 }
 

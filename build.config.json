@@ -1,0 +1,25 @@
+{
+    "default": "yeehaw",
+    "yeehaw": {
+        "build": "\"{bin_path}/kfeditor.exe\" brewcontent -platform=PC -log",
+        "icon": "yeehaw.png",
+        "server_copy": [
+            [
+                "{brew_path}/YeeHaw.u",
+                "{server_path}/BrewedPC"
+            ]
+        ],
+        "target": "c:/temp/yeehaw",
+        "target_icon": "c:/temp/yeehaw.png",
+        "target_workshop": "~/Documents/My Games/KillingFloor2/yeehaw.txt",
+        "test": "\"{bin_path}/kfeditor.exe\" kf-cube?game=YeeHaw.YH_Survival?difficulty=2 -useunpublished -log",
+        "workshop": "yeehaw.txt",
+        "workshop_copy": [
+            [
+                "{brew_path}/YeeHaw.u",
+                "BrewedPC"
+            ]
+        ],
+        "workshop_upload": "\"{workshop_fpath}\" yeehaw.txt"
+    }
+}
