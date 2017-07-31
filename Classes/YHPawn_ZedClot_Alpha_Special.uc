@@ -14,11 +14,12 @@ var repnotify bool bExtraStrength;
 
 var GameExplosion  OverdoseExplosionTemplate;
 var GameExplosion  PharmExplosionTemplate;
+var KFExplosionActorReplicated ExploActor;
 
 replication
 {
     if (bNetDirty)
-        bBobbleheaded, bPharmed, bOverdosed, bSensitive, bZedWhispered, bYourMineMined, bSmellsLikeRoses, bExtraStrength;
+        bBobbleheaded, bPharmed, bOverdosed, bSensitive, bZedWhispered, bYourMineMined, bSmellsLikeRoses, bExtraStrength, ExploActor;
 }
 
 static event class<KFPawn_Monster> GetAIPawnClassToSpawn()
@@ -269,10 +270,8 @@ function bool Died(Controller Killer, class<DamageType> DamageType, vector HitLo
 
 function PharmExplode( Controller Killer, KFPerk InstigatorPerk )
 {
-    local YHExplosion_Pharm ExploActor;
-
     local Actor InstigatorActor;
-    if ( Role < ROLE_Authority )
+    if ( Role != ROLE_Authority )
     {
         return;
     }
@@ -281,22 +280,21 @@ function PharmExplode( Controller Killer, KFPerk InstigatorPerk )
     if( ExploActor != None )
     {
         ExploActor.SetPhysics( PHYS_NONE );
-        ExploActor.MyPawn = self;
+        YHExplosion_Pharm(ExploActor).MyPawn = self;
         ExploActor.SetBase( self,, Mesh );
         ExploActor.InstigatorController = Killer;
         if( Killer.Pawn != none )
         {
             ExploActor.Instigator = Killer.Pawn;
         }
-        ExploActor.Explode( default.PharmExplosionTemplate );
+        ExploActor.Explode( PharmExplosionTemplate );
     }
 }
 
 function OverdoseExplode( Controller Killer, KFPerk InstigatorPerk )
 {
-    local KFExplosionActorReplicated ExploActor;
     local Actor InstigatorActor;
-    if ( Role < ROLE_Authority )
+    if ( Role != ROLE_Authority )
     {
         return;
     }

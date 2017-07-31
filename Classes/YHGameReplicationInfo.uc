@@ -11,9 +11,18 @@ replication
       bGameStarted, bAllowChangePerk;
 }
 
+
+simulated event ReplicatedEvent(Name VarName)
+{
+    if (VarName == 'bGameStarted')
+    {
+        YHGFxObject_TraderItems(TraderItems).Init();
+    }
+    super.ReplicatedEvent(VarName);
+}
+
 event PreBeginPlay()
 {
-    YHGFxObject_TraderItems(TraderItems).Init();
     super.PreBeginPlay();
 }
 

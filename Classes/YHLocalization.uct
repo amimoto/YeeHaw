@@ -45,6 +45,8 @@ static function string GetLocalizedString(string BaseString, string Module, stri
         }
     }
 
+    `yhLog("Missing Module:"@Module@"Key:"@Key);
+
     return "Missing"@Module@Key;
 }
 

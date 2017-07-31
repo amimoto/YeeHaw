@@ -45,6 +45,8 @@ static function string GetLocalizedString(string BaseString, string Module, stri
         }
     }
 
+    `yhLog("Missing Module:"@Module@"Key:"@Key);
+
     return "Missing"@Module@Key;
 }
 
@@ -53,11 +55,17 @@ defaultproperties
 YHStrings.Add( (m="YHCPerk_Scientist",k="PerkName",s="Scientist") )
 YHStrings.Add( (m="YHCPerk_Scientist",k="EXPAction1",s="Dealing Scientist weapon damage") )
 YHStrings.Add( (m="YHCPerk_Scientist",k="EXPAction2",s="Head shots with Scientist weapons") )
-YHStrings.Add( (m="YHCPerk_Scientist",k="SkillCatagories0",s="I'm Helping") )
-YHStrings.Add( (m="YHCPerk_Scientist",k="SkillCatagories1",s="Gene Therapy") )
-YHStrings.Add( (m="YHCPerk_Scientist",k="SkillCatagories2",s="Rx") )
-YHStrings.Add( (m="YHCPerk_Scientist",k="SkillCatagories3",s="Chemistry") )
-YHStrings.Add( (m="YHCPerk_Scientist",k="SkillCatagories4",s="Zedxperiments") )
+YHStrings.Add( (m="YHCPerk_Scientist",k="SkillCatagories.0",s="I'm Helping") )
+YHStrings.Add( (m="YHCPerk_Scientist",k="SkillCatagories.1",s="Gene Therapy") )
+YHStrings.Add( (m="YHCPerk_Scientist",k="SkillCatagories.2",s="Rx") )
+YHStrings.Add( (m="YHCPerk_Scientist",k="SkillCatagories.3",s="Chemistry") )
+YHStrings.Add( (m="YHCPerk_Scientist",k="SkillCatagories.4",s="Zedxperiments") )
+YHStrings.Add( (m="YHCPerk_Scientist",k="Passives.0.Title",s="Perk Weapon Damage") )
+YHStrings.Add( (m="YHCPerk_Scientist",k="Passives.0.Description",s="Increase perk weapon damage %x% per level") )
+YHStrings.Add( (m="YHCPerk_Scientist",k="Passives.1.Title",s="Syringe Recharge Rate") )
+YHStrings.Add( (m="YHCPerk_Scientist",k="Passives.1.Description",s="Increase syringe recharge rate %x% per level") )
+YHStrings.Add( (m="YHCPerk_Scientist",k="Passives.2.Title",s="Health Bar Detection") )
+YHStrings.Add( (m="YHCPerk_Scientist",k="Passives.2.Description",s="Range of 5m plus %x%m per level") )
 YHStrings.Add( (m="YHCPerk_Scientist",k="Bobbleheads",s="Bobbleheads") )
 YHStrings.Add( (m="YHCPerk_Scientist",k="BobbleheadsDescription",s="Darting heads of Zeds will inflate them") )
 YHStrings.Add( (m="YHCPerk_Scientist",k="Sensitive",s="Sensitive") )

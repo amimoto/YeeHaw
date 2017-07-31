@@ -19,11 +19,9 @@ SkillCatagories[2]="Rx"
 SkillCatagories[3]="Chemistry"
 SkillCatagories[4]="Zedxperiments"
 
-//Passives[0]=(Title="Perk Weapon Damage",Description="Increase perk weapon damage %x% per level");
-//Passives[1]=(Title="Bullet Resistance",Description="Increase resistance to projectile damage 5% plus %x% per level");
-//Passives[2]=(Title="Movement Speed",Description="Increase movement speed %x% every five levels");
-//Passives[3]=(Title="Recoil",Description="Reduce perk weapon recoil %x% per level");
-//Passives[4]=(Title="Zedtime Reload",Description="Increase reload speed in Zed time %x% per level");
+Passives[0]=(Title="Perk Weapon Damage",Description="Increase perk weapon damage %x% per level");
+Passives[1]=(Title="Syringe Recharge Rate",Description="Increase syringe recharge rate %x% per level");
+Passives[2]=(Title="Health Bar Detection",Description="Range of 5m plus %x%m per level");
 
 Bobbleheads="Bobbleheads"
 BobbleheadsDescription="Darting heads of Zeds will inflate them"
@@ -293,15 +291,23 @@ for l in YEEHAW_LANG.split('\n'):
         current_module = m.group(1)
         continue
 
-    m = re.search('^(\w+)(\[(\d+)])?=(.*)',l)
-    if m:
-        varname = m.group(1)
-        val = m.group(4)
-        if m.group(2):
-            varindex = m.group(3)
-            varname += varindex
-        buf = u'YHStrings.Add( (m="{m}",k="{k}",s={s}) )'.format(m=current_module,k=varname,s=val)
-        line_items.append(buf)
+    line_match = re.search('^(\w+)(\[(\d+)])?=(.*)',l)
+    if line_match:
+        varname = line_match.group(1)
+        val = line_match.group(4)
+        if line_match.group(2):
+            varindex = line_match.group(3)
+            varname += "."+varindex
+        if re.search("^\(.+\);?$",val):
+            element_matches = re.findall('(\w+)=(".*?")',val)
+            for ( subkey, subvalue ) in element_matches:
+                subvarname = "{k}.{k2}".format(k=varname,k2=subkey)
+                buf = u'YHStrings.Add( (m="{m}",k="{k}",s={s}) )'.format(m=current_module,k=subvarname,s=subvalue)
+                line_items.append(buf)
+        else:
+            buf = u'YHStrings.Add( (m="{m}",k="{k}",s={s}) )'.format(m=current_module,k=varname,s=val)
+            line_items.append(buf)
+
 
 generate_source(
     'YHLocalization.uct',

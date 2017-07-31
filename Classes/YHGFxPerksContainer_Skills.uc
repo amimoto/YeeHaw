@@ -17,7 +17,7 @@ function UpdateSkills( class<KFPerk> PerkClass, const out byte SelectedSkills[`M
     for ( i = 0; i < `MAX_PERK_SKILLS; i++ )
     {
         TempObj = CreateObject( "Object" );
-        TempObj.SetString( "label", `yhLocalizeObject(PerkClass.default.SkillCatagories[i],PerkClass,"SkillCatagories"$i ) );
+        TempObj.SetString( "label", `yhLocalizeObject(PerkClass.default.SkillCatagories[i],PerkClass,"SkillCatagories."$i ) );
         UnlockLevel = class'KFPerk'.const.RANK_1_LEVEL + ( class'KFPerk'.const.UNLOCK_INTERVAL * i );
         TempObj.SetString( "unlockLevel", LevelString@ UnlockLevel );
         PerkLevel = KFPC.GetPerkLevelFromPerkList( PerkClass );

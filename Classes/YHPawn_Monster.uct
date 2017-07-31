@@ -20,13 +20,14 @@ var repnotify bool bExtraStrength;
 
 var GameExplosion  OverdoseExplosionTemplate;
 var GameExplosion  PharmExplosionTemplate;
+var KFExplosionActorReplicated ExploActor;
 {% endblock %}
 
 replication
 {
 {% block replication %}
     if (bNetDirty)
-        {%block bnetdirty%}bBobbleheaded, bPharmed, bOverdosed, bSensitive, bZedWhispered, bYourMineMined, bSmellsLikeRoses, bExtraStrength{%endblock%};
+        {%block bnetdirty%}bBobbleheaded, bPharmed, bOverdosed, bSensitive, bZedWhispered, bYourMineMined, bSmellsLikeRoses, bExtraStrength, ExploActor{%endblock%};
 {% endblock %}
 }
 
@@ -317,10 +318,8 @@ function bool Died(Controller Killer, class<DamageType> DamageType, vector HitLo
 function PharmExplode( Controller Killer, KFPerk InstigatorPerk )
 {
 {% block pharmexplose %}
-    local YHExplosion_Pharm ExploActor;
-
     local Actor InstigatorActor;
-    if ( Role < ROLE_Authority )
+    if ( Role != ROLE_Authority )
     {
         return;
     }
@@ -329,14 +328,14 @@ function PharmExplode( Controller Killer, KFPerk InstigatorPerk )
     if( ExploActor != None )
     {
         ExploActor.SetPhysics( PHYS_NONE );
-        ExploActor.MyPawn = self;
+        YHExplosion_Pharm(ExploActor).MyPawn = self;
         ExploActor.SetBase( self,, Mesh );
         ExploActor.InstigatorController = Killer;
         if( Killer.Pawn != none )
         {
             ExploActor.Instigator = Killer.Pawn;
         }
-        ExploActor.Explode( default.PharmExplosionTemplate );
+        ExploActor.Explode( PharmExplosionTemplate );
     }
 {% endblock %}
 }
@@ -344,9 +343,8 @@ function PharmExplode( Controller Killer, KFPerk InstigatorPerk )
 function OverdoseExplode( Controller Killer, KFPerk InstigatorPerk )
 {
 {% block overdoseexplode %}
-    local KFExplosionActorReplicated ExploActor;
     local Actor InstigatorActor;
-    if ( Role < ROLE_Authority )
+    if ( Role != ROLE_Authority )
     {
         return;
     }

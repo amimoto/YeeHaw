@@ -8,6 +8,17 @@ protected simulated function AffectsPawn(Pawn Victim, float DamageScale)
 }
 
 
+simulated event ReplicatedEvent(Name VarName)
+{
+    if (VarName == 'ExploTemplateRef')
+    {
+        `yhLog("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ExploTemplateRef");
+    }
+
+    super.ReplicatedEvent(VarName);
+}
+
+
 simulated function Explode(GameExplosion NewExplosionTemplate, optional vector Direction)
 {
     super.Explode(NewExplosiontemplate,Direction);

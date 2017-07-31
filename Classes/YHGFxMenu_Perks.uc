@@ -79,5 +79,8 @@ defaultproperties
     SubWidgetBindings.Add((WidgetName="SelectionContainer",WidgetClass=class'YHGFxPerksContainer_Selection'))
     SubWidgetBindings.Remove((WidgetName="HeaderContainer",WidgetClass=class'KFGFxPerksContainer_Header'))
     SubWidgetBindings.Add((WidgetName="HeaderContainer",WidgetClass=class'YHGFxPerksContainer_Header'))
+    SubWidgetBindings.Remove((WidgetName="DetailsContainer",WidgetClass=class'KFGFxPerksContainer_Details'))
+    SubWidgetBindings.Add((WidgetName="DetailsContainer",WidgetClass=class'YHGFxPerksContainer_Details'))
+
 }
 

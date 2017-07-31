@@ -4,8 +4,9 @@ class YHCPerk_Scientist extends KFPerk
 `include(YH_Log.uci)
 
 /** Passive skills */
+var private const   PerkSkill       WeaponDamage;                  // weapon dmg modifier
 var private const   PerkSkill       EnemyHPDetection;              // Can see cloaked zeds x UUs far (100UUs = 100cm = 1m)
-var const PerkSkill                 HealerRecharge;         
+var const PerkSkill                 HealerRecharge;
 
 var             GameExplosion       ExplosionTemplate;
 var class<KFWeaponDefinition>       ZTGrenadeWeaponDef;
@@ -317,6 +318,16 @@ simulated function class< KFProj_Grenade > GetGrenadeClass()
     return GrenadeClass;
 }
 
+simulated static function GetPassiveStrings( out array<string> PassiveValues, out array<string> Increments, byte Level )
+{
+    PassiveValues[0] = Round( GetPassiveValue( default.WeaponDamage, Level) * 100 ) $ "%";
+    PassiveValues[1] = Round(default.HealerRecharge.Increment * Level * 100) $ "%";
+    PassiveValues[2] = Round( GetPassiveValue( default.EnemyHPDetection, Level ) / 100 ) $ "m";     // Divide by 100 to convert unreal units to meters
+
+    Increments[0] = "["@Left( string( default.WeaponDamage.Increment * 100 ), InStr(string(default.WeaponDamage.Increment * 100), ".") + 2 )    $"% /" @default.LevelString @"]";
+    Increments[1] = "[" @ Left( string( default.HealerRecharge.Increment * 100 ), InStr(string(default.HealerRecharge.Increment * 100), ".") + 2 )   $"% /" @ default.LevelString @"]";
+    Increments[2] = "["@ Int(default.EnemyHPDetection.StartingValue / 100 ) @"+" @Int(default.EnemyHPDetection.Increment / 100 )       $"m /" @default.LevelString @"]";
+}
 
 defaultproperties
 {
@@ -336,6 +347,7 @@ defaultproperties
     /** Passive skills */
     EnemyHPDetection=(Name="Enemy HP Detection Range",Increment=200.f,Rank=0,StartingValue=1000.f,MaxValue=6000.f)
     HealerRecharge=(Name="Healer Recharge",Increment=0.04f,Rank=0,StartingValue=1.f,MaxValue=3.f)
+    WeaponDamage=(Name="Weapon Damage",Increment=0.01,Rank=0,StartingValue=0.0f,MaxValue=0.25)
 
     PerkSkills(EScientistBobbleheads)        =(Name="Bobbleheads",      IconPath="UI_PerkTalent_TEX.Gunslinger.UI_Talents_Gunslinger_RackEmUp",     Increment=0.f,Rank=0,StartingValue=0.25,MaxValue=0.25)
     PerkSkills(EScientistSensitive)          =(Name="Sensitive",        IconPath="UI_PerkTalent_TEX.Gunslinger.UI_Talents_Gunslinger_KnockEmDown",  Increment=0.f,Rank=0,StartingValue=2.5f,MaxValue=2.5f)
