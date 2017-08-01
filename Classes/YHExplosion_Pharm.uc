@@ -7,32 +7,21 @@ protected simulated function AffectsPawn(Pawn Victim, float DamageScale)
     super.AffectsPawn(Victim,DamageScale);
 }
 
-
-simulated event ReplicatedEvent(Name VarName)
-{
-    if (VarName == 'ExploTemplateRef')
-    {
-        `yhLog("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ExploTemplateRef");
-    }
-
-    super.ReplicatedEvent(VarName);
-}
-
-
-simulated function Explode(GameExplosion NewExplosionTemplate, optional vector Direction)
-{
-    super.Explode(NewExplosiontemplate,Direction);
-}
-
 simulated function SpawnExplosionParticleSystem(ParticleSystem Template)
 {
+    /*
     local KFPawn_Human KFPH;
 
     if( WorldInfo.NetMode == NM_DedicatedServer )
     {
+        `yhLog("RETURNING BECAUSE: WorldInfo.NetMode == NM_DedicatedServer");
         return;
     }
+    */
 
+    super(KFExplosionActorReplicated).SpawnExplosionParticleSystem(Template);
+
+    /*
     // If the template is none, grab the default
     if( !ExplosionTemplate.bAllowPerMaterialFX && Template == none )
     {
@@ -40,12 +29,15 @@ simulated function SpawnExplosionParticleSystem(ParticleSystem Template)
     }
 
     KFPH = KFPawn_Human(Instigator);
+    `yhLog("SOMETHING HERE?"@Template@"KFPH"@KFPH);
 
     if( KFPH != none )
     {
         // KFPH.PerkFXEmitterPool.SpawnEmitter(Template, Location, rotator(vect(0,0,0)), Instigator);
         KFPH.PerkFXEmitterPool.SpawnEmitter(Template, Location, rotator(vect(0,0,0)));
     }
+
+    */
 }
 
 
@@ -103,7 +95,6 @@ protected simulated function bool ExplodePawns()
     }
 
     return bHitPawn;
-
 }
 
 defaultproperties
@@ -113,5 +104,5 @@ defaultproperties
     AAHealingDamageTypePath="KFGameContent.KFDT_Healing_MedicGrenade"
     HealingAmount=5
     Interval=1
-    MaxTime=8
+    MaxTime=1
 }

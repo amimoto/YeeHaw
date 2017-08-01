@@ -23,6 +23,7 @@ simulated event ReplicatedEvent(Name VarName)
 
 event PreBeginPlay()
 {
+    YHGFxObject_TraderItems(TraderItems).Init();
     super.PreBeginPlay();
 }
 

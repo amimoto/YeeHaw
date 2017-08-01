@@ -40,12 +40,10 @@ defaultproperties
     PoisonPower=33.f
     BobbleheadPower=51.f
     PharmPower=51.f
-    OverdosePower=33.f
-    YourMineMinePower=33.f
-    SmellsLikeRosesPower = 33.f
-    ZedWhispererPower = 33.f
-    ExtraStrengthPower = 100.f
-    SensitivePower = 100.f
+    OverdosePower=51.f
+    YourMineMinePower=51.f
+    SmellsLikeRosesPower = 51.f
+    ZedWhispererPower = 51.f
 
     WeaponDef=class'KFWeapDef_Healer'
 }

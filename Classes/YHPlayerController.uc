@@ -209,4 +209,6 @@ DefaultProperties
     PerkList.Add((PerkClass=class'YHPerk_SWAT'))
 
     CheatClass=class'YHCheatManager'
+
+    PurchaseHelperClass=class'YHAutoPurchaseHelper'
 }

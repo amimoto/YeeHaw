@@ -14,12 +14,11 @@ var repnotify bool bExtraStrength;
 
 var GameExplosion  OverdoseExplosionTemplate;
 var GameExplosion  PharmExplosionTemplate;
-var KFExplosionActorReplicated ExploActor;
 
 replication
 {
     if (bNetDirty)
-        bBobbleheaded, bPharmed, bOverdosed, bSensitive, bZedWhispered, bYourMineMined, bSmellsLikeRoses, bExtraStrength, ExploActor;
+        bBobbleheaded, bPharmed, bOverdosed, bSensitive, bZedWhispered, bYourMineMined, bSmellsLikeRoses, bExtraStrength;
 }
 
 static event class<KFPawn_Monster> GetAIPawnClassToSpawn()
@@ -270,13 +269,15 @@ function bool Died(Controller Killer, class<DamageType> DamageType, vector HitLo
 
 function PharmExplode( Controller Killer, KFPerk InstigatorPerk )
 {
+    local KFExplosionActorReplicated ExploActor;
     local Actor InstigatorActor;
-    if ( Role != ROLE_Authority )
+    if ( Role < ROLE_Authority )
     {
         return;
     }
     InstigatorActor = Killer.Pawn != none ? Killer.Pawn : Killer;
     ExploActor = Spawn(class'YHExplosion_Pharm', InstigatorActor,, Location,,, true);
+    //ExploActor = Spawn(class'KFExplosion_AirborneAgent', InstigatorActor,, Location,,, true);
     if( ExploActor != None )
     {
         ExploActor.SetPhysics( PHYS_NONE );
@@ -293,8 +294,9 @@ function PharmExplode( Controller Killer, KFPerk InstigatorPerk )
 
 function OverdoseExplode( Controller Killer, KFPerk InstigatorPerk )
 {
+    local KFExplosionActorReplicated ExploActor;
     local Actor InstigatorActor;
-    if ( Role != ROLE_Authority )
+    if ( Role < ROLE_Authority )
     {
         return;
     }
@@ -350,12 +352,6 @@ defaultproperties
         DamageDelay=0.f
         MyDamageType=class'KFDT_Toxic_MedicGrenade'
 
-        // Camera Shake
-        CamShake=none
-        CamShakeInnerRadius=0
-        CamShakeOuterRadius=0
-        bIgnoreInstigator=False
-
         // Damage Effects
         KnockDownStrength=0
         KnockDownRadius=0
@@ -364,6 +360,13 @@ defaultproperties
         ExplosionEffects=KFImpactEffectInfo'FX_Impacts_ARCH.Explosions.Medic_Perk_Explosion'
         ExplosionSound=AkEvent'WW_WEP_EXP_Grenade_Medic.Play_WEP_EXP_Grenade_Medic_Explosion'
         MomentumTransferScale=0
+
+        // Camera Shake
+        CamShake=none
+        CamShakeInnerRadius=0
+        CamShakeOuterRadius=0
+        bIgnoreInstigator=False
+
     End Object
     PharmExplosionTemplate=PharmExploTemplate0
 Begin Object Class=KFGameExplosion Name=OverdoseExploTemplate0
