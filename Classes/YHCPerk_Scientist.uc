@@ -79,7 +79,7 @@ function GameExplosion GetExplosionTemplate()
 
 function float GetBobbleheadPowerModifier( class<YHDamageType> DamageType, byte HitZoneIdx ) {
     `yhLog("HitZoneIdx"@HitZoneIdx@"IsBobbleHeadsActive"@IsBobbleHeadsActive());
-    if ( HitZoneIdx == HZI_Head && IsBobbleHeadsActive() )
+    if ( IsBobbleHeadsActive() )
     {
         return 1.f;
     }
@@ -379,7 +379,6 @@ simulated function string GetGrenadeImagePath()
 
     return default.GrenadeWeaponDef.Static.GetImagePath();
 }
-
 
 simulated function class<KFWeaponDefinition> GetGrenadeWeaponDef()
 {

@@ -1,8 +1,6 @@
 class YHAfflictionManager extends KFAfflictionManager
     DependsOn(YHDamageType);
 
-var float DartHeadshotBoost;
-
 `include(YH_Log.uci)
 
 /* Types of stacking afflictions that are used to index the IncapSettings array */
@@ -111,7 +109,7 @@ function YHAccrueAffliction(EYHAfflictionType Type, float InPower, optional EHit
     if ( IncapSettings[Type].Vulnerability.Length > 0 )
     {
         InPower *= YHGetAfflictionVulnerability(Type, BodyPart);
-        // `log(Type@"Applied hit zone vulnerability modifier of"@GetAfflictionVulnerability(Type, BodyPart)@"for"@BodyPart, bDebugLog);
+        // `yhLog(Type@"Applied hit zone vulnerability modifier of"@GetAfflictionVulnerability(Type, BodyPart)@"for"@BodyPart);
     }
 
     // allow owning pawn final adjustment
@@ -119,7 +117,7 @@ function YHAccrueAffliction(EYHAfflictionType Type, float InPower, optional EHit
 
     if ( InPower > 0 )
     {
-        `yhLog("Accrueing Affliction"@Afflictions[Type]);
+        `yhLog("Accrueing Affliction"@Afflictions[Type]@"With Power:"@InPower);
         Afflictions[Type].Accrue(InPower);
     }
 }
@@ -230,19 +228,7 @@ protected function ProcessSpecialMoveAfflictions(KFPerk InstigatorPerk, vector H
         SmellsLikeRosesPower = DT.default.SmellsLikeRosesPower;
         SensitivePower = DT.default.SensitivePower;
         ZedWhispererPower = DT.default.ZedWhispererPower;
-
-        // Headshots will increase the likihood of the effect
-        if ( HitZoneIdX == HZI_HEAD )
-        {
-            BobbleheadPower *= DartHeadshotBoost;
-            PharmPower *= DartHeadshotBoost;
-            OverdosePower *= DartHeadshotBoost;
-            YourMineMinePower *= DartHeadshotBoost;
-            SmellsLikeRosesPower *= DartHeadshotBoost;
-            SensitivePower *= DartHeadshotBoost;
-            ZedWhispererPower *= DartHeadshotBoost;
-        }
-    }
+     }
     else
     {
         BobbleheadPower = 0;
@@ -314,7 +300,6 @@ protected function ProcessSpecialMoveAfflictions(KFPerk InstigatorPerk, vector H
     SmellsLikeRosesPower *= SmellsLikeRosesModifier;
     SensitivePower *= SensitiveModifier;
     ZedWhispererPower *= ZedWhispererModifier;
-
 
     // increment affliction power
     if ( KnockdownPower > 0 && CanDoSpecialmove(SM_Knockdown) )
@@ -425,7 +410,5 @@ defaultproperties
 
     AfflictionClasses(YHAF_Sensitive)=class'YHAffliction_Sensitive'
     AfflictionClasses(YHAF_ZedWhisperer)=class'YHAffliction_ZedWhispered'
-
-    DartHeadshotBoost = 2.f
 }
 

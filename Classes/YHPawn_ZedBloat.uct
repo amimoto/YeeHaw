@@ -91,7 +91,7 @@ function DealPukeDamage( Pawn Victim, Vector Origin )
 {% endblock %}
 
 
-    {% block incapyourminemine%}IncapSettings(YHAF_YourMineMine)=(Duration=60.0,Cooldown=5.0){% endblock %}
+    {% block incapyourminemine%}IncapSettings(YHAF_YourMineMine)=(Vulnerability=(0.5, 1.0, 0.5, 0.5, 0.5),Duration=60.0,Cooldown=5.0){% endblock %}
 
-    {% block incapsmellslikeroses%}IncapSettings(YHAF_SmellsLikeRoses)=(Duration=60,Cooldown=5.0){% endblock %}
+    {% block incapsmellslikeroses%}IncapSettings(YHAF_SmellsLikeRoses)=(Vulnerability=(0.5, 1.0, 0.5, 0.5, 0.5),Duration=60,Cooldown=5.0){% endblock %}
 

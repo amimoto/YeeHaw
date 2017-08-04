@@ -15,6 +15,10 @@ var repnotify bool bExtraStrength;
 var GameExplosion  OverdoseExplosionTemplate;
 var GameExplosion  PharmExplosionTemplate;
 
+var float BobbleheadInflationRate;
+var float BobbleheadInflationTimer;
+var float BobbleheadMaxSize;
+
 replication
 {
     if (bNetDirty)
@@ -60,20 +64,46 @@ function bool IsExtraStrength() {
     return bExtraStrength;
 }
 
+function GrowBobblehead()
+{
+    `yhLog("Growth is currently:"@CurrentHeadScale);
+    IntendedHeadScale = CurrentHeadScale + BobbleheadInflationRate;
+    if ( IntendedHeadScale > BobbleheadMaxSize )
+    {
+        IntendedHeadScale = BobbleheadMaxSize;
+    }
+    SetHeadScale(IntendedHeadScale,CurrentHeadScale);
+    if ( IntendedHeadScale < BobbleheadMaxSize )
+    {
+        SetTimer(BobbleheadInflationTimer, false, 'GrowBobblehead');
+    }
+}
+
+
+function ShrinkBobblehead()
+{
+    `yhLog("Shrink is currently:"@CurrentHeadScale);
+    IntendedHeadScale = CurrentHeadScale - BobbleheadInflationRate;
+    if ( IntendedHeadScale < 1 )
+    {
+        IntendedHeadScale = 1;
+    }
+    SetHeadScale(IntendedHeadScale,CurrentHeadScale);
+    if ( IntendedHeadScale > 1 )
+    {
+        SetTimer(BobbleheadInflationTimer, false, 'ShrinkBobblehead');
+    }
+}
+
 function SetBobbleheaded( bool active ) {
     bBobbleheaded = active;
     if ( active )
     {
-        IntendedHeadScale = 2.0;
-        SetHeadScale(IntendedHeadScale,CurrentHeadScale);
+        GrowBobblehead();
     }
-    else
+    else if ( !bIsHeadless )
     {
-        if ( !bIsHeadless )
-        {
-            IntendedHeadScale = 1.0;
-            SetHeadScale(IntendedHeadScale,CurrentHeadScale);
-        }
+        ShrinkBobblehead();
     }
 }
 
@@ -340,12 +370,12 @@ defaultproperties
     End Object
     AfflictionHandler=Afflictions_1
 
-    IncapSettings(YHAF_Bobblehead)=(Duration=5.0,Cooldown=8.0)
-    IncapSettings(YHAF_Sensitive)=(Duration=5.0,Cooldown=10.0)
-    IncapSettings(YHAF_Overdose)=(Duration=5.0,Cooldown=7.0)
-    IncapSettings(YHAF_Pharmed)=(Duration=5.0,Cooldown=7.0)
-    IncapSettings(YHAF_ZedWhisperer)=(Duration=50.0,Cooldown=5.0)
-    //IncapSettings(YHAF_YourMineMine)=(Duration=5.0,Cooldown=5.0)
+        IncapSettings(YHAF_Bobblehead)=  (Vulnerability=(0.33, 1.0, 0.33, 0.33, 0.33),Duration=6.0,Cooldown=8.0)
+         IncapSettings(YHAF_Sensitive)=   (Vulnerability=(0.5, 1.0, 0.5, 0.5, 0.5),Duration=6.0,Cooldown=10.0)
+           IncapSettings(YHAF_Overdose)=    (Vulnerability=(0.5, 1.0, 0.5, 0.5, 0.5),Duration=6.0,Cooldown=7.0)
+            IncapSettings(YHAF_Pharmed)=     (Vulnerability=(0.5, 1.0, 0.5, 0.5, 0.5),Duration=6.0,Cooldown=7.0)
+       IncapSettings(YHAF_ZedWhisperer)=(Vulnerability=(1.0),Duration=5.0,Cooldown=5.0)
+       //IncapSettings(YHAF_YourMineMine)=(Duration=5.0,Cooldown=5.0)
     //IncapSettings(YHAF_SmellsLikeRoses)=(Duration=5.0,Cooldown=5.0)
 
     Begin Object Class=KFGameExplosion Name=PharmExploTemplate0
@@ -395,6 +425,9 @@ Begin Object Class=KFGameExplosion Name=OverdoseExploTemplate0
     End Object
     OverdoseExplosionTemplate=OverdoseExploTemplate0
     bExtraStrength = False
+    BobbleheadInflationRate = 0.2f
+    BobbleheadMaxSize = 2.0f
+    BobbleheadInflationTimer = 0.15f
 
 }
 

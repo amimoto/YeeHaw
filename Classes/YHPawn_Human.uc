@@ -92,3 +92,8 @@ function AddDefaultInventory()
     Super(KFPawn).AddDefaultInventory();
 }
 
+
+defaultproperties
+{
+    InventoryManagerClass=class'YHInventoryManager'
+}
