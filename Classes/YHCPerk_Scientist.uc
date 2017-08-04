@@ -1,4 +1,5 @@
 class YHCPerk_Scientist extends KFPerk
+    DependsOn(YHLocalization)
     implements(YHPerk_Interface);
 
 `include(YH_Log.uci)
@@ -143,8 +144,71 @@ simulated function ApplyDartBodyshotAfflictions(
 {
 }
 
+// Add to player's ammo count
+reliable server function AddAmmo(KFWeapon KFW)
+{
+    if (KFW.MagazineCapacity[0] >= KFW.AmmoCount[0] )
+    {
+        KFW.AmmoCount[0]++;
+        KFW.ClientForceAmmoUpdate(KFW.AmmoCount[0],KFW.SpareAmmoCount[0]);
+        KFW.bNetDirty = true;
+    }
+    else if ( KFW.SpareAmmoCapacity[0] > KFW.SpareAmmoCount[0] )
+    {
+        KFW.SpareAmmoCount[0]++;
+        KFW.ClientForceAmmoUpdate(KFW.AmmoCount[0],KFW.SpareAmmoCount[0]);
+        KFW.bNetDirty = true;
+    }
+
+}
+
+// Where we determine if the play has got a headshot. If it does turn out
+// that they did, we return ammo to their magazine... if the magazine is
+// full, we'll just put another round into their spare ammo pool
+simulated function ModifyDamageGiven( out int InDamage,
+                                      optional Actor DamageCauser,
+                                      optional KFPawn_Monster MyKFPM,
+                                      optional KFPlayerController DamageInstigator,
+                                      optional class<KFDamageType> DamageType,
+                                      optional int HitZoneIdx )
+{
+    local KFWeapon KFW;
+    local YHEAmmoMode AmmoMode;
+
+    AmmoMode = YHGameReplicationInfo(MyKFGRI).AmmoMode;
+
+    if( DamageCauser != none )
+    {
+        KFW = GetWeaponFromDamageCauser( DamageCauser );
+    }
+
+    if( (KFW != none && IsWeaponOnPerk( KFW,, self.class )) || (DamageType != none && IsDamageTypeOnPerk( DamageType )) )
+    {
+        InDamage += InDamage * GetPassiveValue( WeaponDamage, CurrentLevel );
+    }
+
+    if ( AmmoMode == AM_YEEHAW )
+    {
+        // Only reward ammo when it's a headshot
+        if( KFW != none && IsWeaponOnPerk( KFW,, self.class ) && HitZoneIdx == HZI_HEAD )
+        {
+            // Make sure we're not doing the second round do blow off the head
+            if ( MyKFPM != none && !MyKFPM.bCheckingExtraHeadDamage )
+            {
+                AddAmmo(KFW);
+            }
+        }
+    }
+
+    super.ModifyDamageGiven(InDamage,DamageCauser,MyKFPM,DamageInstigator,DamageType,HitZoneIdx);
+}
+
 simulated function bool GetIsUberAmmoActive( KFWeapon KFW )
 {
+    if ( YHGameReplicationInfo(MyKFGRI).AmmoMode==AM_UBERAMMO )
+    {
+        return true;
+    }
     return IsWeaponOnPerk( KFW,, self.class ) && IsRealityDistortionActive() && WorldInfo.TimeDilation < 1.f;
 }
 
@@ -347,7 +411,7 @@ defaultproperties
     /** Passive skills */
     EnemyHPDetection=(Name="Enemy HP Detection Range",Increment=200.f,Rank=0,StartingValue=1000.f,MaxValue=6000.f)
     HealerRecharge=(Name="Healer Recharge",Increment=0.04f,Rank=0,StartingValue=1.f,MaxValue=3.f)
-    WeaponDamage=(Name="Weapon Damage",Increment=0.01,Rank=0,StartingValue=0.0f,MaxValue=0.25)
+    WeaponDamage=(Name="Weapon Damage",Increment=0.005,Rank=0,StartingValue=0.0f,MaxValue=0.125)
 
     PerkSkills(EScientistBobbleheads)        =(Name="Bobbleheads",      IconPath="UI_PerkTalent_TEX.Gunslinger.UI_Talents_Gunslinger_RackEmUp",     Increment=0.f,Rank=0,StartingValue=0.25,MaxValue=0.25)
     PerkSkills(EScientistSensitive)          =(Name="Sensitive",        IconPath="UI_PerkTalent_TEX.Gunslinger.UI_Talents_Gunslinger_KnockEmDown",  Increment=0.f,Rank=0,StartingValue=2.5f,MaxValue=2.5f)

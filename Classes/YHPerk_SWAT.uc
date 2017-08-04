@@ -52,24 +52,41 @@ simulated function ModifyDamageGiven( out int InDamage,
                                       optional int HitZoneIdx )
 {
     local KFWeapon KFW;
+    local YHEAmmoMode AmmoMode;
 
-    if( DamageCauser != none )
-    {
-        KFW = GetWeaponFromDamageCauser( DamageCauser );
-    }
+    AmmoMode = YHGameReplicationInfo(MyKFGRI).AmmoMode;
 
-    // Only reward ammo when it's a headshot
-    if( KFW != none && IsWeaponOnPerk( KFW,, self.class ) && HitZoneIdx == HZI_HEAD )
+    if ( AmmoMode == AM_YEEHAW )
     {
-        // Make sure we're not doing the second round do blow off the head
-        if ( MyKFPM != none && !MyKFPM.bCheckingExtraHeadDamage )
+        if( DamageCauser != none )
         {
-            AddAmmo(KFW);
+            KFW = GetWeaponFromDamageCauser( DamageCauser );
+        }
+
+        // Only reward ammo when it's a headshot
+        if( KFW != none && IsWeaponOnPerk( KFW,, self.class ) && HitZoneIdx == HZI_HEAD )
+        {
+            // Make sure we're not doing the second round do blow off the head
+            if ( MyKFPM != none && !MyKFPM.bCheckingExtraHeadDamage )
+            {
+                AddAmmo(KFW);
+            }
         }
     }
 
     super.ModifyDamageGiven(InDamage,DamageCauser,MyKFPM,DamageInstigator,DamageType,HitZoneIdx);
 }
+
+simulated function bool GetIsUberAmmoActive( KFWeapon KFW )
+{
+    if ( YHGameReplicationInfo(MyKFGRI).AmmoMode==AM_UBERAMMO )
+    {
+        return true;
+    };
+
+    return super.GetIsUberAmmoActive(KFW);
+}
+
 
 
 /********************************************************************************

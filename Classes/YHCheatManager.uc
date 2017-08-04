@@ -182,4 +182,37 @@ function class<KFPawn_Monster> LoadMonsterByName(string ZedName, optional bool b
     return SpawnClass;
 }
 
+exec function Weapon GiveWeapon( String WeaponClassStr )
+{
+    local KFInventoryManager KFIM;
+    local Weapon NewWeap;
+
+    KFIM = KFInventoryManager(Pawn.InvManager);
+    if (KFIM !=none)
+    {
+        KFIM.bInfiniteWeight = true;
+
+        WeaponClassStr = WeaponClassStr == "KFGameContent.KFWeap_AssaultRifle_Medic" ? "YeeHaw.YHWeap_AssaultRifle_Medic" :
+                         WeaponClassStr == "KFGameContent.KFWeap_Shotgun_Medic" ? "YeeHaw.YHWeap_Shotgun_Medic" :
+                         WeaponClassStr == "KFGameContent.KFWeap_SMG_Medic" ? "YeeHaw.YHWeap_SMG_Medic" :
+                         WeaponClassStr == "KFGameContent.KFWeap_Pistol_Medic" ? "YeeHaw.YHWeap_Pistol_Medic" :
+                         WeaponClassStr == "KFGameContent.KFWeap_Rifle_RailGun" ? "YeeHaw.YHWeap_Rifle_RailGun" :
+                         WeaponClassStr == "KFGameContent.KFWeap_Beam_Microwave" ? "YeeHaw.YHWeap_Beam_Microwave":
+                         WeaponClassStr;
+
+        NewWeap = super.GiveWeapon(WeaponClassStr);
+        KFIM.bInfiniteWeight = false;
+    }
+
+    return NewWeap;
+}
+
+
+/** Give the player all scientist weapons */
+exec function Scientist()
+{
+    Medic();
+    GiveWeapon( "KFGameContent.KFWeap_Rifle_RailGun" );
+    GiveWeapon( "KFGameContent.KFWeap_Beam_Microwave" );
+}
 

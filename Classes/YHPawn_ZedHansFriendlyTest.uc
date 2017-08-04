@@ -64,12 +64,16 @@ function SetBobbleheaded( bool active ) {
     bBobbleheaded = active;
     if ( active )
     {
-        SetHeadScale(2.0,CurrentHeadScale);
+        IntendedHeadScale = 2.0;
+        SetHeadScale(IntendedHeadScale,CurrentHeadScale);
     }
     else
     {
         if ( !bIsHeadless )
-            SetHeadScale(1.0,CurrentHeadScale);
+        {
+            IntendedHeadScale = 1.0;
+            SetHeadScale(IntendedHeadScale,CurrentHeadScale);
+        }
     }
 }
 
@@ -203,8 +207,13 @@ event TakeDamage(int Damage,
                  optional TraceHitInfo HitInfo,
                  optional Actor DamageCauser)
 {
+    // If nerfed by darts, increase damage by 50%
+    if ( IsSensitive() )
+    {
+        Damage *= 1.5f;
+    }
 
-    `yhLog("Took Damage:"@Damage@"Instigated By"@InstigatedBy@"Damage Type"@DamageType);
+    `yhLog("Took Damage:"@Damage@"Instigated By"@InstigatedBy@"Damage Type"@DamageType@"Sensitivity:"@IsSensitive());
 
     // Damage is actually reduced in KFPawn.TakeDamage
     // we're just going to apply the toxicity affliction after the fact
@@ -316,15 +325,9 @@ function OverdoseExplode( Controller Killer, KFPerk InstigatorPerk )
 // For future use.
 function AdjustDamage(out int InDamage, out vector Momentum, Controller InstigatedBy, vector HitLocation, class<DamageType> DamageType, TraceHitInfo HitInfo, Actor DamageCauser)
 {
-
-    // If nerfed by darts, increase damage by 50%
-    if ( IsSensitive() )
-    {
-        InDamage *= 1.5f;
-    }
-
     super.AdjustDamage(InDamage, Momentum, InstigatedBy, HitLocation, DamageType, HitInfo, DamageCauser);
 }
+
 
 defaultproperties
 {

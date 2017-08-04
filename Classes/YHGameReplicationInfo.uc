@@ -4,11 +4,12 @@ class YHGameReplicationInfo extends KFGameReplicationInfo;
 
 var repnotify bool bGameStarted;
 var repnotify bool bAllowChangePerk;
+var repnotify YHEAmmoMode AmmoMode;
 
 replication
 {
     if (bNetDirty)
-      bGameStarted, bAllowChangePerk;
+      bGameStarted, bAllowChangePerk, AmmoMode;
 }
 
 

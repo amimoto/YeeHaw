@@ -44,6 +44,7 @@ defaultproperties
     YourMineMinePower=51.f
     SmellsLikeRosesPower = 51.f
     ZedWhispererPower = 51.f
+    SensitivePower = 51.f;
 
     WeaponDef=class'KFWeapDef_Healer'
 }

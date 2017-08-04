@@ -1,4 +1,48 @@
-class YH_Survival extends CD_Survival;
+class YH_Survival extends CD_Survival
+    DependsOn(YHLocalization);
+
+// Used to control how the ammo handling will be manipulated
+// Options can be:
+// - normal   [default]
+// - yeehaw   [this will return headshotted ammo back to chamber]
+// - uberammo [infinite ammo. YAH!]
+//
+var config YHEAmmoMode AmmoMode;
+
+function ChangeAmmoMode(YHEAmmoMode NewAmmoMode)
+{
+    AmmoMode = NewAmmoMode;
+    YHGameReplicationInfo(MyKFGRI).AmmoMode = NewAmmoMode;
+}
+
+private function string AmmoModeNormal()
+{
+    ChangeAmmoMode(AM_NORMAL);
+    return "Normal Ammo Handling";
+}
+
+private function string AmmoModeYeeHaw()
+{
+    ChangeAmmoMode(AM_YEEHAW);
+    return "YeeHaw Ammo Handling";
+}
+
+private function string AmmoModeUber()
+{
+    ChangeAmmoMode(AM_UBERAMMO);
+    return "UBER Ammo Handling";
+}
+
+event InitGame( string Options, out string ErrorMessage )
+{
+    Super.InitGame( Options, ErrorMessage );
+    YHGameReplicationInfo(MyKFGRI).AmmoMode = AmmoMode;
+
+    ChatCommander = new(self) class'YHChatCommander';
+    ChatCommander.SetupChatCommands();
+
+    SaveConfig();
+}
 
 function RestartPlayer(Controller NewPlayer)
 {
@@ -121,7 +165,6 @@ function StartWave()
 
 defaultproperties
 {
-
     HUDType=class'YeeHaw.YHGFxHudWrapper'
     DefaultPawnClass=class'YeeHaw.YHPawn_Human'
 

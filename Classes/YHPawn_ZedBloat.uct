@@ -1,30 +1,49 @@
 {% extends "YHPawn_Monster.uct" %}
 
+{% block code %}
 /** Spawns a puke mine at the specified location and rotation. Network: SERVER */
 function SpawnPukeMine( vector SpawnLocation, rotator SpawnRotation )
 {
     local KFProjectile PukeMine;
-    class<KFProjectile> MyPukeMineProjectileClass;
+    local YHProj_BloatPukeMine MyPukeMine;
+    local class<KFProjectile> MyPukeMineProjectileClass;
 
     MyPukeMineProjectileClass = PukeMineProjectileClass;
 
-    if ( IsYourMineMined() )
-    {
-        MyPukeMineProjectileClass.bYourMineMine = true;
-    }
-
-    if ( IsSmellsLikeRoses() )
-    {
-        MyPukeMineProjectileClass.bSmellsLikeRoses = true;
-    }
+    `yhLog("++++++++++++++++++ DROPPING CRAP");
 
     PukeMine = Spawn( PukeMineProjectileClass, self,, SpawnLocation, SpawnRotation,, true );
     if( PukeMine != none )
     {
         PukeMine.Init( vector(SpawnRotation) );
+
+        MyPukeMine = YHProj_BloatPukeMine(PukeMine);
+
+        if ( MyPukeMine != none && IsYourMineMined() )
+        {
+            MyPukeMine.InculateYourMineMine();
+        }
+
+        if ( MyPukeMine != none && IsSmellsLikeRoses() )
+        {
+            MyPukeMine.InculateSmellsLikeRoses();
+        }
+
     }
 }
 
+/** Spawns several puke mines when dying */
+function SpawnPukeMinesOnDeath()
+{
+    `yhLog("++++++++++++++++++++++++++ SPAWNING PUKERS");
+    super.SpawnPukeMinesOnDeath();
+}
+
+function TakeHitZoneDamage(float Damage, class<DamageType> DamageType, int HitZoneIdx, vector InstigatorLocation)
+{
+    `yhLog("++++++++++++++++++++++++++ TAKING HIT ZONE DAMAGE");
+    super.TakeHitZoneDamage(Damage,DamageType,HitZoneIdx,Location);
+}
 
 function DealExplosionDamage()
 {
@@ -59,6 +78,8 @@ function DealPukeDamage( Pawn Victim, Vector Origin )
 
     Victim.TakeDamage( GetRallyBoostDamage(VomitDamage), Controller, Victim.Location, VectToEnemy, class'KFDT_BloatPuke',, self );
 }
+
+{%endblock%}
 
 {% block defaultproperties %}
 {{ super() }}

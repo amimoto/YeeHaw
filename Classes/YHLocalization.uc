@@ -9,6 +9,19 @@ class YHLocalization extends Object;
  string. Nasty business
  ********************************************/
 
+// Used to control how the ammo handling will be manipulated
+// Options can be:
+// - normal   [default]
+// - yeehaw   [this will return headshotted ammo back to chamber]
+// - uberammo [infinite ammo. YAH!]
+//
+enum YHEAmmoMode
+{
+    AM_NORMAL,
+    AM_YEEHAW,
+    AM_UBERAMMO
+};
+
 struct YHStringEntry
 {
     var string m; // module

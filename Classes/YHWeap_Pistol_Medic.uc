@@ -7,9 +7,18 @@ var int NoPainNoGainDamage;
 // Disable Lock-on
 function bool AllowTargetLockOn()
 {
+    local KFPerk InstigatorPerk;
+    InstigatorPerk = GetPerk();
+
+    // Disable homing for Horzine Scientist
+    if ( InstigatorPerk != none && YHCPerk_Scientist(InstigatorPerk) != none )
+    {
+        return False;
+    }
+
     // `yhLog("AllowTargetLockOn Instigator"@Instigator);
     // Instigator = KF_Human_Pawn0
-    return false;
+    return super.AllowTargetLockOn();
 }
 
 /**

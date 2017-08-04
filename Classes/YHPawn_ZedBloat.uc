@@ -64,12 +64,16 @@ function SetBobbleheaded( bool active ) {
     bBobbleheaded = active;
     if ( active )
     {
-        SetHeadScale(2.0,CurrentHeadScale);
+        IntendedHeadScale = 2.0;
+        SetHeadScale(IntendedHeadScale,CurrentHeadScale);
     }
     else
     {
         if ( !bIsHeadless )
-            SetHeadScale(1.0,CurrentHeadScale);
+        {
+            IntendedHeadScale = 1.0;
+            SetHeadScale(IntendedHeadScale,CurrentHeadScale);
+        }
     }
 }
 
@@ -203,8 +207,13 @@ event TakeDamage(int Damage,
                  optional TraceHitInfo HitInfo,
                  optional Actor DamageCauser)
 {
+    // If nerfed by darts, increase damage by 50%
+    if ( IsSensitive() )
+    {
+        Damage *= 1.5f;
+    }
 
-    `yhLog("Took Damage:"@Damage@"Instigated By"@InstigatedBy@"Damage Type"@DamageType);
+    `yhLog("Took Damage:"@Damage@"Instigated By"@InstigatedBy@"Damage Type"@DamageType@"Sensitivity:"@IsSensitive());
 
     // Damage is actually reduced in KFPawn.TakeDamage
     // we're just going to apply the toxicity affliction after the fact
@@ -316,15 +325,87 @@ function OverdoseExplode( Controller Killer, KFPerk InstigatorPerk )
 // For future use.
 function AdjustDamage(out int InDamage, out vector Momentum, Controller InstigatedBy, vector HitLocation, class<DamageType> DamageType, TraceHitInfo HitInfo, Actor DamageCauser)
 {
-
-    // If nerfed by darts, increase damage by 50%
-    if ( IsSensitive() )
-    {
-        InDamage *= 1.5f;
-    }
-
     super.AdjustDamage(InDamage, Momentum, InstigatedBy, HitLocation, DamageType, HitInfo, DamageCauser);
 }
+
+/** Spawns a puke mine at the specified location and rotation. Network: SERVER */
+function SpawnPukeMine( vector SpawnLocation, rotator SpawnRotation )
+{
+    local KFProjectile PukeMine;
+    local YHProj_BloatPukeMine MyPukeMine;
+    local class<KFProjectile> MyPukeMineProjectileClass;
+
+    MyPukeMineProjectileClass = PukeMineProjectileClass;
+
+    `yhLog("++++++++++++++++++ DROPPING CRAP");
+
+    PukeMine = Spawn( PukeMineProjectileClass, self,, SpawnLocation, SpawnRotation,, true );
+    if( PukeMine != none )
+    {
+        PukeMine.Init( vector(SpawnRotation) );
+
+        MyPukeMine = YHProj_BloatPukeMine(PukeMine);
+
+        if ( MyPukeMine != none && IsYourMineMined() )
+        {
+            MyPukeMine.InculateYourMineMine();
+        }
+
+        if ( MyPukeMine != none && IsSmellsLikeRoses() )
+        {
+            MyPukeMine.InculateSmellsLikeRoses();
+        }
+
+    }
+}
+
+/** Spawns several puke mines when dying */
+function SpawnPukeMinesOnDeath()
+{
+    `yhLog("++++++++++++++++++++++++++ SPAWNING PUKERS");
+    super.SpawnPukeMinesOnDeath();
+}
+
+function TakeHitZoneDamage(float Damage, class<DamageType> DamageType, int HitZoneIdx, vector InstigatorLocation)
+{
+    `yhLog("++++++++++++++++++++++++++ TAKING HIT ZONE DAMAGE");
+    super.TakeHitZoneDamage(Damage,DamageType,HitZoneIdx,Location);
+}
+
+function DealExplosionDamage()
+{
+    local Pawn P;
+    local vector HitLocation, HitNormal;
+    local Actor HitActor;
+
+    // @note - At low ranges CollidingActors (no VisibleCollidingActors) is okay,
+    // but AllPawns is constant and much faster 99% of the time.
+    foreach WorldInfo.AllPawns( class'Pawn', P, Location, ExplodeRange )
+    {
+        if ( P != Instigator )
+        {
+            // Trace to make sure there are no obstructions. ie acquiring someone through a wall
+            HitActor = Instigator.Trace(HitLocation, HitNormal, P.Location, Location, true);
+            if ( HitActor == none || HitActor == P )
+            {
+                DealPukeDamage(P, Location);
+            }
+        }
+    }
+}
+
+
+function DealPukeDamage( Pawn Victim, Vector Origin )
+{
+    local Vector VectToEnemy;
+
+    VectToEnemy = Victim.Location - Origin;
+    VectToEnemy.Z = 0.f;
+    VectToEnemy = Normal( VectToEnemy );
+
+    Victim.TakeDamage( GetRallyBoostDamage(VomitDamage), Controller, Victim.Location, VectToEnemy, class'KFDT_BloatPuke',, self );
+}
+
 
 defaultproperties
 {

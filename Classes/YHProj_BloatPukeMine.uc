@@ -64,15 +64,22 @@ simulated event Touch( Actor Other, PrimitiveComponent OtherComp, vector HitLoca
 
 simulated function TriggerExplosion(Vector HitLocation, Vector HitNormal, Actor HitActor)
 {
+
     // Select the correct template for exploding
     if ( bSmellsLikeRoses )
     {
+        `yhLog("Triggering Bloat Mine Explosion SmellsLikeRoses");
         ExplosionTemplate = SmellsLikeRosesExplosionTemplate;
-        ExplosionActorClass = class'KFExplosion_MedicGrenade';
+        ExplosionActorClass = class'YHExplosion_SmellsLikeRoses';
     }
     else if ( bYourMineMine )
     {
+        `yhLog("Triggering Bloat Mine Explosion YourMineMine");
         ExplosionTemplate = YourMineMineExplosionTemplate;
+    }
+    else
+    {
+        `yhLog("Triggering Normal Bloat Mine Explosion");
     }
 
 

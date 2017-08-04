@@ -1,0 +1,9 @@
+{% extends "YHPerk.uct" %}
+
+{%block defaultproperties%}
+    PrimaryWeaponDef=class'YHWeapDef_MedicPistol'
+
+    AutoBuyLoadOutPath=(class'YHWeapDef_MedicPistol', class'YHWeapDef_MedicSMG', class'YHWeapDef_MedicShotgun', class'YHWeapDef_MedicRifle')
+{%endblock%}
+
+
