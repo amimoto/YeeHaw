@@ -280,7 +280,6 @@ protected function ProcessSpecialMoveAfflictions(KFPerk InstigatorPerk, vector H
 
         //Snare power doesn't scale DT, it exists on its own (Ex: Gunslinger Skullcracker)
         SnarePower += InstigatorPerk.GetSnarePowerModifier( DamageType, HitZoneIdx );
-
     }
 
     YHInstigatorPerk = YHPerk_Interface(InstigatorPerk);
@@ -338,7 +337,6 @@ protected function ProcessSpecialMoveAfflictions(KFPerk InstigatorPerk, vector H
     {
         AccrueAffliction(AF_Snare, SnarePower, BodyPart);
     }
-
     if ( BobbleheadPower > 0 )
     {
         YHAccrueAffliction(YHAF_Bobblehead, BobbleheadPower, BodyPart);

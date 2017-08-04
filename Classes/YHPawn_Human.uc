@@ -23,6 +23,8 @@ function GiveHealthOverTime()
 {
     local KFPlayerReplicationInfo KFPRI;
 
+    `yhLog("HealthToRegen"@HealthToRegen@"HealthToRegenFast"@HealthToRegenFast);
+
     if( HealthToRegen > 0 && Health < HealthMax )
     {
         Health++;
@@ -54,6 +56,8 @@ function GiveHealthOverTime()
 event bool HealDamageFast(int Amount, Controller Healer, class<DamageType> DamageType, optional bool bCanRepairArmor=true, optional bool bMessageHealer=true)
 {
     local bool bRepairedArmor;
+
+    `yhLog("HealingDamageFast"@Amount);
 
     HealthToRegenFast += Amount;
 

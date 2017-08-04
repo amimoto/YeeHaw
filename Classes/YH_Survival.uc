@@ -1,6 +1,8 @@
 class YH_Survival extends CD_Survival
     DependsOn(YHLocalization);
 
+`include(YH_Log.uci)
+
 // Used to control how the ammo handling will be manipulated
 // Options can be:
 // - normal   [default]
@@ -42,6 +44,17 @@ event InitGame( string Options, out string ErrorMessage )
     ChatCommander.SetupChatCommands();
 
     SaveConfig();
+}
+
+function ReduceDamage(out int Damage, Pawn Injured, Controller InstigatedBy, vector HitLocation, out vector Momentum, class<DamageType> DamageType, Actor DamageCauser, TraceHitInfo HitInfo)
+{
+    `yhLog("ReduceDamage of"@Damage@"DT:"@DamageType);
+    // Don't reduce damage if the type supposed to be pain from a medic dart
+    if ( DamageType == class'YHDT_Medic_Pain' )
+    {
+        return;
+    }
+    super.ReduceDamage(Damage,Injured,InstigatedBy,HitLocation,Momentum,DamageType,DamageCauser,HitInfo);
 }
 
 function RestartPlayer(Controller NewPlayer)

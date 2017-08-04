@@ -59,11 +59,13 @@ simulated function ProcessInstantHitEx( byte FiringMode, ImpactInfo Impact, opti
         // Figure if we need to deal with NoPainNoGain
         YHPI = YHPerk_Interface(InstigatorPerk);
         Human_HealTarget = YHPawn_Human(HealTarget);
+        `yhLog("++++++++++++++++++++++++++:"@Human_HealTarget@"Healer"@Healer@"YHPI"@YHPI);
         if ( YHPI != none && YHPI.IsNoPainNoGainActive() && Human_HealTarget != none )
         {
             HitZoneIdx = HealTarget.HitZones.Find('ZoneName', Impact.HitInfo.BoneName);
             if ( HitZoneIdx != HZI_HEAD )
             {
+                `yhLog("++++++++++++++++++++++ HURTING PLAYER:"@HealTarget@"by"@NoPainNoGainDamage@"HP");
                 HealTarget.TakeDamage(
                     NoPainNoGainDamage,
                     Instigator.Controller,

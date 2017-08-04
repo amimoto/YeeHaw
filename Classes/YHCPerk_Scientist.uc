@@ -159,7 +159,6 @@ reliable server function AddAmmo(KFWeapon KFW)
         KFW.ClientForceAmmoUpdate(KFW.AmmoCount[0],KFW.SpareAmmoCount[0]);
         KFW.bNetDirty = true;
     }
-
 }
 
 // Where we determine if the play has got a headshot. If it does turn out
