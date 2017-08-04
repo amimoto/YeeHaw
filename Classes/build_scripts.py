@@ -53,10 +53,16 @@ ZedTimeGrenadesDescription="Swap your bloat mine grenades and wield the power to
 RealityDistortion="ZED TIME - Reality Distortion Field"
 RealityDistortionDescription="Infinite darts and ammo!"
 
+[YHProj_BloatMineGrenade]
+ItemName="Healing Mines"
+ItemCategory ="Mines"
+ItemDescription="-"
+
+
 [YHProj_ZedTimeGrenade]
-ItemName="Time Decompression Grenade"
+ItemName="Zed Time Grenade"
 ItemCategory ="Time"
-ItemDescription="-Triggers Zed Time. Amazing stuff."
+ItemDescription="-Triggers Zed Time. You get to carry one. Nuff said?"
 
 [YHWeap_Healer_Syringe]
 ItemName="Medical Syringe"

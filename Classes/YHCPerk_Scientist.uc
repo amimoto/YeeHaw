@@ -9,6 +9,7 @@ var private const   PerkSkill       WeaponDamage;                  // weapon dmg
 var private const   PerkSkill       EnemyHPDetection;              // Can see cloaked zeds x UUs far (100UUs = 100cm = 1m)
 var const PerkSkill                 HealerRecharge;
 
+var int                             MaxZTGrenadeCount;
 var             GameExplosion       ExplosionTemplate;
 var class<KFWeaponDefinition>       ZTGrenadeWeaponDef;
 
@@ -28,6 +29,29 @@ enum EScientistPerkSkills
     EScientistZTRealityDistortion // DONE
 };
 
+
+
+simulated protected event PostSkillUpdate()
+{
+    local KFInventoryManager KFIM;
+
+    // Actively limit the number of grenades a player may hold
+    if( IsZTGrenadesActive() )
+    {
+        MaxGrenadeCount = MaxZTGrenadeCount;
+        KFIM = KFInventoryManager( OwnerPawn.InvManager );
+        if ( KFIM.GrenadeCount > MaxGrenadeCount )
+        {
+            KFIM.GrenadeCount = MaxGrenadeCount;
+        }
+    }
+    else
+    {
+        MaxGrenadeCount = default.MaxGrenadeCount;
+    }
+
+    super.PostSkillUpdate();
+}
 
 /**
  * @brief Modifies how long one recharge cycle takes
@@ -448,6 +472,7 @@ defaultproperties
 
     WhiteMaterial=Texture2D'EngineResources.WhiteSquareTexture'
 
-    ZTGrenadeWeaponDef=class'YHWeapDef_Grenade_Scientist';
+    ZTGrenadeWeaponDef = class'YHWeapDef_Grenade_Scientist';
+    MaxZTGrenadeCount = 2
 }
 
