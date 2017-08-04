@@ -333,9 +333,6 @@ function SpawnPukeMine( vector SpawnLocation, rotator SpawnRotation )
 {
     local KFProjectile PukeMine;
     local YHProj_BloatPukeMine MyPukeMine;
-    local class<KFProjectile> MyPukeMineProjectileClass;
-
-    MyPukeMineProjectileClass = PukeMineProjectileClass;
 
     `yhLog("++++++++++++++++++ DROPPING CRAP");
 
