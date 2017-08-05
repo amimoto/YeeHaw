@@ -81,11 +81,9 @@ function bool IsExtraStrength() {
     return bExtraStrength;
 }
 
-/*
 function GrowBobblehead()
 {
-    `yhLog("Growth is currently:"@CurrentHeadScale);
-    IntendedHeadScale = CurrentHeadScale + BobbleheadInflationRate;
+    IntendedHeadScale += BobbleheadInflationRate;
     if ( IntendedHeadScale > BobbleheadMaxSize )
     {
         IntendedHeadScale = BobbleheadMaxSize;
@@ -94,14 +92,14 @@ function GrowBobblehead()
     if ( IntendedHeadScale < BobbleheadMaxSize )
     {
         SetTimer(BobbleheadInflationTimer, false, 'GrowBobblehead');
+        ClearTimer('ShrinkBobblehead');
     }
 }
 
 
 function ShrinkBobblehead()
 {
-    `yhLog("Shrink is currently:"@CurrentHeadScale);
-    IntendedHeadScale = CurrentHeadScale - BobbleheadInflationRate;
+    IntendedHeadScale -= BobbleheadInflationRate;
     if ( IntendedHeadScale < 1 )
     {
         IntendedHeadScale = 1;
@@ -110,21 +108,8 @@ function ShrinkBobblehead()
     if ( IntendedHeadScale > 1 )
     {
         SetTimer(BobbleheadInflationTimer, false, 'ShrinkBobblehead');
+        ClearTimer('GrowBobblehead');
     }
-}
-*/
-
-function GrowBobblehead()
-{
-    IntendedHeadScale = BobbleheadMaxSize;
-    SetHeadScale(IntendedHeadScale,CurrentHeadScale);
-}
-
-
-function ShrinkBobblehead()
-{
-    IntendedHeadScale = 1;
-    SetHeadScale(IntendedHeadScale,CurrentHeadScale);
 }
 
 function SetBobbleheaded( bool active ) {
@@ -425,12 +410,6 @@ function SpawnPukeMinesOnDeath()
     super.SpawnPukeMinesOnDeath();
 }
 
-function TakeHitZoneDamage(float Damage, class<DamageType> DamageType, int HitZoneIdx, vector InstigatorLocation)
-{
-    `yhLog("++++++++++++++++++++++++++ TAKING HIT ZONE DAMAGE");
-    super.TakeHitZoneDamage(Damage,DamageType,HitZoneIdx,Location);
-}
-
 function DealExplosionDamage()
 {
     local Pawn P;
@@ -464,6 +443,51 @@ function DealPukeDamage( Pawn Victim, Vector Origin )
 
     Victim.TakeDamage( GetRallyBoostDamage(VomitDamage), Controller, Victim.Location, VectToEnemy, class'KFDT_BloatPuke',, self );
 }
+
+// Override to deal explosive damage for the killing shot of an explosive bone
+function TakeHitZoneDamage(float Damage, class<DamageType> DamageType, int HitZoneIdx, vector InstigatorLocation)
+{
+    local int HitZoneIndex;
+    local name HitBoneName;
+
+    super(KFPawn_Monster).TakeHitZoneDamage( Damage, DamageType, HitZoneIdx, InstigatorLocation );
+
+    // Only deal explosive damage on the killing shot
+    if( Role == ROLE_Authority && bPlayedDeath && !bHasExploded && TimeOfDeath == WorldInfo.TimeSeconds )
+    {
+        HitZoneIndex = HitFxInfo.HitBoneIndex;
+        if ( HitZoneIndex != 255 && (InjuredHitZones & (1 << HitZoneIndex)) > 0 )   // INDEX_None -> 255 after byte conversion
+        {
+            HitBoneName = HitZones[HitZoneIndex].BoneName;
+            if( HitExplosiveBone(HitBoneName) )
+            {
+                DealExplosionDamage();
+                bHasExploded = true;
+
+                // Spawn some puke mines
+                SpawnPukeMinesOnDeath();
+
+                SoundGroupArch.PlayObliterationSound(self, false);
+            }
+        }
+        else if (
+            IsYourMineMined()
+            ||
+            IsSmellsLikeRoses()
+        )
+        {
+            DealExplosionDamage();
+            bHasExploded = true;
+
+            // Spawn some puke mines
+            SpawnPukeMinesOnDeath();
+
+            SoundGroupArch.PlayObliterationSound(self, false);
+        }
+
+    }
+}
+
 
 
 defaultproperties
@@ -534,7 +558,7 @@ Begin Object Class=KFGameExplosion Name=OverdoseExploTemplate0
     bExtraStrength = False
     BobbleheadInflationRate = 0.2f
     BobbleheadMaxSize = 2.0f
-    BobbleheadInflationTimer = 0.15f
+    BobbleheadInflationTimer = 0.10f
 
 
 

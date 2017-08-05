@@ -81,11 +81,9 @@ function bool IsExtraStrength() {
     return bExtraStrength;
 }
 
-/*
 function GrowBobblehead()
 {
-    `yhLog("Growth is currently:"@CurrentHeadScale);
-    IntendedHeadScale = CurrentHeadScale + BobbleheadInflationRate;
+    IntendedHeadScale += BobbleheadInflationRate;
     if ( IntendedHeadScale > BobbleheadMaxSize )
     {
         IntendedHeadScale = BobbleheadMaxSize;
@@ -94,14 +92,14 @@ function GrowBobblehead()
     if ( IntendedHeadScale < BobbleheadMaxSize )
     {
         SetTimer(BobbleheadInflationTimer, false, 'GrowBobblehead');
+        ClearTimer('ShrinkBobblehead');
     }
 }
 
 
 function ShrinkBobblehead()
 {
-    `yhLog("Shrink is currently:"@CurrentHeadScale);
-    IntendedHeadScale = CurrentHeadScale - BobbleheadInflationRate;
+    IntendedHeadScale -= BobbleheadInflationRate;
     if ( IntendedHeadScale < 1 )
     {
         IntendedHeadScale = 1;
@@ -110,21 +108,8 @@ function ShrinkBobblehead()
     if ( IntendedHeadScale > 1 )
     {
         SetTimer(BobbleheadInflationTimer, false, 'ShrinkBobblehead');
+        ClearTimer('GrowBobblehead');
     }
-}
-*/
-
-function GrowBobblehead()
-{
-    IntendedHeadScale = BobbleheadMaxSize;
-    SetHeadScale(IntendedHeadScale,CurrentHeadScale);
-}
-
-
-function ShrinkBobblehead()
-{
-    IntendedHeadScale = 1;
-    SetHeadScale(IntendedHeadScale,CurrentHeadScale);
 }
 
 function SetBobbleheaded( bool active ) {
@@ -459,7 +444,7 @@ Begin Object Class=KFGameExplosion Name=OverdoseExploTemplate0
     bExtraStrength = False
     BobbleheadInflationRate = 0.2f
     BobbleheadMaxSize = 2.0f
-    BobbleheadInflationTimer = 0.15f
+    BobbleheadInflationTimer = 0.10f
 
 }
 
