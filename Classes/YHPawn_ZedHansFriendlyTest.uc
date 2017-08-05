@@ -25,6 +25,23 @@ replication
         bBobbleheaded, bPharmed, bOverdosed, bSensitive, bZedWhispered, bYourMineMined, bSmellsLikeRoses, bExtraStrength;
 }
 
+simulated event ReplicatedEvent(name VarName)
+{
+    if ( VarName == 'bBobbleheaded')
+    {
+        if ( bBobbleHeaded )
+        {
+            GrowBobblehead();
+        }
+        else if ( !bIsHeadless )
+        {
+            ShrinkBobblehead();
+        }
+    }
+
+    super.ReplicatedEvent(VarName);
+}
+
 static event class<KFPawn_Monster> GetAIPawnClassToSpawn()
 {
     local class<KFPawn_Monster> RequestedClass;
@@ -64,6 +81,7 @@ function bool IsExtraStrength() {
     return bExtraStrength;
 }
 
+/*
 function GrowBobblehead()
 {
     `yhLog("Growth is currently:"@CurrentHeadScale);
@@ -94,10 +112,24 @@ function ShrinkBobblehead()
         SetTimer(BobbleheadInflationTimer, false, 'ShrinkBobblehead');
     }
 }
+*/
+
+function GrowBobblehead()
+{
+    IntendedHeadScale = BobbleheadMaxSize;
+    SetHeadScale(IntendedHeadScale,CurrentHeadScale);
+}
+
+
+function ShrinkBobblehead()
+{
+    IntendedHeadScale = 1;
+    SetHeadScale(IntendedHeadScale,CurrentHeadScale);
+}
 
 function SetBobbleheaded( bool active ) {
     bBobbleheaded = active;
-    if ( active )
+    if ( bBobbleHeaded )
     {
         GrowBobblehead();
     }

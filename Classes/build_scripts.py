@@ -24,22 +24,22 @@ Passives[1]=(Title="Syringe Recharge Rate",Description="Increase syringe recharg
 Passives[2]=(Title="Health Bar Detection",Description="Range of 5m plus %x%m per level");
 
 Bobbleheads="Bobbleheads"
-BobbleheadsDescription="Darting heads of Zeds will inflate them"
+BobbleheadsDescription="Darting Zeds will inflate them. Headshots most effective."
 
 Sensitive="Sensitive"
-SensitiveDescription="Darting Zeds will decrease damage by 20% and resistance by 20%"
+SensitiveDescription="Darting Zeds will decrease damage by 20% and resistance by 20%. Headshots most effective."
 
 Pharming="Pharming"
-PharmingDescription="Darted zeds release healing clouds upon death"
+PharmingDescription="Darted zeds release healing clouds upon death. Headshots most effective."
 
 Overdose="Overdose"
-OverdoseDescription="Darted zeds will explode upon death"
+OverdoseDescription="Darted zeds will explode upon death. Headshots most effective."
 
 NoPainNoGain="No Pain No Gain"
 NoPainNoGainDescription="Darts have MUCH faster dart healing BUT bodyshots will cause initial damage"
 
 ZedWhisperer="Zed Whisperer"
-ZedWhispererDescription="Darting Zeds will de-rage or disable some special moves"
+ZedWhispererDescription="Darting Zeds will de-rage or disable some special moves. Headshots most effective."
 
 YourMineMine="Your Mine Mine"
 YourMineMineDescription="Darted bloats upon explosive death will release mines that explode on zed contact"
