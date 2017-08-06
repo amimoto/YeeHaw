@@ -96,7 +96,7 @@ simulated function ProcessInstantHitEx( byte FiringMode, ImpactInfo Impact, opti
         {
             HealTarget.PlaySoundBase(HurtImpactSoundPlayEvent, false, false,,Impact.HitLocation);
         }
-        Super.ProcessInstantHitEx(FiringMode, Impact, NumHits, out_PenetrationVal);
+        Super(KFWeapon).ProcessInstantHitEx(FiringMode, Impact, NumHits, out_PenetrationVal);
     }
 }
 
@@ -106,7 +106,7 @@ defaultproperties
 
     InstantHitDamageTypes(ALTFIRE_FIREMODE)=class'YHDT_Dart_Scientist'
 
-    AssociatedPerkClasses.Add(class'YeeHaw.YHCPerk_Scientist')
-
+        AssociatedPerkClasses.Add(class'YeeHaw.YHCPerk_Scientist')
+    
     NoPainNoGainDamage = 15
 }

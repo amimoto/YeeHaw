@@ -411,7 +411,7 @@ simulated static function GetPassiveStrings( out array<string> PassiveValues, ou
     PassiveValues[2] = Round( GetPassiveValue( default.EnemyHPDetection, Level ) / 100 ) $ "m";     // Divide by 100 to convert unreal units to meters
 
     Increments[0] = "["@Left( string( default.WeaponDamage.Increment * 100 ), InStr(string(default.WeaponDamage.Increment * 100), ".") + 2 )    $"% /" @default.LevelString @"]";
-    Increments[1] = "[" @ Left( string( default.HealerRecharge.Increment * 100 ), InStr(string(default.HealerRecharge.Increment * 100), ".") + 2 )   $"% /" @ default.LevelString @"]";
+    Increments[1] = "["@ Left( string( default.HealerRecharge.Increment * 100 ), InStr(string(default.HealerRecharge.Increment * 100), ".") + 2 )   $"% /" @ default.LevelString @"]";
     Increments[2] = "["@ Int(default.EnemyHPDetection.StartingValue / 100 ) @"+" @Int(default.EnemyHPDetection.Increment / 100 )       $"m /" @default.LevelString @"]";
 }
 

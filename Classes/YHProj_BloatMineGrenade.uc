@@ -115,7 +115,7 @@ defaultproperties
     AssociatedPerkClass=class'YHCPerk_Scientist'
 
     PukeMineProjectileClass=class'YHProj_BloatPukeMine'
-	PukeMineSpawnRotation=(Pitch=7000,Yaw=-10480,Roll=0)
+    PukeMineSpawnRotation=(Pitch=7000,Yaw=-10480,Roll=0)
 }
 
 

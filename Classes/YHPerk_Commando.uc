@@ -217,14 +217,26 @@ simulated event UpdatePerkBuild( const out byte InSelectedSkills[`MAX_PERK_SKILL
     }
 }
 
+function UpdatePerkHeadShots( ImpactInfo Impact, class<DamageType> DamageType, int NumHit )
+{
+    super.UpdatePerkHeadShots(Impact,DamageType,NumHit);
+}
+
 static function bool IsDamageTypeOnPerk( class<KFDamageType> KFDT )
 {
+    local int i;
     if( KFDT != none )
     {
-        return KFDT.default.ModifierPerkList.Find( class'KFPerk_Commando' ) > INDEX_NONE;
+        for ( i=0; i<KFDT.default.ModifierPerkList.length; i++ )
+        {
+            if ( ClassIsChildOf(default.class,KFDT.default.ModifierPerkList[i]) )
+            {
+                return true;
+            }
+        }
     }
 
-    return false;
+    return super.IsDamageTypeOnPerk( KFDT );
 }
 
 
@@ -235,22 +247,36 @@ static simulated function bool IsWeaponOnPerk(
                 optional name WeaponClassName
                 )
 {
-    if ( InstigatorPerkClass == class'YHPerk_Commando' )
-    {
-        InstigatorPerkClass = class'KFPerk_Commando';
-    }
+        local int i;
+    local array< Class<KFPerk> > AssociatedPerkClasses;
 
     if( W != none )
     {
-        return W.static.GetWeaponPerkClass( InstigatorPerkClass ) == class'KFPerk_Commando';
+        AssociatedPerkClasses = W.GetAssociatedPerkClasses();
+        for (i=0;i < AssociatedPerkClasses.Length;i++)
+        {
+            if ( ClassIsChildOf(InstigatorPerkClass,AssociatedPerkClasses[i]) )
+            {
+                return true;
+            }
+        }
+        return false;
+        //return W.static.GetWeaponPerkClass( InstigatorPerkClass ) == class'KFPerk_Commando';
     }
     else if( WeaponPerkClass.length > 0 )
     {
+        for (i=0;i<WeaponPerkClass.length;i++)
+        {
+            if (ClassIsChildOf(InstigatorPerkClass,WeaponPerkClass[i]))
+            {
+                return true;
+            }
+        }
         return WeaponPerkClass.Find(class'KFPerk_Commando') != INDEX_NONE;
     }
 
     return false;
-}
+    }
 
 
 function float GetBobbleheadPowerModifier( class<YHDamageType> DamageType, byte HitZoneIdx ) { return 0; };

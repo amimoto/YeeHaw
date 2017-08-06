@@ -1,5 +1,27 @@
 class YHCheatManager extends KFCheatManager;
 
+
+/**
+ * Give the player all pistol weapons
+ */
+simulated exec function Pistols()
+{
+    GiveWeapon( "KFGameContent.KFWeap_Pistol_9mm" );
+    GiveWeapon( "KFGameContent.KFWeap_Pistol_Deagle" );
+    GiveWeapon( "YeeHaw.YHWeap_Pistol_Medic" );
+}
+
+
+simulated exec function Singles()
+{
+    GiveWeapon( "KFGameContent.KFWeap_Pistol_9mm" );
+    GiveWeapon( "KFGameContent.KFWeap_Pistol_Deagle" );
+    GiveWeapon( "KFGameContent.KFWeap_Pistol_Colt1911" );
+    GiveWeapon( "KFGameContent.KFWeap_Revolver_Rem1858" );
+    GiveWeapon( "KFGameContent.KFWeap_Revolver_SW500" );
+    GiveWeapon( "YeeHaw.YHWeap_Pistol_Medic" );
+}
+
 exec function SpawnHumanPawn(optional bool bEnemy, optional bool bUseGodMode, optional int CharIndex)
 {
     local KFAIController KFBot;

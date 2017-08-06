@@ -1,0 +1,36 @@
+{% extends "YHPerk.uct" %}
+
+{% block isweapononperk %}
+    local int i;
+    local array< Class<KFPerk> > AssociatedPerkClasses;
+
+    if( W != none )
+    {
+        AssociatedPerkClasses = W.GetAssociatedPerkClasses();
+        for (i=0;i < AssociatedPerkClasses.Length;i++)
+        {
+            if ( ClassIsChildOf(InstigatorPerkClass,AssociatedPerkClasses[i]) )
+            {
+                return true;
+            }
+        }
+
+        return super.IsWeaponOnPerk(W,WeaponPerkClass,InstigatorPerkClass,WeaponClassName);
+
+        //return W.static.GetWeaponPerkClass( InstigatorPerkClass ) == class'KFPerk_{{perk}}';
+    }
+    else if( WeaponPerkClass.length > 0 )
+    {
+        for (i=0;i<WeaponPerkClass.length;i++)
+        {
+            if (ClassIsChildOf(InstigatorPerkClass,WeaponPerkClass[i]))
+            {
+                return true;
+            }
+        }
+        return WeaponPerkClass.Find(class'KFPerk_{{perk}}') != INDEX_NONE;
+    }
+
+    return false;
+{% endblock %}
+
