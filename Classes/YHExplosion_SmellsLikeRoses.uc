@@ -1,9 +1,10 @@
 class YHExplosion_SmellsLikeRoses extends YHExplosion_Pharm;
 
+`include(YH_Log.uci)
 
 defaultproperties
 {
-    HealingAmount=50
+    HealingAmount=5
     Interval=1
-    MaxTime=6
+    MaxTime=8
 }

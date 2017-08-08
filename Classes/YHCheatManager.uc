@@ -22,6 +22,36 @@ simulated exec function Singles()
     GiveWeapon( "YeeHaw.YHWeap_Pistol_Medic" );
 }
 
+// Used to test Scientist Perk
+simulated exec function AkiTest()
+{
+    DemiGod();
+    Medic();
+    DoshMe(90000);
+    YH_Survival(WorldInfo.Game).ChangeAmmoMode(AM_UBERAMMO);
+}
+
+exec function UberAmmo()
+{
+	local KFWeapon KFW;
+
+	if (Pawn == None)
+		return;
+
+	ForEach Pawn.InvManager.InventoryActors(class'KFWeapon', KFW)
+	{
+		KFW.SpareAmmoCount[0] = KFW.GetMaxAmmoAmount(0) * 3;
+		KFW.AmmoCount[0] = KFW.MagazineCapacity[0];
+		KFW.AmmoCount[1] = KFW.MagazineCapacity[1];
+		KFW.bInfiniteAmmo = true;
+	}
+
+	if( KFInventoryManager(Pawn.InvManager) != none )
+	{
+	   KFInventoryManager(Pawn.InvManager).GrenadeCount = 255;
+	}
+}
+
 exec function SpawnHumanPawn(optional bool bEnemy, optional bool bUseGodMode, optional int CharIndex)
 {
     local KFAIController KFBot;

@@ -5,6 +5,8 @@ class YHProj_BloatPukeMine extends KFProj_BloatPukeMine;
 var repnotify bool bYourMineMine;
 var repnotify bool bSmellsLikeRoses;
 
+var Controller CachedInstigator;
+
 var(Projectile) instanced editinline KFGameExplosion YourMineMineExplosionTemplate;
 var(Projectile) instanced editinline KFGameExplosion SmellsLikeRosesExplosionTemplate;
 var(Projectile) instanced editinline KFGameExplosion NormalExplosionTemplate;
@@ -82,8 +84,15 @@ simulated function TriggerExplosion(Vector HitLocation, Vector HitNormal, Actor 
         `yhLog("Triggering Normal Bloat Mine Explosion");
     }
 
-
     super.TriggerExplosion(HitLocation, HitNormal, HitActor);
+
+    `yhLog("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"@ExplosionActor);
+
+    if ( YHExplosion_Pharm(ExplosionActor) != None )
+    {
+        `yhLog("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"@CachedInstigator);
+        YHExplosion_Pharm(ExplosionActor).CachedInstigator = CachedInstigator;
+    }
 }
 
 event TakeDamage(int Damage,
@@ -116,28 +125,31 @@ event TakeDamage(int Damage,
 
         if ( MyPerk.IsYourMineMineActive() )
         {
-            InculateYourMineMine();
+            InculateYourMineMine(InstigatedBy);
         }
 
         if ( MyPerk.IsSmellsLikeRosesActive() )
         {
-            InculateSmellsLikeRoses();
+            InculateSmellsLikeRoses(InstigatedBy);
         }
     }
 }
 
-simulated function InculateYourMineMine()
+simulated function InculateYourMineMine( Controller AfflictionInstigator )
 {
     bYourMineMine = True;
     bSmellsLikeRoses = False;
+    CachedInstigator = AfflictionInstigator;
 
     // Need to change the material of the bloat mine
 }
 
-simulated function InculateSmellsLikeRoses()
+simulated function InculateSmellsLikeRoses( Controller AfflictionInstigator )
 {
     bYourMineMine = False;
     bSmellsLikeRoses = True;
+    CachedInstigator = AfflictionInstigator;
+    `yhLog("++++++++++++++++++++++++ Using AfflictionInstigator"@AfflictionInstigator);
 }
 
 defaultproperties
@@ -232,7 +244,6 @@ defaultproperties
     NormalExplosionTemplate=NormalExploTemplate0
 
     ExplosionTemplate=NormalExploTemplate0
-
 }
 
 

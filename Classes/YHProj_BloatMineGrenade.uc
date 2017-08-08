@@ -54,7 +54,7 @@ simulated function Explode(vector HitLocation, vector HitNormal)
     {
         YHPukeMine = YHProj_BloatPukeMine(PukeMine);
         PukeMine.Init(HitNormal);
-        YHPukeMine.InculateSmellsLikeRoses();
+        YHPukeMine.InculateSmellsLikeRoses(InstigatorController);
     }
 
     if( Role < Role_Authority )

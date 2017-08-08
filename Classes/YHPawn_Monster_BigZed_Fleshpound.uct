@@ -1,0 +1,33 @@
+{% extends "YHPawn_Monster_BigZed.uct" %}
+
+{% block setzedwhispered %}
+    local KFAIController_ZedFleshpound FpAIC;
+
+    bZedWhispered = active;
+
+    `yhLog(self@"Rage status is:"@IsEnraged()@"ZedWhispered Status is:"@bZedWhispered);
+
+    if ( active )
+    {
+        `yhLog("Disabling Rage for"@self);
+        EndSpecialMove();
+        FpAIC = KFAIController_ZedFleshpound(MyKFAIC);
+        if ( FpAIC != None && FpAIC.RagePlugin != none )
+        {
+            FpAIC.RagePlugin.EndRage();
+        }
+        SetEnraged(False);
+        `yhLog("Disable RallyBoost if active"@self);
+        Timer_EndRallyBoost();
+    }
+
+    SetZedWhispererParticles(active);
+
+{% endblock %}
+
+{%block myadjustaffliction%}
+    // No adjustments made for zed whisperer
+    if (Type == YHAF_ZedWhisperer) return;
+    AdjustAffliction(AfflictionPower);
+{%endblock%}
+

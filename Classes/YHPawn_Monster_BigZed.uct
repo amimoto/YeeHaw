@@ -1,0 +1,5 @@
+{% extends "YHPawn_Monster.uct" %}
+
+{% block incapzedwhisperer%}   IncapSettings(YHAF_ZedWhisperer)=(Vulnerability=(0.25, 0.75, 0.25, 0.25, 0.25),Duration=3.0,Cooldown=10.0){% endblock %}
+
+

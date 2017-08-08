@@ -3,10 +3,12 @@ class YHAfflictionBase extends KFAfflictionAdvanced
 
 var bool bDeactivateOnShutdown;
 
+var Controller CachedInstigator;
+
 `include(YH_Log.uci)
 
 /** */
-function Accrue(float InPower)
+function YHAccrue(float InPower, optional Controller AfflictionInstigator=none)
 {
     // total immunity during cooldown
     if ( LastActivationTime > 0 && `TimeSinceEx(PawnOwner, LastActivationTime) < Cooldown )
@@ -29,6 +31,7 @@ function Accrue(float InPower)
     CurrentStrength = fClamp(CurrentStrength + InPower, InPower, INCAP_THRESHOLD);
     if ( CurrentStrength >= INCAP_THRESHOLD )
     {
+        CachedInstigator = AfflictionInstigator;
         Activate();
     }
 
@@ -62,8 +65,6 @@ function Shutdown()
     {
         if ( bDeactivateOnShutdown ) DeActivate();;
         PawnOwner.ClearTimer(nameof(DeActivate), self);
-
-        `log(self@"shutdown on owner death", bDebug);
     }
 }
 

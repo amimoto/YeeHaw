@@ -36,7 +36,7 @@ Overdose="Overdose"
 OverdoseDescription="Darted zeds will explode upon death. Headshots most effective."
 
 NoPainNoGain="No Pain No Gain"
-NoPainNoGainDescription="Darts have MUCH faster dart healing BUT bodyshots will cause initial damage"
+NoPainNoGainDescription="Darts have MUCH faster dart healing. Headshots are all awesome. Bodyshots will hurt teammate and you!"
 
 ZedWhisperer="Zed Whisperer"
 ZedWhispererDescription="Darting Zeds will de-rage or disable some special moves. Headshots most effective."

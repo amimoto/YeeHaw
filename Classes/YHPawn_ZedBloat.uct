@@ -18,12 +18,12 @@ function SpawnPukeMine( vector SpawnLocation, rotator SpawnRotation )
 
         if ( MyPukeMine != none && IsYourMineMined() )
         {
-            MyPukeMine.InculateYourMineMine();
+            MyPukeMine.InculateYourMineMine(YourMineMineInstigator);
         }
 
         if ( MyPukeMine != none && IsSmellsLikeRoses() )
         {
-            MyPukeMine.InculateSmellsLikeRoses();
+            MyPukeMine.InculateSmellsLikeRoses(SmellsLikeRosesInstigator);
         }
 
     }
@@ -78,11 +78,17 @@ function TakeHitZoneDamage(float Damage, class<DamageType> DamageType, int HitZo
 
     super(KFPawn_Monster).TakeHitZoneDamage( Damage, DamageType, HitZoneIdx, InstigatorLocation );
 
+    // This will be handled in "died"
+    if ( IsYourMineMined() || IsSmellsLikeRoses() )
+    {
+        return;
+    }
+
     // Only deal explosive damage on the killing shot
-    if( Role == ROLE_Authority && bPlayedDeath && !bHasExploded && TimeOfDeath == WorldInfo.TimeSeconds )
+    if( Role == ROLE_Authority && bPlayedDeath && TimeOfDeath == WorldInfo.TimeSeconds )
     {
         HitZoneIndex = HitFxInfo.HitBoneIndex;
-        if ( HitZoneIndex != 255 && (InjuredHitZones & (1 << HitZoneIndex)) > 0 )   // INDEX_None -> 255 after byte conversion
+        if ( !bHasExploded && HitZoneIndex != 255 && (InjuredHitZones & (1 << HitZoneIndex)) > 0 )   // INDEX_None -> 255 after byte conversion
         {
             HitBoneName = HitZones[HitZoneIndex].BoneName;
             if( HitExplosiveBone(HitBoneName) )
@@ -96,26 +102,23 @@ function TakeHitZoneDamage(float Damage, class<DamageType> DamageType, int HitZo
                 SoundGroupArch.PlayObliterationSound(self, false);
             }
         }
-        else if (
-            IsYourMineMined()
-            ||
-            IsSmellsLikeRoses()
-        )
-        {
-            DealExplosionDamage();
-            bHasExploded = true;
-
-            // Spawn some puke mines
-            SpawnPukeMinesOnDeath();
-
-            SoundGroupArch.PlayObliterationSound(self, false);
-        }
-
     }
 }
 
-
 {%endblock%}
+
+{% block morediedactions%}
+    if ( IsYourMineMined() || IsSmellsLikeRoses() )
+    {
+        DealExplosionDamage();
+        bHasExploded = true;
+
+        // Spawn some puke mines
+        SpawnPukeMinesOnDeath();
+
+        SoundGroupArch.PlayObliterationSound(self, false);
+    }
+{% endblock %}
 
 {% block defaultproperties %}
 {{ super() }}
@@ -130,7 +133,7 @@ function TakeHitZoneDamage(float Damage, class<DamageType> DamageType, int HitZo
 {% endblock %}
 
 
-    {% block incapyourminemine%}IncapSettings(YHAF_YourMineMine)=(Vulnerability=(0.5, 1.0, 0.5, 0.5, 0.5),Duration=60.0,Cooldown=5.0){% endblock %}
+    {% block incapyourminemine%}IncapSettings(YHAF_YourMineMine)=(Vulnerability=(0.5, 1.0, 0.5, 0.5, 0.5),Duration=6.0,Cooldown=5.0){% endblock %}
 
-    {% block incapsmellslikeroses%}IncapSettings(YHAF_SmellsLikeRoses)=(Vulnerability=(0.5, 1.0, 0.5, 0.5, 0.5),Duration=60,Cooldown=5.0){% endblock %}
+    {% block incapsmellslikeroses%}IncapSettings(YHAF_SmellsLikeRoses)=(Vulnerability=(0.5, 1.0, 0.5, 0.5, 0.5),Duration=6,Cooldown=5.0){% endblock %}
 

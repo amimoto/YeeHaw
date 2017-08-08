@@ -37,6 +37,7 @@ KF2_BIN_PATH = KF2_INSTALL_PATH + r"\Binaries\Win64"
 KF2_WORKSHOP_FPATH = KF2_INSTALL_PATH + r"\Binaries\WorkshopUserTool.exe"
 HOME_PATH = os.path.expanduser("~")
 KF2_BREWED_PATH = HOME_PATH+"/Documents/My Games/KillingFloor2/KFGame/Published/BrewedPC"
+KF2_PREBREWED_PATH = HOME_PATH+"/Documents/My Games/KillingFloor2/KFGame/Unpublished/BrewedPC"
 KF2_SERVER_PATH = r"C:\kf2server\KFGame"
 SRC_PATH = HOME_PATH+"/Documents/My Games/KillingFloor2/KFGame/src"
 
@@ -110,12 +111,14 @@ elif args['server']:
                             bin_path=KF2_BIN_PATH,
                             install_path=KF2_INSTALL_PATH,
                             brew_path=KF2_BREWED_PATH,
+                            prebrew_path=KF2_PREBREWED_PATH,
                             src_path=SRC_PATH
                         )
         target_path = dest.format(
                             bin_path=KF2_BIN_PATH,
                             install_path=KF2_INSTALL_PATH,
                             brew_path=KF2_BREWED_PATH,
+                            prebrew_path=KF2_PREBREWED_PATH,
                             server_path=KF2_SERVER_PATH,
                             src_path=SRC_PATH
                         )
@@ -143,6 +146,7 @@ elif args['publish']:
                             bin_path=KF2_BIN_PATH,
                             install_path=KF2_INSTALL_PATH,
                             brew_path=KF2_BREWED_PATH,
+                            prebrew_path=KF2_PREBREWED_PATH,
                             src_path=SRC_PATH
                         )
         target_path = os.path.join(config['target'],dest)

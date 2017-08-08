@@ -61,8 +61,14 @@ event bool HealDamageFast(int Amount, Controller Healer, class<DamageType> Damag
 
     HealthToRegenFast += Amount;
 
-    bRepairedArmor = super.HealDamage(Amount, Healer, DamageType, bCanRepairArmor, bMessageHealer );
+    bRepairedArmor = HealDamage(Amount, Healer, DamageType, bCanRepairArmor, bMessageHealer );
     return bRepairedArmor;
+}
+
+event bool HealDamage(int Amount, Controller Healer, class<DamageType> DamageType, optional bool bCanRepairArmor=true, optional bool bMessageHealer=true)
+{
+    `yhLog(">>>>>>>>>> Healing Amount"@Amount@"Healer"@Healer@"DamageType"@DamageType);
+    return super.HealDamage(Amount, Healer, DamageType,bCanRepairArmor,bMessageHealer);
 }
 
 /**

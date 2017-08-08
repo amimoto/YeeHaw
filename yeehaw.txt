@@ -34,6 +34,10 @@ Making this puppy run:
 * Change difficulty by supplying another difficulty parameter. So for HoE it could be: open kf-burningparis?game=YeeHaw.YH_Survival?Difficulty=3 (Note: 0=Normal)
 * All usual parameters for ControlledDifficulty are also available here
 
+Blue Cross Image for Pharm from: http://www.iconsdb.com/icon-sets/web-2-blue-icons/cross-icon.html
+Minus Image for Sensitive from: http://www.iconsdb.com/soylent-red-icons/minus-4-icon.html
+
+
 GS Logo by Atagene"
 $Title "YeeHawTest"
 $PreviewFile "c:\temp\yeehaw.png"

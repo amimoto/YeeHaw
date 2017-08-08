@@ -6,13 +6,13 @@ function Activate()
 {
     Super.Activate();
     `yhLog("Activating Pharmed on"@MonsterOwner);
-    YHPawn_Monster_Interface(MonsterOwner).SetPharmed(True);
+    YHPawn_Monster_Interface(MonsterOwner).SetPharmed(True,CachedInstigator);
 }
 
 function DeActivate()
 {
     Super.DeActivate();
-    YHPawn_Monster_Interface(MonsterOwner).SetPharmed(False);
+    YHPawn_Monster_Interface(MonsterOwner).SetPharmed(False,None);
 }
 
 defaultproperties

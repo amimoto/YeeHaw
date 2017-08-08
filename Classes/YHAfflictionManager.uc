@@ -82,10 +82,11 @@ function EAfflictionType ConvertAfflictionEnum(EYHAfflictionType EYHAT)
  * Adds StackedPower
  * @return true if the affliction effect should be applied
  */
-function YHAccrueAffliction(EYHAfflictionType Type, float InPower, optional EHitZoneBodyPart BodyPart)
+function YHAccrueAffliction(Controller DamageInstigator, EYHAfflictionType Type, float InPower, optional EHitZoneBodyPart BodyPart)
 {
+    local YHAfflictionBase YHAffliction;
 
-    `yhLog("InPower"@InPower@"Type"@Type@"IncapSettings.Length"@IncapSettings.Length);
+    `yhLog("InPower"@InPower@"Type"@Type@"IncapSettings.Length"@IncapSettings.Length@"DamageInstigator"@DamageInstigator);
     if ( InPower <= 0 || Type >= IncapSettings.Length )
     {
         `yhLog("Immune");
@@ -113,12 +114,20 @@ function YHAccrueAffliction(EYHAfflictionType Type, float InPower, optional EHit
     }
 
     // allow owning pawn final adjustment
-    AdjustAffliction(InPower);
+    YHPawn_Monster_Interface(Outer).MyAdjustAffliction(InPower,Type);
 
     if ( InPower > 0 )
     {
         `yhLog("Accrueing Affliction"@Afflictions[Type]@"With Power:"@InPower);
-        Afflictions[Type].Accrue(InPower);
+        YHAffliction = YHAfflictionBase(Afflictions[Type]);
+        if ( YHAffliction != None )
+        {
+            YHAffliction.YHAccrue(InPower,DamageInstigator);
+        }
+        else
+        {
+            Afflictions[Type].Accrue(InPower);
+        }
     }
 }
 
@@ -186,7 +195,33 @@ simulated function bool YHVerifyAfflictionInstance(EYHAfflictionType Type)
 }
 
 
-protected function ProcessSpecialMoveAfflictions(KFPerk InstigatorPerk, vector HitDir, class<KFDamageType> DamageType)
+/** Check, and if needed activate afflictions after being hit (Server only) */
+function NotifyTakeHit(Controller DamageInstigator, vector HitDir, class<KFDamageType> DamageType)
+{
+    local KFPerk InstigatorPerk;
+
+    if( DamageType == none )
+    {
+        return;
+    }
+
+    // Allow damage instigator perk to modify reaction
+    if ( DamageInstigator != None && DamageInstigator.bIsPlayer )
+    {
+        InstigatorPerk = KFPlayerController(DamageInstigator).GetPerk();
+    }
+
+    // For now all below effects are for Zeds
+    if( GetTeamNum() > 254 && !bPlayedDeath )
+    {
+        YHProcessSpecialMoveAfflictions(DamageInstigator, InstigatorPerk, HitDir, DamageType);
+        ProcessHitReactionAfflictions(InstigatorPerk, DamageType);
+    }
+
+    ProcessEffectBasedAfflictions(InstigatorPerk, DamageType);
+}
+
+protected function YHProcessSpecialMoveAfflictions(Controller DamageInstigator, KFPerk InstigatorPerk, vector HitDir, class<KFDamageType> DamageType)
 {
     local EHitZoneBodyPart BodyPart;
     local byte HitZoneIdx;
@@ -324,31 +359,31 @@ protected function ProcessSpecialMoveAfflictions(KFPerk InstigatorPerk, vector H
     }
     if ( BobbleheadPower > 0 )
     {
-        YHAccrueAffliction(YHAF_Bobblehead, BobbleheadPower, BodyPart);
+        YHAccrueAffliction(DamageInstigator, YHAF_Bobblehead, BobbleheadPower, BodyPart);
     }
     if ( PharmPower > 0 )
     {
-        YHAccrueAffliction(YHAF_Pharmed, PharmPower, BodyPart);
+        YHAccrueAffliction(DamageInstigator, YHAF_Pharmed, PharmPower, BodyPart);
     }
     if ( OverdosePower > 0 )
     {
-        YHAccrueAffliction(YHAF_Overdose, OverdosePower, BodyPart);
+        YHAccrueAffliction(DamageInstigator, YHAF_Overdose, OverdosePower, BodyPart);
     }
     if ( YourMineMinePower > 0 )
     {
-        YHAccrueAffliction(YHAF_YourMineMine, YourMineMinePower, BodyPart);
+        YHAccrueAffliction(DamageInstigator, YHAF_YourMineMine, YourMineMinePower, BodyPart);
     }
     if ( SmellsLikeRosesPower > 0 )
     {
-        YHAccrueAffliction(YHAF_SmellsLikeRoses, SmellsLikeRosesPower, BodyPart);
+        YHAccrueAffliction(DamageInstigator, YHAF_SmellsLikeRoses, SmellsLikeRosesPower, BodyPart);
     }
     if ( SensitivePower > 0 )
     {
-        YHAccrueAffliction(YHAF_Sensitive, SensitivePower, BodyPart);
+        YHAccrueAffliction(DamageInstigator, YHAF_Sensitive, SensitivePower, BodyPart);
     }
     if ( ZedWhispererPower > 0 )
     {
-        YHAccrueAffliction(YHAF_ZedWhisperer, ZedWhispererPower, BodyPart);
+        YHAccrueAffliction(DamageInstigator, YHAF_ZedWhisperer, ZedWhispererPower, BodyPart);
     }
 }
 

@@ -88,7 +88,7 @@ YHStrings.Add( (m="YHCPerk_Scientist",k="PharmingDescription",s="Darted zeds rel
 YHStrings.Add( (m="YHCPerk_Scientist",k="Overdose",s="Overdose") )
 YHStrings.Add( (m="YHCPerk_Scientist",k="OverdoseDescription",s="Darted zeds will explode upon death. Headshots most effective.") )
 YHStrings.Add( (m="YHCPerk_Scientist",k="NoPainNoGain",s="No Pain No Gain") )
-YHStrings.Add( (m="YHCPerk_Scientist",k="NoPainNoGainDescription",s="Darts have MUCH faster dart healing BUT bodyshots will cause initial damage") )
+YHStrings.Add( (m="YHCPerk_Scientist",k="NoPainNoGainDescription",s="Darts have MUCH faster dart healing. Headshots are all awesome. Bodyshots will hurt teammate and you!") )
 YHStrings.Add( (m="YHCPerk_Scientist",k="ZedWhisperer",s="Zed Whisperer") )
 YHStrings.Add( (m="YHCPerk_Scientist",k="ZedWhispererDescription",s="Darting Zeds will de-rage or disable some special moves. Headshots most effective.") )
 YHStrings.Add( (m="YHCPerk_Scientist",k="YourMineMine",s="Your Mine Mine") )

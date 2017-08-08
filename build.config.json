@@ -7,7 +7,24 @@
             [
                 "{brew_path}/YeeHaw.u",
                 "{server_path}/BrewedPC"
+            ],
+            [
+                "{brew_path}/FX_YeeHaw.upk",
+                "{server_path}/BrewedPC"
+            ],
+            [
+                "{prebrew_path}/FX_YeeHaw.upk",
+                "{src_path}/YeeHaw/YeeHawUpload/BrewedPC/Packages/"
+            ],
+            [
+                "{prebrew_path}/LocalShaderCache-PC-D3D-SM4.upk",
+                "{src_path}/YeeHaw/YeeHawUpload/BrewedPC/Packages/"
+            ],
+            [
+                "{prebrew_path}/LocalShaderCache-PC-D3D-SM5.upk",
+                "{src_path}/YeeHaw/YeeHawUpload/BrewedPC/Packages/"
             ]
+
         ],
         "target": "c:/temp/yeehaw",
         "target_icon": "c:/temp/yeehaw.png",
@@ -18,7 +35,20 @@
             [
                 "{brew_path}/YeeHaw.u",
                 "BrewedPC"
+            ],
+            [
+                "{brew_path}/FX_YeeHaw.upk",
+                "BrewedPC/Packages"
+            ],
+            [
+                "{prebrew_path}/LocalShaderCache-PC-D3D-SM4.upk",
+                "BrewedPC/Packages"
+            ],
+            [
+                "{prebrew_path}/LocalShaderCache-PC-D3D-SM5.upk",
+                "BrewedPC/Packages"
             ]
+
         ],
         "workshop_upload": "\"{workshop_fpath}\" yeehaw.txt"
     }

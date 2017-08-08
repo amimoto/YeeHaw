@@ -1,6 +1,9 @@
 class YHWeap_Shotgun_Medic extends KFWeap_Shotgun_Medic;
 
 var int NoPainNoGainDamage;
+var int AntiGriefingDamage;
+
+var AkBaseSoundObject   DartHeadshotFirstPerson;
 
 `include(YH_Log.uci)
 
@@ -48,6 +51,16 @@ simulated function ProcessInstantHitEx( byte FiringMode, ImpactInfo Impact, opti
         InstigatorPerk.UpdatePerkHeadShots( Impact, InstantHitDamageTypes[FiringMode], ImpactNum );
     }
 
+    // We play different sound effects if the user is a scientist and they get a headshot
+    if (FiringMode == ALTFIRE_FIREMODE && HealTarget != none)
+    {
+        HitZoneIdx = HealTarget.HitZones.Find('ZoneName', Impact.HitInfo.BoneName);
+        if ( HitZoneIdx == HZI_HEAD )
+        {
+            ClientPlayTargetingSound(DartHeadshotFirstPerson);
+        }
+    }
+
     if (FiringMode == ALTFIRE_FIREMODE && HealTarget != none && WorldInfo.GRI.OnSameTeam(Instigator,HealTarget) )
     {
         // Let the accuracy system know that we hit someone
@@ -68,6 +81,15 @@ simulated function ProcessInstantHitEx( byte FiringMode, ImpactInfo Impact, opti
                 `yhLog("++++++++++++++++++++++ HURTING PLAYER:"@HealTarget@"by"@NoPainNoGainDamage@"HP");
                 HealTarget.TakeDamage(
                     NoPainNoGainDamage,
+                    Instigator.Controller,
+                    Impact.HitLocation,
+                    InstantHitMomentum[FiringMode] * Impact.RayDir,
+                    class'YHDT_Medic_Pain',
+                    Impact.HitInfo,
+                    Instigator
+                );
+                Instigator.TakeDamage(
+                    AntiGriefingDamage,
                     Instigator.Controller,
                     Impact.HitLocation,
                     InstantHitMomentum[FiringMode] * Impact.RayDir,
@@ -109,4 +131,7 @@ defaultproperties
         AssociatedPerkClasses.Add(class'YeeHaw.YHCPerk_Scientist')
     
     NoPainNoGainDamage = 15
+    AntiGriefingDamage = 5
+
+    DartHeadshotFirstPerson=AkEvent'WW_Skin_Impacts.Play_IMP_Ballistic_Skull_Local'
 }

@@ -12,6 +12,10 @@ var repnotify bool bYourMineMined;
 var repnotify bool bSmellsLikeRoses;
 var repnotify bool bExtraStrength;
 
+var Controller PharmInstigator;
+var Controller SmellsLikeRosesInstigator;
+var Controller YourMineMineInstigator;
+
 var GameExplosion  OverdoseExplosionTemplate;
 var GameExplosion  PharmExplosionTemplate;
 
@@ -19,10 +23,160 @@ var float BobbleheadInflationRate;
 var float BobbleheadInflationTimer;
 var float BobbleheadMaxSize;
 
+var repnotify bool bParticlesEnabled;
+
+var ParticleSystem PharmParticleSystem;
+var ParticleSystemComponent PharmEmitter;
+
+var ParticleSystem SensitiveParticleSystem;
+var ParticleSystemComponent SensitiveEmitter;
+
+var ParticleSystem OverdoseParticleSystem;
+var ParticleSystemComponent OverdoseEmitter;
+
+var ParticleSystem ZedWhispererParticleSystem;
+var ParticleSystemComponent ZedWhispererEmitter;
+
+var ParticleSystem SmellsLikeRosesParticleSystem;
+var ParticleSystemComponent SmellsLikeRosesEmitter;
+
+var ParticleSystem YourMineMineParticleSystem;
+var ParticleSystemComponent YourMineMineEmitter;
+
+
 replication
 {
     if (bNetDirty)
-        bBobbleheaded, bPharmed, bOverdosed, bSensitive, bZedWhispered, bYourMineMined, bSmellsLikeRoses, bExtraStrength;
+        bBobbleheaded, bPharmed, bOverdosed, bSensitive, bZedWhispered, bYourMineMined, bSmellsLikeRoses, bExtraStrength, bParticlesEnabled;
+}
+
+simulated function SetPharmParticles(bool active)
+{
+    if ( active )
+    {
+        if ( PharmEmitter != none ) return;
+        PharmEmitter = WorldInfo.MyEmitterPool.SpawnEmitter(
+            PharmParticleSystem,
+            Location,
+            Rotation,
+            self
+        );
+    }
+    else
+    {
+        if ( PharmEmitter == none ) return;
+        PharmEmitter.DeactivateSystem();
+        PharmEmitter = none;
+    }
+}
+
+
+simulated function SetSensitiveParticles(bool active)
+{
+    local vector            HeadLocation;
+    if ( active )
+    {
+        if ( SensitiveEmitter != none ) return;
+        HeadLocation = Mesh.GetBoneLocation(HeadBoneName);
+        SensitiveEmitter = WorldInfo.MyEmitterPool.SpawnEmitter(
+            SensitiveParticleSystem,
+            HeadLocation,
+            Rotation,
+            self
+        );
+    }
+    else
+    {
+        if ( SensitiveEmitter == none ) return;
+        SensitiveEmitter.DeactivateSystem();
+        SensitiveEmitter = none;
+    }
+}
+
+function SetOverdoseParticles(bool active)
+{
+    if ( active )
+    {
+        if ( OverdoseEmitter != none ) return;
+        OverdoseEmitter = WorldInfo.MyEmitterPool.SpawnEmitter(
+            OverdoseParticleSystem,
+            Location,
+            Rotation,
+            self
+        );
+    }
+    else
+    {
+        if ( OverdoseEmitter == none ) return;
+        OverdoseEmitter.DeactivateSystem();
+        OverdoseEmitter = none;
+    }
+}
+
+simulated function SetZedWhispererParticles(bool active)
+{
+    local vector            HeadLocation;
+    if ( active )
+    {
+        if ( ZedWhispererEmitter != none ) return;
+        HeadLocation = Mesh.GetBoneLocation(HeadBoneName);
+        ZedWhispererEmitter = WorldInfo.MyEmitterPool.SpawnEmitter(
+            ZedWhispererParticleSystem,
+            HeadLocation,
+            Rotation,
+            self
+        );
+    }
+    else
+    {
+        if ( ZedWhispererEmitter == none ) return;
+        ZedWhispererEmitter.DeactivateSystem();
+        ZedWhispererEmitter = none;
+    }
+}
+
+simulated function SetSmellsLikeRosesParticles(bool active)
+{
+    local vector            HeadLocation;
+    if ( active )
+    {
+        if ( SmellsLikeRosesEmitter != none ) return;
+        HeadLocation = Mesh.GetBoneLocation(HeadBoneName);
+        SmellsLikeRosesEmitter = WorldInfo.MyEmitterPool.SpawnEmitter(
+            SmellsLikeRosesParticleSystem,
+            HeadLocation,
+            Rotation,
+            self
+        );
+    }
+    else
+    {
+        if ( SmellsLikeRosesEmitter == none ) return;
+        SmellsLikeRosesEmitter.DeactivateSystem();
+        SmellsLikeRosesEmitter = none;
+    }
+}
+
+simulated function SetYourMineMineParticles(bool active)
+{
+    local vector            HeadLocation;
+    if ( active )
+    {
+        if ( YourMineMineEmitter != none ) return;
+        HeadLocation = Mesh.GetBoneLocation(HeadBoneName);
+        YourMineMineEmitter = WorldInfo.MyEmitterPool.SpawnEmitter(
+            YourMineMineParticleSystem,
+            HeadLocation,
+            Rotation,
+            self
+        );
+    }
+    else
+    {
+        if ( YourMineMineEmitter == none ) return;
+        YourMineMineEmitter.DeactivateSystem();
+        YourMineMineEmitter = none;
+    }
 }
 
 simulated event ReplicatedEvent(name VarName)
@@ -37,6 +191,47 @@ simulated event ReplicatedEvent(name VarName)
         {
             ShrinkBobblehead();
         }
+    }
+
+    else if ( VarName == 'bPharmed' )
+    {
+        SetPharmParticles(bPharmed);
+    }
+
+    else if ( VarName == 'bSensitive' )
+    {
+        SetSensitiveParticles(bSensitive);
+    }
+
+    else if ( VarName == 'bOverdosed' )
+    {
+        SetOverdoseParticles(bOverdosed);
+    }
+
+    else if ( VarName == 'bZedWhispered' )
+    {
+        SetZedWhispererParticles(bZedWhispered);
+    }
+
+    else if ( VarName == 'bSmellsLikeRoses' )
+    {
+        SetSmellsLikeRosesParticles(bSmellsLikeRoses);
+    }
+
+    else if ( VarName == 'bYourMineMined' )
+    {
+        SetYourMineMineParticles(bYourMineMined);
+    }
+
+    else if ( VarName == 'bParticlesEnabled' && !bParticlesEnabled )
+    {
+        // Disable affliction particles and such
+        SetPharmParticles(false);
+        SetSensitiveParticles(false);
+        SetOverdoseParticles(false);
+        SetZedWhispererParticles(false);
+        SetYourMineMineParticles(false);
+        SetSmellsLikeRosesParticles(false);
     }
 
     super.ReplicatedEvent(VarName);
@@ -126,6 +321,7 @@ function SetBobbleheaded( bool active ) {
 
 function SetSensitive( bool active ) {
     bSensitive = active;
+    SetSensitiveParticles(active);
 }
 
 simulated event bool CanDoSpecialMove(ESpecialMove AMove, optional bool bForceCheck)
@@ -139,14 +335,19 @@ simulated event bool CanDoSpecialMove(ESpecialMove AMove, optional bool bForceCh
     return SpecialMoveHandler.CanDoSpecialMove( AMove, bForceCheck );
     }
 
-function SetPharmed( bool active ) {
+function SetPharmed( bool active, Controller AfflictionInstigator ) {
     if ( !bIsHeadless )
+    {
         bPharmed = active;
+        PharmInstigator = AfflictionInstigator;
+    }
+    SetPharmParticles(active);
 }
 
 function SetOverdosed( bool active ) {
     if ( !bIsHeadless )
         bOverdosed = active;
+    SetOverdoseParticles(active);
 }
 
 function bool ShouldSprint()
@@ -172,6 +373,8 @@ function SetZedWhispered( bool active ) {
         Timer_EndRallyBoost();
     }
 
+    SetZedWhispererParticles(active);
+
 }
 
 function AdjustMovementSpeed( float SpeedAdjust )
@@ -194,14 +397,22 @@ simulated function SetEnraged( bool bNewEnraged )
     super.SetEnraged(bNewEnraged);
 }
 
-function SetYourMineMined( bool active ) {
+function SetYourMineMined( bool active, Controller AfflictionInstigator ) {
     if ( !bIsHeadless )
+    {
         bYourMineMined = active;
+        YourMineMineInstigator = AfflictionInstigator;
+    }
+    SetYourMineMineParticles(active);
 }
 
-function SetSmellsLikeRoses( bool active ) {
+function SetSmellsLikeRoses( bool active, Controller AfflictionInstigator ) {
     if ( !bIsHeadless )
+    {
         bSmellsLikeRoses = active;
+        SmellsLikeRosesInstigator = AfflictionInstigator;
+    }
+    SetSmellsLikeRosesParticles(active);
 }
 
 simulated function ApplyDartAfflictions(int Damage,
@@ -280,6 +491,17 @@ function bool Died(Controller Killer, class<DamageType> DamageType, vector HitLo
     local KFPlayerController KFPC;
     local KFPerk InstigatorPerk;
 
+    // Disable affliction particles and such
+    SetPharmParticles(false);
+    SetSensitiveParticles(false);
+    SetOverdoseParticles(false);
+    SetZedWhispererParticles(false);
+    SetYourMineMineParticles(false);
+    SetSmellsLikeRosesParticles(false);
+
+    // Stop any spawning particles
+    bParticlesEnabled = False;
+
     if ( super.Died(Killer, damageType, HitLocation) )
     {
         if( Killer != none )
@@ -317,6 +539,7 @@ function bool Died(Controller Killer, class<DamageType> DamageType, vector HitLo
         {
         }
 
+        
         return true;
     }
 
@@ -340,6 +563,8 @@ function PharmExplode( Controller Killer, KFPerk InstigatorPerk )
         YHExplosion_Pharm(ExploActor).MyPawn = self;
         ExploActor.SetBase( self,, Mesh );
         ExploActor.InstigatorController = Killer;
+        `yhLog("PHARMPHARMPHARMPHARMPHARMPHARMPHARMPHARMPHARMPHARM"@PharmInstigator);
+        YHExplosion_Pharm(ExploActor).CachedInstigator = PharmInstigator;
         if( Killer.Pawn != none )
         {
             ExploActor.Instigator = Killer.Pawn;
@@ -375,6 +600,12 @@ function AdjustDamage(out int InDamage, out vector Momentum, Controller Instigat
     super.AdjustDamage(InDamage, Momentum, InstigatedBy, HitLocation, DamageType, HitInfo, DamageCauser);
 }
 
+simulated function MyAdjustAffliction(out float AfflictionPower,EYHAfflictionType Type)
+{
+    AdjustAffliction(AfflictionPower);
+}
+
+
 
 defaultproperties
 {
@@ -391,7 +622,7 @@ defaultproperties
          IncapSettings(YHAF_Sensitive)=   (Vulnerability=(0.5, 1.0, 0.5, 0.5, 0.5),Duration=6.0,Cooldown=10.0)
            IncapSettings(YHAF_Overdose)=    (Vulnerability=(0.5, 1.0, 0.5, 0.5, 0.5),Duration=6.0,Cooldown=7.0)
             IncapSettings(YHAF_Pharmed)=     (Vulnerability=(0.5, 1.0, 0.5, 0.5, 0.5),Duration=6.0,Cooldown=7.0)
-       IncapSettings(YHAF_ZedWhisperer)=(Vulnerability=(0.25, 0.75, 0.25, 0.25, 0.25),Duration=5.0,Cooldown=5.0)
+       IncapSettings(YHAF_ZedWhisperer)=(Vulnerability=(0.25, 0.75, 0.25, 0.25, 0.25),Duration=3.0,Cooldown=10.0)
        //IncapSettings(YHAF_YourMineMine)=(Duration=5.0,Cooldown=5.0)
     //IncapSettings(YHAF_SmellsLikeRoses)=(Duration=5.0,Cooldown=5.0)
 
@@ -445,6 +676,14 @@ Begin Object Class=KFGameExplosion Name=OverdoseExploTemplate0
     BobbleheadInflationRate = 0.2f
     BobbleheadMaxSize = 2.0f
     BobbleheadInflationTimer = 0.10f
+
+    bParticlesEnabled = True
+    PharmParticleSystem=ParticleSystem'FX_YeeHaw.FX_Affliction_Pharm'
+    SensitiveParticleSystem=ParticleSystem'FX_YeeHaw.FX_Affliction_Sensitive'
+    OverdoseParticleSystem=ParticleSystem'FX_YeeHaw.FX_Affliction_Overdose'
+    ZedWhispererParticleSystem=ParticleSystem'FX_YeeHaw.FX_Affliction_ZedWhisperer'
+    SmellsLikeRosesParticleSystem=ParticleSystem'FX_YeeHaw.FX_Affliction_SmellsLikeRoses'
+    YourMineMineParticleSystem=ParticleSystem'FX_YeeHaw.FX_Affliction_YourMineMine'
 
 }
 
