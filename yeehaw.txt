@@ -13,7 +13,7 @@ Changes from vanilla survival:
 * Full integration with ControlledDifficulty
 * New Perk: Horzine Scientist
 
-So what about the "Horzine Scientist"?
+So what about the 'Horzine Scientist'?
 
 Level comes from your Survivalist level. Hah! Didn't think you need that perk did you?
 
@@ -46,7 +46,7 @@ Level 25:
 
 NOTES:
 
-* By default, ammo mode is now "normal". To switch ammo handling types use the chat commands:
+* By default, ammo mode is now 'normal'. To switch ammo handling types use the chat commands:
   - !cdan    - Normal ammo handling
   - !cday    - YeeHaw ammo handling
   - !cdau    - Unlimited ammo

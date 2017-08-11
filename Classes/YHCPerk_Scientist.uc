@@ -29,13 +29,6 @@ enum EScientistPerkSkills
     EScientistZTRealityDistortion // DONE
 };
 
-
-static simulated event string GetPerkIconPath()
-{
-    return "FX_YeeHaw.UI_PerkIcon_Scientist";
-}
-
-
 simulated protected event PostSkillUpdate()
 {
     local KFInventoryManager KFIM;
