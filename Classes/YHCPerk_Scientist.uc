@@ -30,17 +30,22 @@ enum EScientistPerkSkills
 };
 
 
+static simulated event string GetPerkIconPath()
+{
+    return "FX_YeeHaw.UI_PerkIcon_Scientist";
+}
+
 
 simulated protected event PostSkillUpdate()
 {
     local KFInventoryManager KFIM;
 
     // Actively limit the number of grenades a player may hold
-    if( IsZTGrenadesActive() )
+    if( OwnerPawn != None && IsZTGrenadesActive() )
     {
         MaxGrenadeCount = MaxZTGrenadeCount;
         KFIM = KFInventoryManager( OwnerPawn.InvManager );
-        if ( KFIM.GrenadeCount > MaxGrenadeCount )
+        if ( KFIM != None && KFIM.GrenadeCount > MaxGrenadeCount )
         {
             KFIM.GrenadeCount = MaxGrenadeCount;
         }
@@ -420,6 +425,8 @@ defaultproperties
 
     //PerkIcon=Texture2D'UI_PerkIcons_TEX.UI_PerkIcon_Scientist'
     PerkIcon=Texture2D'UI_PerkIcons_TEX.UI_Horzine_H_Logo'
+    //PerkIcon=Texture2D'FX_YeeHaw.UI_PerkIcon_Scientist'
+    // PerkIcon=Texture2D'UI_YeeHaw.UI_PerkIcon_Scientist'
 
     ProgressStatID=STATID_Surv_Progress
     PerkBuildStatID=STATID_Surv_Build

@@ -1,4 +1,9 @@
-$Description "ControlledDifficulty where headshots return the ammo back to the chamber.
+$Description "ControlledDifficulty with a few bonuses.
+
+IN BETA: There may be bugs!
+
+New Custom Perk: Horzine Scientist
+Ammo handling: Normal, Headshots return ammo to chamber or simply Infinite ammo
 
 Changes from vanilla survival:
 
@@ -7,6 +12,44 @@ Changes from vanilla survival:
 * Trader is quiet
 * Full integration with ControlledDifficulty
 * New Perk: Horzine Scientist
+
+So what about the "Horzine Scientist"?
+
+Level comes from your Survivalist level. Hah! Didn't think you need that perk did you?
+
+Passives:
+    Perk Weapon Damage: Increase perk weapon damage 0.5% per level
+    Syringe Recharge Rate: Increase syringe recharge rate 4% per level
+    Health Bar Detection: Range of 5m plus 2m per level
+
+Level 5:
+    Bobbleheads: Darting Zeds will inflate them. Headshot will afflict immediately, bodyshots require multiple hits.
+    Sensitive: Darting Zeds will decrease damage by 20% and resistance by 20%. Headshot will afflict immediately, bodyshots require multiple hits.
+
+Level 10:
+    Pharming: Darted zeds release healing clouds upon death. Headshot will afflict immediately, bodyshots require multiple hits.
+    Overdose: Darted zeds will explode upon death. Headshot will afflict immediately, bodyshots require multiple hits.
+
+Level 15:
+    No Pain No Gain: Darts have MUCH faster dart healing. Headshots are important: Bodyshots will hurt teammate and you!
+    Zed Whisperer: Darting Zeds will de-rage or disable some special moves. 2-3 headshots required.
+
+Level 20:
+    Smells Like Roses: Darted bloats upon explosive death will release healing mines. Headshot will afflict immediately, bodyshots require multiple hits.
+    Your Mine Mine: Darted bloats upon explosive death will release mines that explode on zed contact. Headshot will afflict immediately, bodyshots require multiple hits.
+
+
+Level 25:
+    Zed Time Grenades: Swap your bloat mine grenades and wield the power to manipulate time!
+    ZED TIME - Reality Distortion Field: Infinite darts and ammo!
+
+
+NOTES:
+
+* By default, ammo mode is now "normal". To switch ammo handling types use the chat commands:
+  - !cdan    - Normal ammo handling
+  - !cday    - YeeHaw ammo handling
+  - !cdau    - Unlimited ammo
 
 IMPORTANT:
 
@@ -34,12 +77,12 @@ Making this puppy run:
 * Change difficulty by supplying another difficulty parameter. So for HoE it could be: open kf-burningparis?game=YeeHaw.YH_Survival?Difficulty=3 (Note: 0=Normal)
 * All usual parameters for ControlledDifficulty are also available here
 
-Blue Cross Image for Pharm from: http://www.iconsdb.com/icon-sets/web-2-blue-icons/cross-icon.html
-Minus Image for Sensitive from: http://www.iconsdb.com/soylent-red-icons/minus-4-icon.html
+Credits:
+Images for affliction particle systems mostly from: http://www.iconsdb.com/icon-sets/web-2-blue-icons/cross-icon.html
 
 
-GS Logo by Atagene"
-$Title "YeeHawTest"
+"
+$Title "YeeHaw"
 $PreviewFile "c:\temp\yeehaw.png"
 $Tags "Gamemodes"
 $MicroTxItem "false"

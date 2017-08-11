@@ -14,7 +14,10 @@ var config YHEAmmoMode AmmoMode;
 function ChangeAmmoMode(YHEAmmoMode NewAmmoMode)
 {
     AmmoMode = NewAmmoMode;
-    YHGameReplicationInfo(MyKFGRI).AmmoMode = NewAmmoMode;
+    if (MyKFGRI != None )
+    {
+        YHGameReplicationInfo(MyKFGRI).AmmoMode = NewAmmoMode;
+    }
 }
 
 private function string AmmoModeNormal()
@@ -38,7 +41,10 @@ private function string AmmoModeUber()
 event InitGame( string Options, out string ErrorMessage )
 {
     Super.InitGame( Options, ErrorMessage );
-    YHGameReplicationInfo(MyKFGRI).AmmoMode = AmmoMode;
+    if (MyKFGRI != None )
+    {
+        YHGameReplicationInfo(MyKFGRI).AmmoMode = AmmoMode;
+    }
 
     ChatCommander = new(self) class'YHChatCommander';
     ChatCommander.SetupChatCommands();

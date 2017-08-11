@@ -1,0 +1,24 @@
+
+https://docs.unrealengine.com/udk/Three/ScaleformTechnicalGuide.html#Enabling Logging
+
+Testing and Debugging Scenes
+
+Debugging with Scaleform can be a test of wills at times. Many errors such as misspellings and typos in ActionScript which don't throw compile time warnings, fail silently so bugs can be near impossible to track down. Other aspects, such as handling focus within scenes, are really hard to debug because there really are not any debugging tools for those aspects.
+
+Testing in the GFxPlayer
+
+In order to reduce iteration and testing time because of how long it takes to Publish -> Import -> Boot Game -> Test, often we set up dummy data in the ActionScript code to test. To prevent this from executing in game, in ActionScript you can use
+
+if( _global.gfxPlayer )
+{
+    // debugging code here.
+}
+This make sure the code only gets run in the external GFxPlayer, and not the game, so that you don't have to worry about fake data appearing in the game. One of the biggest lessons we learned is that where you can, you should always test your content in Flash and get it working there before bringing it into engine, because you'll save so much iteration time. That's part of the motivation for our newer scenes being set up with the gears.view.Foo class. That base location is where we put in the Flash-only debug data so we can test the scene before bringing it in engine. This allows for easy simulation of data being sent from the game, as that is the class we typically hook and send all the data to for processing.
+
+This will also allow your UI Artist to be able to see what the scene will look like with dummy content in it.
+
+Enabling Logging
+
+Logging from Scaleform GFx is turned on by default in the PC library, but not the console libraries. Logging is sent through the DevGFxUI logging channel, which is suppressed by default. To enable, comment out (using a semi-colon) the line "Suppress=DevGFxUI" in your game's Engine.ini file (e.g. UDKEngine.ini).
+
+Note that ActionScript Trace() logging is also routed through this channel, so it must be unsuppressed to see any ActionScript logging that you may be doing.

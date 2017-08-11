@@ -13,16 +13,24 @@
                 "{server_path}/BrewedPC"
             ],
             [
-                "{prebrew_path}/FX_YeeHaw.upk",
-                "{src_path}/YeeHaw/YeeHawUpload/BrewedPC/Packages/"
+                "{brew_path}/UI_YeeHaw.upk",
+                "{server_path}/BrewedPC"
             ],
             [
-                "{prebrew_path}/LocalShaderCache-PC-D3D-SM4.upk",
-                "{src_path}/YeeHaw/YeeHawUpload/BrewedPC/Packages/"
+                "{brew_path}/FX_YeeHaw.upk",
+                "{src_path}/YeeHaw/YeeHawUpload/BrewedPC/"
             ],
             [
-                "{prebrew_path}/LocalShaderCache-PC-D3D-SM5.upk",
-                "{src_path}/YeeHaw/YeeHawUpload/BrewedPC/Packages/"
+                "{brew_path}/UI_YeeHaw.upk",
+                "{src_path}/YeeHaw/YeeHawUpload/BrewedPC/"
+            ],
+            [
+                "{brew_path}/LocalShaderCache-PC-D3D-SM4.upk",
+                "{src_path}/YeeHaw/YeeHawUpload/BrewedPC/"
+            ],
+            [
+                "{brew_path}/LocalShaderCache-PC-D3D-SM5.upk",
+                "{src_path}/YeeHaw/YeeHawUpload/BrewedPC/"
             ]
 
         ],
@@ -38,15 +46,19 @@
             ],
             [
                 "{brew_path}/FX_YeeHaw.upk",
-                "BrewedPC/Packages"
+                "BrewedPC"
             ],
             [
-                "{prebrew_path}/LocalShaderCache-PC-D3D-SM4.upk",
-                "BrewedPC/Packages"
+                "{brew_path}/UI_YeeHaw.upk",
+                "BrewedPC"
             ],
             [
-                "{prebrew_path}/LocalShaderCache-PC-D3D-SM5.upk",
-                "BrewedPC/Packages"
+                "{brew_path}/LocalShaderCache-PC-D3D-SM4.upk",
+                "BrewedPC"
+            ],
+            [
+                "{brew_path}/LocalShaderCache-PC-D3D-SM5.upk",
+                "BrewedPC"
             ]
 
         ],

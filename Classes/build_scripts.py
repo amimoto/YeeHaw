@@ -24,28 +24,28 @@ Passives[1]=(Title="Syringe Recharge Rate",Description="Increase syringe recharg
 Passives[2]=(Title="Health Bar Detection",Description="Range of 5m plus %x%m per level");
 
 Bobbleheads="Bobbleheads"
-BobbleheadsDescription="Darting Zeds will inflate them. Headshots most effective."
+BobbleheadsDescription="Darting Zeds will inflate them. Headshot will afflict immediately, bodyshots require multiple hits."
 
 Sensitive="Sensitive"
-SensitiveDescription="Darting Zeds will decrease damage by 20% and resistance by 20%. Headshots most effective."
+SensitiveDescription="Darting Zeds will decrease damage by 20% and resistance by 20%. Headshot will afflict immediately, bodyshots require multiple hits.."
 
 Pharming="Pharming"
-PharmingDescription="Darted zeds release healing clouds upon death. Headshots most effective."
+PharmingDescription="Darted zeds release healing clouds upon death. Headshot will afflict immediately, bodyshots require multiple hits.."
 
 Overdose="Overdose"
-OverdoseDescription="Darted zeds will explode upon death. Headshots most effective."
+OverdoseDescription="Darted zeds will explode upon death. Headshot will afflict immediately, bodyshots require multiple hits.."
 
 NoPainNoGain="No Pain No Gain"
-NoPainNoGainDescription="Darts have MUCH faster dart healing. Headshots are all awesome. Bodyshots will hurt teammate and you!"
+NoPainNoGainDescription="Darts have MUCH faster dart healing. Headshots are important: Bodyshots will hurt teammate and you!"
 
 ZedWhisperer="Zed Whisperer"
-ZedWhispererDescription="Darting Zeds will de-rage or disable some special moves. Headshots most effective."
+ZedWhispererDescription="Darting Zeds will de-rage or disable some special moves. 2-3 headshots required, bodyshots require even more hits."
 
 YourMineMine="Your Mine Mine"
-YourMineMineDescription="Darted bloats upon explosive death will release mines that explode on zed contact"
+YourMineMineDescription="Darted bloats upon explosive death will release mines that explode on zed contact. Headshot will afflict immediately, bodyshots require multiple hits."
 
 SmellsLikeRoses="Smells Like Roses"
-SmellsLikeRosesDescription="Darted bloats upon explosive death will release mines that release a healing cloud on contact"
+SmellsLikeRosesDescription="Darted bloats upon explosive death will release mines that release a healing cloud on contact. Headshot will afflict immediately, bodyshots require multiple hits."
 
 ZedTimeGrenades="Zed Time Grenades"
 ZedTimeGrenadesDescription="Swap your bloat mine grenades and wield the power to manipulate time!"
