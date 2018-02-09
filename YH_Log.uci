@@ -1,4 +1,4 @@
-//`define YH_LOG 1
+// `define YH_LOG 1
 
 `if(`isdefined(YH_LOG))
 `define yhLog(text, cond) `log(`text, `cond, 'YH')

@@ -77,6 +77,9 @@ Making this puppy run:
 * Change difficulty by supplying another difficulty parameter. So for HoE it could be: open kf-burningparis?game=YeeHaw.YH_Survival?Difficulty=3 (Note: 0=Normal)
 * All usual parameters for ControlledDifficulty are also available here
 
+Source:
+https://github.com/amimoto/YeeHaw
+
 Credits:
 Images for affliction particle systems mostly from: http://www.iconsdb.com/icon-sets/web-2-blue-icons/cross-icon.html
 

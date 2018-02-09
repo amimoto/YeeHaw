@@ -196,7 +196,7 @@ simulated function bool YHVerifyAfflictionInstance(EYHAfflictionType Type)
 
 
 /** Check, and if needed activate afflictions after being hit (Server only) */
-function NotifyTakeHit(Controller DamageInstigator, vector HitDir, class<KFDamageType> DamageType)
+function NotifyTakeHit(Controller DamageInstigator, vector HitDir, class<KFDamageType> DamageType, Actor DamageCauser)
 {
     local KFPerk InstigatorPerk;
 
@@ -214,14 +214,14 @@ function NotifyTakeHit(Controller DamageInstigator, vector HitDir, class<KFDamag
     // For now all below effects are for Zeds
     if( GetTeamNum() > 254 && !bPlayedDeath )
     {
-        YHProcessSpecialMoveAfflictions(DamageInstigator, InstigatorPerk, HitDir, DamageType);
+        YHProcessSpecialMoveAfflictions(DamageInstigator, InstigatorPerk, HitDir, DamageType, DamageCauser);
         ProcessHitReactionAfflictions(InstigatorPerk, DamageType);
     }
 
     ProcessEffectBasedAfflictions(InstigatorPerk, DamageType);
 }
 
-protected function YHProcessSpecialMoveAfflictions(Controller DamageInstigator, KFPerk InstigatorPerk, vector HitDir, class<KFDamageType> DamageType)
+protected function YHProcessSpecialMoveAfflictions(Controller DamageInstigator, KFPerk InstigatorPerk, vector HitDir, class<KFDamageType> DamageType, Actor DamageCauser)
 {
     local EHitZoneBodyPart BodyPart;
     local byte HitZoneIdx;
@@ -229,6 +229,7 @@ protected function YHProcessSpecialMoveAfflictions(Controller DamageInstigator, 
     local float BobbleheadPower, PharmPower, OverdosePower, YourMineMinePower;
     local float SmellsLikeRosesPower, ZedWhispererPower;
     local float KnockdownModifier, StumbleModifier, StunModifier;
+    local KFInterface_DamageCauser KFDmgCauser;
 
     local float BobbleheadModifier, PharmModifier, OverdoseModifier, YourMineMineModifier;
     local float SmellsLikeRosesModifier, SensitiveModifier, ZedWhispererModifier;
@@ -253,46 +254,25 @@ protected function YHProcessSpecialMoveAfflictions(Controller DamageInstigator, 
     StunPower = DamageType.default.StunPower;
     SnarePower = DamageType.default.SnarePower;
 
-    DT = class<YHDamageType>(DamageType);
-    if ( DT != None )
+    KFDmgCauser = KFInterface_DamageCauser(DamageCauser);
+    if (KFDmgCauser != None)
     {
-        BobbleheadPower = DT.default.BobbleheadPower;
-        PharmPower = DT.default.PharmPower;
-        OverdosePower = DT.default.OverdosePower;
-        YourMineMinePower = DT.default.YourMineMinePower;
-        SmellsLikeRosesPower = DT.default.SmellsLikeRosesPower;
-        SensitivePower = DT.default.SensitivePower;
-        ZedWhispererPower = DT.default.ZedWhispererPower;
-     }
-    else
-    {
-        BobbleheadPower = 0;
-        PharmPower = 0;
-        OverdosePower = 0;
-        YourMineMinePower = 0;
-        SmellsLikeRosesPower = 0;
-        SensitivePower = 0;
-        ZedWhispererPower = 0;
+        KnockdownPower *= KFDmgCauser.GetIncapMod();
+        StumblePower *= KFDmgCauser.GetIncapMod();
+        StunPower *= KFDmgCauser.GetIncapMod();
+        SnarePower *= KFDmgCauser.GetIncapMod();
     }
 
     KnockdownModifier = 1.f;
     StumbleModifier = 1.f;
     StunModifier = 1.f;
 
-    BobbleheadModifier = 0;
-    PharmModifier = 0;
-    OverdoseModifier = 0;
-    YourMineMineModifier = 0;
-    SmellsLikeRosesModifier = 0;
-    SensitiveModifier = 0;
-    ZedWhispererModifier = 0;
-
     // Allow for known afflictions to adjust reaction
     KnockdownModifier += GetAfflictionKnockdownModifier();
     StumbleModifier += GetAfflictionStumbleModifier();
     StunModifier += GetAfflictionStunModifier();
 
-    // Allow damage instigator perk to modify reaction
+	// Allow damage instigator perk to modify reaction
     if ( InstigatorPerk != None )
     {
         KnockdownModifier += InstigatorPerk.GetKnockdownPowerModifier( DamageType, BodyPart, bIsSprinting );
@@ -303,38 +283,9 @@ protected function YHProcessSpecialMoveAfflictions(Controller DamageInstigator, 
         SnarePower += InstigatorPerk.GetSnarePowerModifier( DamageType, HitZoneIdx );
     }
 
-    YHInstigatorPerk = YHPerk_Interface(InstigatorPerk);
-    if ( DT == None || YHInstigatorPerk == None )
-    {
-        BobbleheadModifier = 0.f;
-        PharmModifier = 0.f;
-        OverdoseModifier = 0.f;
-        YourMineMineModifier = 0.f;
-        SmellsLikeRosesModifier = 0.f;
-    }
-    else
-    {
-        BobbleheadModifier = YHInstigatorPerk.GetBobbleheadPowerModifier( DT, HitZoneIdx );
-        PharmModifier = YHInstigatorPerk.GetPharmPowerModifier( DT, HitZoneIdx );
-        OverdoseModifier = YHInstigatorPerk.GetOverdosePowerModifier( DT, HitZoneIdx );
-        YourMineMineModifier = YHInstigatorPerk.GetYourMineMinePowerModifier( DT, HitZoneIdx );
-        SmellsLikeRosesModifier = YHInstigatorPerk.GetSmellsLikeRosesPowerModifier( DT, HitZoneIdx );
-        SensitiveModifier = YHInstigatorPerk.GetSensitivePowerModifier( DT, HitZoneIdx );
-        ZedWhispererModifier = YHInstigatorPerk.GetZedWhispererPowerModifier( DT, HitZoneIdx );
-
-    }
-
     KnockdownPower *= KnockdownModifier;
     StumblePower *= StumbleModifier;
     StunPower *= StunModifier;
-
-    BobbleheadPower *= BobbleheadModifier;
-    PharmPower *= PharmModifier;
-    OverdosePower *= OverdoseModifier;
-    YourMineMinePower *= YourMineMineModifier;
-    SmellsLikeRosesPower *= SmellsLikeRosesModifier;
-    SensitivePower *= SensitiveModifier;
-    ZedWhispererPower *= ZedWhispererModifier;
 
     // increment affliction power
     if ( KnockdownPower > 0 && CanDoSpecialmove(SM_Knockdown) )
@@ -357,6 +308,67 @@ protected function YHProcessSpecialMoveAfflictions(Controller DamageInstigator, 
     {
         AccrueAffliction(AF_Snare, SnarePower, BodyPart);
     }
+
+    DT = class<YHDamageType>(DamageType);
+    if ( DT != None )
+    {
+        BobbleheadPower = DT.default.BobbleheadPower;
+        PharmPower = DT.default.PharmPower;
+        OverdosePower = DT.default.OverdosePower;
+        YourMineMinePower = DT.default.YourMineMinePower;
+        SmellsLikeRosesPower = DT.default.SmellsLikeRosesPower;
+        SensitivePower = DT.default.SensitivePower;
+        ZedWhispererPower = DT.default.ZedWhispererPower;
+     }
+    else
+    {
+        BobbleheadPower = 0;
+        PharmPower = 0;
+        OverdosePower = 0;
+        YourMineMinePower = 0;
+        SmellsLikeRosesPower = 0;
+        SensitivePower = 0;
+        ZedWhispererPower = 0;
+    }
+
+    BobbleheadModifier = 0;
+    PharmModifier = 0;
+    OverdoseModifier = 0;
+    YourMineMineModifier = 0;
+    SmellsLikeRosesModifier = 0;
+    SensitiveModifier = 0;
+    ZedWhispererModifier = 0;
+
+    YHInstigatorPerk = YHPerk_Interface(InstigatorPerk);
+    if ( DT == None || YHInstigatorPerk == None )
+    {
+        BobbleheadModifier = 0.f;
+        PharmModifier = 0.f;
+        OverdoseModifier = 0.f;
+        YourMineMineModifier = 0.f;
+        SmellsLikeRosesModifier = 0.f;
+    }
+    else
+    {
+        BobbleheadModifier = YHInstigatorPerk.GetBobbleheadPowerModifier( DT, HitZoneIdx );
+        PharmModifier = YHInstigatorPerk.GetPharmPowerModifier( DT, HitZoneIdx );
+        OverdoseModifier = YHInstigatorPerk.GetOverdosePowerModifier( DT, HitZoneIdx );
+        YourMineMineModifier = YHInstigatorPerk.GetYourMineMinePowerModifier( DT, HitZoneIdx );
+        SmellsLikeRosesModifier = YHInstigatorPerk.GetSmellsLikeRosesPowerModifier( DT, HitZoneIdx );
+        SensitiveModifier = YHInstigatorPerk.GetSensitivePowerModifier( DT, HitZoneIdx );
+        ZedWhispererModifier = YHInstigatorPerk.GetZedWhispererPowerModifier( DT, HitZoneIdx );
+
+    }
+
+    BobbleheadPower *= BobbleheadModifier;
+    PharmPower *= PharmModifier;
+    OverdosePower *= OverdoseModifier;
+    YourMineMinePower *= YourMineMineModifier;
+    SmellsLikeRosesPower *= SmellsLikeRosesModifier;
+    SensitivePower *= SensitiveModifier;
+    ZedWhispererPower *= ZedWhispererModifier;
+
+    // increment affliction power
     if ( BobbleheadPower > 0 )
     {
         YHAccrueAffliction(DamageInstigator, YHAF_Bobblehead, BobbleheadPower, BodyPart);

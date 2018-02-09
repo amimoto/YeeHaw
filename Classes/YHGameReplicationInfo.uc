@@ -52,7 +52,7 @@ simulated event bool CanChangePerks()
 defaultproperties
 {
     // With this, there will be an eerie quiet through all the waves
-    TraderDialogManagerClass=class'YHTraderDialogManager'
+    // TraderDialogManagerClass=class'YHTraderDialogManager'
 
     Begin Object Class="YHGFxObject_TraderItems" Name="TraderItems0"
     End Object

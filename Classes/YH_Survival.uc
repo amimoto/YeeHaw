@@ -40,6 +40,7 @@ private function string AmmoModeUber()
 
 event InitGame( string Options, out string ErrorMessage )
 {
+    `yhLog("Initializing YeeHaw!");
     Super.InitGame( Options, ErrorMessage );
     if (MyKFGRI != None )
     {
@@ -195,5 +196,6 @@ defaultproperties
     SpawnManagerClasses(0)=class'YeeHaw.YHSpawnManager_Short'
     SpawnManagerClasses(1)=class'YeeHaw.YHSpawnManager_Normal'
     SpawnManagerClasses(2)=class'YeeHaw.YHSpawnManager_Long'
-
 }
+
+
